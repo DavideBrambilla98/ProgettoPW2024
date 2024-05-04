@@ -15,3 +15,22 @@ I ricoveri avvengono per curare una o più patologie, che sono note a propri: og
 ed è caratterizzata dal nome, e da un livello di criticità (tipicamente, un numero).  
 In particolare, si vogliono gestire due sottoinsiemi: quello delle patologie mortali e quello delle patologie croniche
 (i due sottoinsiemi potrebbero essere non disgiunti e sicuramente non sono esaustivi).
+
+## Struttura del DB:
+
+<img width="649" alt="StrutturaDB1" src="https://github.com/DavideBrambilla98/ProgettoPW2024/assets/145765934/2f42509f-1882-4c23-8095-6af598d8211c">
+
+
+<img width="728" alt="StrutturaDB2" src="https://github.com/DavideBrambilla98/ProgettoPW2024/assets/145765934/8223b76f-e04c-4c91-b0a6-4134f29f9231">
+
+## Struttura interfaccia:
+
+<img width="729" alt="Interfaccia" src="https://github.com/DavideBrambilla98/ProgettoPW2024/assets/145765934/9b0e086a-49de-4b85-bae4-1d17890baaea">
+
+## Dettagli:
+
+- Progetto: 124
+- DB di riferimento: Servizio Sanitario (Ex 3)
+- Tabella per CRUD: Ricovero
+- Interfaccia: Interfaccia 4
+- Palette: Arancione
