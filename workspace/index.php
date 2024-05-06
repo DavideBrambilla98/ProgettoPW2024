@@ -22,7 +22,7 @@
             <form name="researchForm" method="POST">
                 <input id="codicePatologia" name="codicePatologia" type="text" placeholder="codice patologia"/>
                 <input id="nomePatologia" name="nomePatologia" type="text" placeholder="nome patologia"/>
-                <input id="criticità" name="criticità" type="text" placeholder="criticità"/>
+                <input id="criticita" name="criticita" type="text" placeholder="criticità"/>
                 <input id="cronica" name="cronica" type="text" placeholder="cronica = X"/>
                 <input id="mortale" name="mortale" type="text" placeholder="mortale = X"/>
                 <button type="submit">
@@ -44,11 +44,11 @@
 
                 $cod = $_POST["codicePatologia"] ?? "";
                 $nome = $_POST["nomePatologia"] ?? "";
-                $criticità  = $_POST["criticità"] ?? "";
+                $criticita  = $_POST["criticita"] ?? "";
                 $cronica = $_POST["cronica"] ?? "";
                 $mortale  = $_POST["mortale"] ?? "";
             
-                $sql = readPatologieFromDb ($cod, $nome, $criticità, $cronica, $mortale);
+                $sql = readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale);
             
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
@@ -58,13 +58,15 @@
                     $statoPDO->bindValue(':cod', $cod);
                 if ($nome != "")
                     $statoPDO->bindValue(':nome', "%$nome%");
-                if ($criticità != "")
-                    $statoPDO->bindValue(':criticità', $criticità);
+                if ($criticita != "")
+                    $statoPDO->bindValue(':criticita', $criticita);
                 if ($cronica != "")
                     $statoPDO->bindValue(':cronica', $cronica);
                 if ($mortale != "")
                     $statoPDO->bindValue(':mortale', $mortale);
-        
+        ?>
+        <div class="scroll-table">
+            <?php
                 // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
                 $statoPDO->execute();
             
@@ -72,7 +74,7 @@
                     echo "<table><tr><th>Codice</th><th>Nome</th><th>Criticità</th><th>Cronica</th><th>Mortale</th></tr>";
                     // output data of each row
                     while($row = $statoPDO->fetch()) {
-                        echo "<tr><td>".$row["Codice"]."</td><td>".$row["Nome"]."</td><td>".$row["Criticità"]."</td><td>".$row["Cronica"]."</td><td>".$row["Mortale"]."</td></tr>";
+                        echo "<tr><td>".$row["Codice"]."</td><td>".$row["Nome"]."</td><td>".$row["Criticita"]."</td><td>".$row["Cronica"]."</td><td>".$row["Mortale"]."</td></tr>";
                     }
                     echo "</table>";
                 } else {
@@ -81,7 +83,8 @@
             } catch (PDOException $e) {
                 die("DB Error: " . $e->getMessage());
             }
-        ?>
+            ?>
+        </div>
 
     <?php	
         include 'footer.html';

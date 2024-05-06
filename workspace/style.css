@@ -11,6 +11,8 @@ body{
     background: #fff;
     color: #080808;
     margin: 0;
+    position: relative;
+    min-height: 100vh;
 }
 
 
@@ -76,7 +78,6 @@ nav ul li a i{
 }
 
 #research{
-    margin-top: 0;
     border-radius: 0px;
     font-size: 30px;
     background-color: transparent;
@@ -103,7 +104,10 @@ nav ul li a i{
     font-size: 16px;
     outline: none;
     background-color:  transparent;
-    border: none;
+    width: 100%;
+    border: 0;
+    padding: 15px;
+    font-size: 18px;
 }
 #research form input::placeholder{
     color: #080808;
@@ -123,7 +127,7 @@ nav ul li a i{
 
 #research form i{
     color: #FFB347;
-    text-shadow: #080808;
+    text-shadow: transparent;
     box-shadow: none;
     font-size: 16px;
     cursor: pointer;
@@ -132,18 +136,20 @@ nav ul li a i{
 #research form i:hover{
     color: #ff4500;
 }
+.scroll-table {
+    margin-top: 2%;
+    margin-right: 5%;
+    margin-left: 5%;
+    height: 60vh;
+    overflow: auto;
+}
 
 table {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 2%;
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
     font-family: 'Poppins', sans-serif;
-    min-width: 400px;
-    /*box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);*/
+    margin-bottom: 1%;
 }
 
 table tr {
@@ -155,6 +161,7 @@ table tr {
 table th,
 table td {
     padding: 12px 15px;
+    font-size: 14px;
 }
 
 table tr {
@@ -169,14 +176,14 @@ table tr:last-of-type {
     border-bottom: 2px solid #FFB347;
 }
 
-
-
 footer{
     width: 100%;
     text-align: center;
-    background: rgba(0, 0, 0,0.7);
+    background: rgba(0, 0, 0, 0.7);
     font-weight: 30px;
-    margin-top: 2%;
     color: #fff;
     border-radius: 0px;
+    position: absolute;
+    bottom: 0;
+    z-index: -1; /* Impostato un valore di z-index inferiore */
 }
