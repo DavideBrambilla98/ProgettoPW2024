@@ -18,39 +18,36 @@ body{
 
 header{
     display:flex;
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: left;
     width: 100%;
     background-position: center;
-    color: #FFB347;
+    color: #fff;
+    background-color: #FFB347;
     font-size: 40px;
+    padding-top:  0.5%;
+    padding-left:  30px;
 }
 
 nav{
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    margin-top: 3%;
-    border-radius: 0px;
-}
-
-nav ul{
-    border-radius: 0px;
+    align-items: left;
+    justify-content: left;
+    background-color: #FFB347;
+    padding-top: 0.5%;
 }
 
 nav ul li {
     display: inline-block;
-    justify-content: center;
     list-style: none;
-    margin: 10px 20px;
+    margin-right: 30px;
 }
 
 
 nav ul li a{
-    color: #FFB347;
+    color: #ffffffc9;
     text-decoration: none;
-    font-size: 30px; 
+    font-size: 20px; 
     position: relative;
 }
 
@@ -141,15 +138,17 @@ nav ul li a i{
 }
 .scroll-table {
     margin-top: 2%;
-    margin-right: 5%;
-    margin-left: 5%;
-    height: 52vh;
+    margin-right: 10%;
+    margin-left: 10%;
+    height: 60vh;
     overflow: auto;
+    border: 2px solid #cdc8c857;
+    border-radius: 10px;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
     font-size: 0.9em;
     font-family: 'Poppins', sans-serif;
     margin-bottom: 1%;
@@ -187,11 +186,18 @@ table tr:last-of-type {
 footer{
     width: 100%;
     text-align: center;
-    background: rgba(0, 0, 0, 0.7);
-    font-weight: 30px;
+    background: rgba(255,179,71,1);
+    font-size: 24px;
     color: #fff;
     border-radius: 0px;
     position: absolute;
     bottom: 0;
     z-index: 1; /* Impostato un valore di z-index inferiore */
+    min-height: 35px;
 }
+
+footer i{
+    color: #ff004f;
+    font-size: 20px;
+}
+
