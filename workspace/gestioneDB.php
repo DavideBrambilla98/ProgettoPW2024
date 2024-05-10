@@ -1,5 +1,26 @@
 <?php      
-	function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale) : string {
+	    function readRicoveriFromDb ($codRicovero, $codOsp, $paziente, $dataRic, $durata, $motivo, $costo) : string {
+            $sql = "SELECT CodiceRicovero, CodOspedale, Paziente, Data, Durata, Motivo, Costo FROM Ricoveri WHERE 1=1";
+                
+            if ($codRicovero != "")
+                $sql .= " AND CodiceRicovero LIKE  :codiceRicovero";
+            if ($codOsp != "")
+                $sql .= " AND CodOspedale LIKE :codiceOspedale";
+            if ($paziente != "")
+                $sql .= " AND Paziente LIKE  :paziente";
+            if ($dataRic != "")
+                $sql .= " AND Data LIKE  :dataRic";
+            if ($durata != "")
+                $sql .= " AND Durata LIKE  :durata";
+            if ($motivo != "")
+                $sql .= " AND Motivo LIKE  :motivo";
+            if ($costo != "")
+                $sql .= " AND Costo LIKE  :costo";
+    
+            return $sql;
+        }
+    
+    function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale) : string {
         $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale FROM Patologie WHERE 1=1";
             
         if ($cod != "")

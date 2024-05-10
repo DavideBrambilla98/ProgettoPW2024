@@ -20,11 +20,10 @@
 
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="codicePatologia" name="codicePatologia" type="text" placeholder="codice patologia"/>
-                <input id="nomePatologia" name="nomePatologia" type="text" placeholder="nome patologia"/>
-                <input id="criticita" name="criticita" type="text" placeholder="criticità"/>
-                <input id="cronica" name="cronica" type="text" placeholder="cronica = X"/>
-                <input id="mortale" name="mortale" type="text" placeholder="mortale = X"/>
+                <input id="codiceRicovero" name="codiceRicovero" type="text" placeholder="codice ricovero"/>
+                <input id="codiceOspedale" name="codiceOspedale" type="text" placeholder="codice ospedale"/>
+                <input id="paziente" name="paziente" type="text" placeholder="paziente(CF)"/>
+                <input id="dataRicovero" name="dataRicovero" type="text" placeholder="data"/>
                 <button type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
@@ -42,28 +41,34 @@
             }
             try {
 
-                $cod = $_POST["codicePatologia"] ?? "";
-                $nome = $_POST["nomePatologia"] ?? "";
-                $criticita  = $_POST["criticita"] ?? "";
-                $cronica = $_POST["cronica"] ?? "";
-                $mortale  = $_POST["mortale"] ?? "";
+                $codRicovero = $_POST["codiceRicovero"] ?? "";
+                $codOsp = $_POST["codiceOspedale"] ?? "";
+                $paziente = $_POST["paziente"] ?? "";
+                $dataRic = $_POST["dataRicovero"] ?? "";
+                $durata = $_POST["durata"] ?? "";
+                $motivo = $_POST["motivo"] ?? "";
+                $costo = $_POST["costo"] ?? "";
             
-                $sql = readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale);
+                $sql = readRicoveriFromDb ($codRicovero, $codOsp, $paziente, $dataRic, $durata, $motivo, $costo);
             
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
 
                 //per associare i valori al segnaposto (:cod è un segnaposto usato nella query)
-                if ($cod != "")
-                    $statoPDO->bindValue(':cod', $cod);
-                if ($nome != "")
-                    $statoPDO->bindValue(':nome', "%$nome%");
-                if ($criticita != "")
-                    $statoPDO->bindValue(':criticita', $criticita);
-                if ($cronica != "")
-                    $statoPDO->bindValue(':cronica', $cronica);
-                if ($mortale != "")
-                    $statoPDO->bindValue(':mortale', $mortale);
+                if ($codRicovero != "")
+                    $statoPDO->bindValue(':codiceRicovero', "%$codRicovero%");
+                if ($codOsp != "")
+                    $statoPDO->bindValue(':codiceOspedale', "%$codOsp%");
+                if ($paziente != "")
+                    $statoPDO->bindValue(':paziente', "%$paziente%");
+                if ($dataRic != "")
+                    $statoPDO->bindValue(':dataRic', "%$dataRic%");
+                if ($durata != "")
+                    $statoPDO->bindValue(':durata', "%$durata%");
+                if ($motivo != "")
+                    $statoPDO->bindValue(':motivo', "%$motivo%");
+                if ($costo != "")
+                    $statoPDO->bindValue(':costo', "%$costo%");
         ?>
         <div class="scroll-table">
             <?php
@@ -71,10 +76,10 @@
                 $statoPDO->execute();
             
                 if ($statoPDO->rowCount() > 0) {
-                    echo "<table><tr><th>Codice</th><th>Nome</th><th>Criticità</th><th>Cronica</th><th>Mortale</th></tr>";
+                    echo "<table><tr><th>CodiceRicovero</th><th>CodiceOspedale</th><th>Paziente</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
                     // output data of each row
                     while($row = $statoPDO->fetch()) {
-                        echo "<tr><td>".$row["Codice"]."</td><td>".$row["Nome"]."</td><td>".$row["Criticita"]."</td><td>".$row["Cronica"]."</td><td>".$row["Mortale"]."</td></tr>";
+                        echo "<tr><td>".$row["CodiceRicovero"]."</td><td>".$row["CodOspedale"]."</td><td>".$row["Paziente"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Motivo"]."</td><td>".$row["Costo"]."</td></tr>";
                     }
                     echo "</table>";
                 } else {
