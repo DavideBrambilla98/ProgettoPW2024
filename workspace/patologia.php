@@ -71,7 +71,7 @@
                     $statoPDO->execute();
                     
                     if ($statoPDO->rowCount() > 0) {
-                        echo "<table><tr><th>Codice</th><th>Nome</th><th>Criticità</th><th>Cronica</th><th>Mortale</th></tr>";
+                        echo "<table id='tabella'><tr><th>Codice</th><th>Nome</th><th>Criticità</th><th>Cronica</th><th>Mortale</th></tr>";
                         // output data of each row
                         while($row = $statoPDO->fetch()) {
                             echo "<tr><td>".$row["Codice"]."</td><td>".$row["Nome"]."</td><td>".$row["Criticita"]."</td><td>".$row["Cronica"]."</td><td>".$row["Mortale"]."</td></tr>";
@@ -88,5 +88,5 @@
     <?php	
         include 'footer.html';
     ?>
-    
+    <script src='gestioneAzioni.js'></script>
 </html>
