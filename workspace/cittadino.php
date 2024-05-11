@@ -75,7 +75,7 @@
                     $statoPDO->execute();
                     
                         if ($statoPDO->rowCount() > 0) {
-                            echo "<table><tr><th>CF</th><th>Nome</th><th>Cognome</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th>#Ricoveri</th></tr>";
+                            echo "<table><tr><th>CF</th><th>Nome</th><th>Cognome</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th># Ricoveri</th></tr>";
                             // stampa i dati di ogni riga
                             while($row = $statoPDO->fetch()) {
                                 echo "<tr><td>".$row["codFiscale"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td><td>".$row["numRicoveri"]."</td></tr>";
