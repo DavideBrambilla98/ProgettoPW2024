@@ -3,7 +3,7 @@
     <head>
         <meta charset='utf-8'>
         <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-        <title>Gestionale</title>
+        <title>Ricoveri</title>
         <link rel="stylesheet" href="style.css">
         <meta name='viewport' content='width=device-width, initial-scale=1'>
         <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
@@ -22,6 +22,7 @@
             <form name="researchForm" method="POST">
                 <input id="codiceRicovero" name="codiceRicovero" type="text" placeholder="codice ricovero"/>
                 <input id="codiceOspedale" name="codiceOspedale" type="text" placeholder="codice ospedale"/>
+                <input id="nomeOspedale" name="nomeOspedale" type="text" placeholder="nome ospedale"/>
                 <input id="paziente" name="paziente" type="text" placeholder="paziente(CF)"/>
                 <input id="dataRicovero" name="dataRicovero" type="text" placeholder="data"/>
                 <button type="submit">
@@ -43,13 +44,15 @@
 
                 $codRicovero = $_POST["codiceRicovero"] ?? "";
                 $codOsp = $_POST["codiceOspedale"] ?? "";
+                $nomOsp = $_POST["nomeOspedale"] ?? "";
                 $paziente = $_POST["paziente"] ?? "";
                 $dataRic = $_POST["dataRicovero"] ?? "";
                 $durata = $_POST["durata"] ?? "";
                 $motivo = $_POST["motivo"] ?? "";
                 $costo = $_POST["costo"] ?? "";
+                $nomePaziente = $_POST["nomePaziente"] ?? "";
             
-                $sql = readRicoveriFromDb ($codRicovero, $codOsp, $paziente, $dataRic, $durata, $motivo, $costo);
+                $sql = readRicoveriFromDb ($codRicovero, $codOsp, $nomOsp, $paziente, $dataRic, $durata, $motivo, $costo);
             
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
@@ -59,6 +62,8 @@
                     $statoPDO->bindValue(':codiceRicovero', "%$codRicovero%");
                 if ($codOsp != "")
                     $statoPDO->bindValue(':codiceOspedale', "%$codOsp%");
+                if ($nomOsp != "")
+                    $statoPDO->bindValue(':nomeOspedale', "%$nomOsp%");
                 if ($paziente != "")
                     $statoPDO->bindValue(':paziente', "%$paziente%");
                 if ($dataRic != "")
@@ -69,6 +74,7 @@
                     $statoPDO->bindValue(':motivo', "%$motivo%");
                 if ($costo != "")
                     $statoPDO->bindValue(':costo', "%$costo%");
+
         ?>
         <div class="scroll-table">
             <?php
@@ -76,10 +82,11 @@
                 $statoPDO->execute();
             
                 if ($statoPDO->rowCount() > 0) {
-                    echo "<table><tr><th>CodiceRicovero</th><th>CodiceOspedale</th><th>Paziente</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
+                    echo "<table><tr><th>Codice ricovero</th><th>Nome ospedale</th><th>Paziente</th><th>Nome</th><th>Cognome</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
                     // output data of each row
                     while($row = $statoPDO->fetch()) {
-                        echo "<tr><td>".$row["CodiceRicovero"]."</td><td>".$row["CodOspedale"]."</td><td>".$row["Paziente"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Motivo"]."</td><td>".$row["Costo"]."</td></tr>";
+                        // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
+                        echo "<tr><td>".$row["CodiceRicovero"]."</td><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Paziente"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Motivo"]."</td><td>".$row["Costo"]."</td></tr>";
                     }
                     echo "</table>";
                 } else {

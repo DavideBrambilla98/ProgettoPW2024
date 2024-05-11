@@ -1,27 +1,35 @@
 <?php      
-	    function readRicoveriFromDb ($codRicovero, $codOsp, $paziente, $dataRic, $durata, $motivo, $costo) : string {
-            $sql = "SELECT CodiceRicovero, CodOspedale, Paziente, Data, Durata, Motivo, Costo FROM Ricoveri WHERE 1=1";
+	function readRicoveriFromDb ($codRicovero, $codOsp,$nomOsp, $paziente, $dataRic, $durata, $motivo, $costo) : string {
+        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
+                FROM Ricoveri
+                JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
+                JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
+                WHERE 1=1";
                 
-            if ($codRicovero != "")
-                $sql .= " AND CodiceRicovero LIKE  :codiceRicovero";
-            if ($codOsp != "")
-                $sql .= " AND CodOspedale LIKE :codiceOspedale";
-            if ($paziente != "")
-                $sql .= " AND Paziente LIKE  :paziente";
-            if ($dataRic != "")
-                $sql .= " AND Data LIKE  :dataRic";
-            if ($durata != "")
-                $sql .= " AND Durata LIKE  :durata";
-            if ($motivo != "")
-                $sql .= " AND Motivo LIKE  :motivo";
-            if ($costo != "")
-                $sql .= " AND Costo LIKE  :costo";
-    
-            return $sql;
-        }
+        if ($codRicovero != "")
+            $sql .= " AND Ricoveri.CodiceRicovero LIKE  :codiceRicovero";
+        if ($codOsp != "")
+            $sql .= " AND Ricoveri.CodOspedale LIKE :codiceOspedale";
+        if ($nomOsp != "")
+            $sql .= " AND Ospedali.DenominazioneStruttura LIKE :nomeOspedale";
+        if ($paziente != "")
+            $sql .= " AND Ricoveri.Paziente LIKE  :paziente";
+        if ($dataRic != "")
+             $sql .= " AND Ricoveri.Data LIKE  :dataRic";
+        if ($durata != "")
+            $sql .= " AND Ricoveri.Durata LIKE  :durata";
+        if ($motivo != "")
+            $sql .= " AND Ricoveri.Motivo LIKE  :motivo";
+         if ($costo != "")
+            $sql .= " AND Ricoveri.Costo LIKE  :costo";
+
+        return $sql;
+    }
     
     function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale) : string {
-        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale FROM Patologie WHERE 1=1";
+        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale
+                FROM Patologie
+                WHERE 1=1";
             
         if ($cod != "")
             $sql .= " AND Codice = :cod";
@@ -39,7 +47,10 @@
 
 
     function readOspedaliFromDb ($codStruttura, $nomeStruttura, $indirizzoStruttura, $comuneStruttura, $direttoreSanitario) : string {
-        $sql = "SELECT CodiceStruttura, DenominazioneStruttura, Indirizzo, Comune, DirettoreSanitario FROM Ospedali WHERE 1=1";
+        $sql = "SELECT Ospedali.CodiceStruttura, Ospedali.DenominazioneStruttura, Ospedali.Indirizzo, Ospedali.Comune, Ospedali.DirettoreSanitario, Persone.nome,Persone.cognome
+                FROM Ospedali
+                JOIN Persone ON Persone.codFiscale = Ospedali.Direttoresanitario
+                WHERE 1=1";
             
         if ($codStruttura != "")
             $sql .= " AND CodiceStruttura LIKE :codStruttura";
@@ -56,7 +67,9 @@
     }
 
     function readPersoneFromDb ($cf, $nome, $cognome, $dataNascita, $luogoNascita ,$indirizzo) : string {
-        $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo FROM Persone WHERE 1=1";
+        $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo
+                FROM Persone
+                WHERE 1=1";
             
         if ($cf != "")
             $sql .= " AND codFiscale LIKE :cf";
