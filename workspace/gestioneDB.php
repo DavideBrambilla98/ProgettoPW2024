@@ -90,5 +90,33 @@
     
         return $sql;
     }
-    
+
+    //per definire la chiave primaria della tabella
+    function singlePrimaryKeyTable($nomeTabella,$nomeColonna){
+        $sql = "ALTER TABLE $nomeTabella
+        ADD PRIMARY KEY ($nomeColonna)";
+    return $sql;
+    }
+
+    //per definire la chiave primaria della tabella come coppia di colonne
+     function doublePrimaryKeyTable($nomeTabella,$nomeColonna1,$nomeColonna2){
+        $sql = "ALTER TABLE $tableName
+        ADD PRIMARY KEY ($nomeColonna1,$nomeColonna2)";
+    return $sql;
+    }
+
+    //per definire la foreign-key della tabella
+    function foreignKeyTable($nomeTabella,$nomeColonna){
+        $sql = "ALTER TABLE $nomeTabella
+        ADD FOREIGN KEY ($nomeColonna)";
+    return $sql;
+    }
+
+    //per definire una colonna senza duplicati
+    function uniqueIndex($nomeTabella,$nomeColonna){
+        $sql = "ALTER TABLE $nomeTabella
+        ADD UNIQUE ($nomeColonna)";
+    return $sql;
+    }
+
 ?>
