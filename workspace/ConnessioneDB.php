@@ -1,18 +1,16 @@
 <?php
     $servername = "localhost";
-    $username = "davidebrambilla";
-    $dbname = "my_davidebrambilla";
+    $username = "marcoalgisi";
+    $dbname = "my_marcoalgisi";
     $password = null;
     $error = false;
-
+    $conn = null;
     try {
-        $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        //$conn = null; // Chiudi la connessione
-    } catch (PDOException $e) {
-        die("DB Error: " . $e->getMessage());
-    }
-?>
+      $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  } catch (PDOException $e) {
+      die("DB Error: " . $e->getMessage());
+  }
+  ?>
 
 

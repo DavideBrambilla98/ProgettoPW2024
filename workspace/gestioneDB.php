@@ -1,4 +1,5 @@
-<?php      
+<?php     
+    include 'ConnessioneDB.php';
 	function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale) : string {
         $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale FROM Patologie WHERE 1=1";
             
@@ -33,6 +34,64 @@
     
         return $sql;
     }
+    
+    function readRicoveriFromDb ($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo) : string {
+        $sql = "SELECT CodiceStruttura, CodRic, Paziente, Data, Durata, Motivo, Costo FROM Ricoveri WHERE 1=1";
+
+        if ($codStruttura != "")
+            $sql .= " AND CodiceStruttura LIKE :fCodOsp";
+        if ($codRicovero != "")
+            $sql .= " AND CodRic LIKE :fCodRic";
+        if ($paziente != "")
+            $sql .= " AND Paziente LIKE :fpaziente";
+        if ($data != "")
+            $sql .= " AND Data LIKE :fdata";
+        if ($durata != "")
+            $sql .= " AND Durata LIKE :fDurata";
+        if ($motivo != "")
+            $sql .= " AND Motivo LIKE :fMotivo";
+        if ($costo != "")
+            $sql .= " AND Costo LIKE :fCosto";
+            
+            return $sql;
+        }
+
+
+
+        function createRicoveriInDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo){
+            global $conn;
+            $sql = 'INSERT INTO Ricoveri (CodiceStruttura, CodRic, Paziente, Data, Durata, Motivo, Costo) VALUES (:CodiceStruttura, :CodRic, :Paziente, :Data, :Durata, :Motivo, :Costo)';
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':CodiceStruttura', $codStruttura);
+            $stmt->bindParam(':CodRic', $codRicovero);
+            $stmt->bindParam(':Paziente', $paziente);
+            $stmt->bindParam(':Data', $data);
+            $stmt->bindParam(':Durata', $durata);
+            $stmt->bindParam(':Motivo', $motivo);
+            $stmt->bindParam(':Costo', $costo);
+            $stmt->execute();
+            return $stmt->rowCount(); 
+        }
+      
+    function updateRicoveriInDb($codRicovero, $paziente, $data, $durata, $motivo, $costo, $conn) {
+        try {
+            $sql = "UPDATE Ricoveri SET Paziente = ?, Data = ?, Durata = ?, Motivo = ?, Costo = ? WHERE CodRic = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$paziente, $data, $durata, $motivo, $costo, $codRicovero]);
+        } catch (PDOException $e) {
+            die("DB Error: " . $e->getMessage());
+        }
+    }
+    
+    
+
+    function deleteRicoveriFromDb($codRicovero, $tableName, $conn) {
+        $sql = "DELETE FROM Ricoveri WHERE CodRic = :fCodRic";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':fCodRic', $codRicovero);
+        $stmt->execute();
+    }
+
 
     function readPersoneFromDb ($cf, $nome, $cognome, $dataNascita, $luogoNascita ,$indirizzo) : string {
         $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo FROM Persone WHERE 1=1";
