@@ -51,8 +51,8 @@
                 FROM Ospedali
                 JOIN Persone ON Persone.codFiscale = Ospedali.Direttoresanitario
                 LEFT JOIN Ricoveri ON Ospedali.CodiceStruttura = Ricoveri.CodOspedale
-                WHERE 1=1
-                GROUP BY Ospedali.CodiceStruttura" ;
+                WHERE 1=1";
+
             
         if ($codStruttura != "")
             $sql .= " AND CodiceStruttura LIKE :codStruttura";
@@ -64,7 +64,9 @@
             $sql .= " AND Comune LIKE :comuneStruttura";
         if ($direttoreSanitario != "")
             $sql .= " AND DirettoreSanitario LIKE :direttoreSanitario";
-    
+
+        $sql .= " GROUP BY Ospedali.CodiceStruttura";
+        
         return $sql;
     }
 
@@ -72,9 +74,8 @@
         $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo, COUNT(Ricoveri.CodiceRicovero) AS numRicoveri
                 FROM Persone
                 LEFT JOIN Ricoveri ON Persone.codFiscale= Ricoveri.Paziente
-                WHERE 1=1
-                GROUP BY Persone.codFiscale";
-            
+                WHERE 1=1";
+                
         if ($cf != "")
             $sql .= " AND codFiscale LIKE :cf";
         if ($nome != "")
@@ -85,11 +86,14 @@
             $sql .= " AND dataNascita LIKE :dataNascita";
         if ($luogoNascita != "")
             $sql .= " AND nasLuogo LIKE :luogoNascita";
-            if ($indirizzo != "")
+        if ($indirizzo != "")
             $sql .= " AND indirizzo LIKE :indirizzo";
+    
+        $sql .= " GROUP BY Persone.codFiscale";
     
         return $sql;
     }
+    
 
     //per definire la chiave primaria della tabella
     function singlePrimaryKeyTable($nomeTabella,$nomeColonna){
