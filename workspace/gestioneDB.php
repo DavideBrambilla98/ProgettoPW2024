@@ -47,10 +47,12 @@
 
 
     function readOspedaliFromDb ($codStruttura, $nomeStruttura, $indirizzoStruttura, $comuneStruttura, $direttoreSanitario) : string {
-        $sql = "SELECT Ospedali.CodiceStruttura, Ospedali.DenominazioneStruttura, Ospedali.Indirizzo, Ospedali.Comune, Ospedali.DirettoreSanitario, Persone.nome,Persone.cognome
+        $sql = "SELECT Ospedali.CodiceStruttura, Ospedali.DenominazioneStruttura, Ospedali.Indirizzo, Ospedali.Comune, Ospedali.DirettoreSanitario, Persone.nome,Persone.cognome, COUNT(Ricoveri.CodiceRicovero) AS countRicoveri
                 FROM Ospedali
                 JOIN Persone ON Persone.codFiscale = Ospedali.Direttoresanitario
-                WHERE 1=1";
+                LEFT JOIN Ricoveri ON Ospedali.CodiceStruttura = Ricoveri.CodOspedale
+                WHERE 1=1
+                GROUP BY Ospedali.CodiceStruttura" ;
             
         if ($codStruttura != "")
             $sql .= " AND CodiceStruttura LIKE :codStruttura";
@@ -67,9 +69,11 @@
     }
 
     function readPersoneFromDb ($cf, $nome, $cognome, $dataNascita, $luogoNascita ,$indirizzo) : string {
-        $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo
+        $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo, COUNT(Ricoveri.CodiceRicovero) AS numRicoveri
                 FROM Persone
-                WHERE 1=1";
+                LEFT JOIN Ricoveri ON Persone.codFiscale= Ricoveri.Paziente
+                WHERE 1=1
+                GROUP BY Persone.codFiscale";
             
         if ($cf != "")
             $sql .= " AND codFiscale LIKE :cf";
