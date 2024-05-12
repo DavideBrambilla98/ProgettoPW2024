@@ -35,7 +35,7 @@
         <?php
 
             //stabilisce la connessione con il DB
-            include 'connessioneDB.php';
+            include 'ConnessioneDB.php';
 
             // Controlla connessione
             if ($conn->connect_error) {
