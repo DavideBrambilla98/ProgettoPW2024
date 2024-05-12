@@ -17,6 +17,9 @@ switch(pagina) {
     case "index.php":
         pulsanteHome.style.color = "#0047AB";
         break;
+    case"":
+        pulsanteHome.style.color = "#0047AB";
+        break;
     case "cittadino.php":
         pulsantePersona.style.color = "#0047AB";
         break;
@@ -31,8 +34,8 @@ switch(pagina) {
         pulsantePersona.style.color = "#fff";
         pulsanteOspedale.style.color = "#fff";
         pulsanteVirus.style.color = "#fff";
-
 }
+
 
 // Script per evidenziare le righe della tabella -------------------------------------------------------------------------
 
