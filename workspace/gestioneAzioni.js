@@ -3,7 +3,7 @@
 // Ottieni l'URL della pagina corrente
 var url = window.location.href;
 
-// Estrai il nome della pagina dal URL
+// Estrai il nome della pagina dal URL (aggiunto +1 altrimenti restituirebbe anche / dell'URL)
 var pagina = url.substring(url.lastIndexOf('/') + 1);
 
 // Ottieni il pulsante tramite il suo ID
@@ -27,10 +27,10 @@ switch(pagina) {
         pulsanteVirus.style.color = "#0047AB";
         break;
     default:
-        pulsanteHome.style.color = "white";
-        pulsantePersona.style.color = "white";
-        pulsanteOspedale.style.color = "white";
-        pulsanteVirus.style.color = "white";
+        pulsanteHome.style.color = "#fff";
+        pulsantePersona.style.color = "#fff";
+        pulsanteOspedale.style.color = "#fff";
+        pulsanteVirus.style.color = "#fff";
 
 }
 
