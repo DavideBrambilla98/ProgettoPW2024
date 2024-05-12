@@ -72,35 +72,12 @@
         return $sql;
     }
     
-    function readRicoveriFromDb ($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo) : string {
-        $sql = "SELECT CodiceStruttura, CodRic, Paziente, Data, Durata, Motivo, Costo FROM Ricoveri WHERE 1=1";
-
-        if ($codStruttura != "")
-            $sql .= " AND CodiceStruttura LIKE :fCodOsp";
-        if ($codRicovero != "")
-            $sql .= " AND CodRic LIKE :fCodRic";
-        if ($paziente != "")
-            $sql .= " AND Paziente LIKE :fpaziente";
-        if ($data != "")
-            $sql .= " AND Data LIKE :fdata";
-        if ($durata != "")
-            $sql .= " AND Durata LIKE :fDurata";
-        if ($motivo != "")
-            $sql .= " AND Motivo LIKE :fMotivo";
-        if ($costo != "")
-            $sql .= " AND Costo LIKE :fCosto";
-            
-            return $sql;
-        }
-
-
-
         function createRicoveriInDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo){
             global $conn;
             $sql = 'INSERT INTO Ricoveri (CodiceStruttura, CodRic, Paziente, Data, Durata, Motivo, Costo) VALUES (:CodiceStruttura, :CodRic, :Paziente, :Data, :Durata, :Motivo, :Costo)';
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':CodiceStruttura', $codStruttura);
-            $stmt->bindParam(':CodRic', $codRicovero);
+            $stmt->bindParam(':codiceRicovero', $codRicovero);
             $stmt->bindParam(':Paziente', $paziente);
             $stmt->bindParam(':Data', $data);
             $stmt->bindParam(':Durata', $durata);
@@ -123,9 +100,9 @@
     
 
     function deleteRicoveriFromDb($codRicovero, $tableName, $conn) {
-        $sql = "DELETE FROM Ricoveri WHERE CodRic = :fCodRic";
+        $sql = "DELETE FROM Ricoveri WHERE CodRic = :codiceRicovero";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':fCodRic', $codRicovero);
+        $stmt->bindParam(':codiceRicovero', $codRicovero);
         $stmt->execute();
     }
 
