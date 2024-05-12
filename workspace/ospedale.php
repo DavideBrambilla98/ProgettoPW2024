@@ -20,15 +20,22 @@
 
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="codStruttura" name="codStruttura" type="text" placeholder="codice"/>
-                <input id="nomeStruttura" name="nomeStruttura" type="text" placeholder="nome"/>
-                <input id="indirizzo" name="indirizzo" type="text" placeholder="indirizzo"/>
-                <input id="comuneStruttura" name="comuneStruttura" type="text" placeholder="comune"/>
-                <input id="direttoreSanitario" name="direttoreSanitario" type="text" placeholder="direttore sanitario(CF)"/>
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                <div class="select-wrapper">
+                    <select id="search" name="search" >
+                        <option value="1">codice ospedale</option>
+                        <option value="2">nome ospedale</option>
+                        <option value="3">indirizzo ospedale</option>
+                        <option value="4">comune ospedale</option>
+                        <option value="5">direttore sanitario</option>
+                    </select>
+                    <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                </div>
+                    <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                    <button type="submit">
+                        <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                    </button>
             </form>
+        </div>
         <div id="results">
 
         <?php
@@ -42,11 +49,29 @@
             }
             try {
 
-                $codStruttura = $_POST["codStruttura"] ?? "";
-                $nomeStruttura = $_POST["nomeStruttura"] ?? "";
-                $indirizzoStruttura  = $_POST["indirizzo"] ?? "";
-                $comuneStruttura = $_POST["comuneStruttura"] ?? "";
-                $direttoreSanitario  = $_POST["direttoreSanitario"] ?? "";
+                $codStruttura = $nomeStruttura = $indirizzoStruttura = $pazicomuneStrutturaente = $direttoreSanitario = "";
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $search = $_POST['search'];
+                    $cerca = $_POST['cerca'];
+            
+                    switch ($search) {
+                        case "1":
+                            $codStruttura = $cerca;
+                            break;
+                        case "2":
+                            $nomeStruttura = $cerca;
+                            break;
+                        case "3":
+                            $indirizzoStruttura = $cerca;
+                            break;
+                        case "4":
+                            $comuneStruttura = $cerca;
+                            break;
+                        case "5":
+                            $direttoreSanitario = $cerca;
+                            break;
+                    }
+                }
             
                 $sql = readOspedaliFromDb ($codStruttura, $nomeStruttura, $indirizzoStruttura, $comuneStruttura, $direttoreSanitario);
             

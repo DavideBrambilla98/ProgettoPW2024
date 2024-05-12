@@ -17,19 +17,25 @@
             include 'navigation.html';
             include 'gestioneDB.php';
         ?>
-
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="cf" name="cf" type="text" placeholder="codice fiscale"/>
-                <input id="nome" name="nome" type="text" placeholder="nome"/>
-                <input id="cognome" name="cognome" type="text" placeholder="cognome"/>
-                <input id="dataNascita" name="dataNascita" type="text" placeholder="data di nascita"/>
-                <input id="luogoNascita" name="luogoNascita" type="text" placeholder="luogo di nascita"/>
-                <input id="indirizzo" name="indirizzo" type="text" placeholder="indirizzo"/>
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                <div class="select-wrapper">
+                    <select id="search" name="search" >
+                        <option value="1">codice fiscale</option>
+                        <option value="2">nome</option>
+                        <option value="3">cognome</option>
+                        <option value="4">data di nascita</option>
+                        <option value="5">luogo di nascita</option>
+                        <option value="6">indirizzo</option>
+                    </select>
+                    <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                </div>
+                    <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                    <button type="submit">
+                        <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                    </button>
             </form>
+        </div>
         <div id="results">
 
         <?php
@@ -43,13 +49,33 @@
             }
             try {
 
-                $cf  = $_POST["cf"] ?? "";
-                $nome = $_POST["nome"] ?? "";
-                $cognome = $_POST["cognome"] ?? "";
-                $dataNascita = $_POST["dataNascita"] ?? "";
-                $luogoNascita  = $_POST["luogoNascita"] ?? "";
-                $indirizzo  = $_POST["indirizzo"] ?? "";
+                $cf = $nome = $cognome = $dataNascita = $luogoNascita = $indirizzo = "";
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $search = $_POST['search'];
+                    $cerca = $_POST['cerca'];
             
+                    switch ($search) {
+                        case "1":
+                            $cf = $cerca;
+                            break;
+                        case "2":
+                            $nome = $cerca;
+                            break;
+                        case "3":
+                            $cognome = $cerca;
+                            break;
+                        case "4":
+                            $dataNascita = $cerca;
+                            break;
+                        case "5":
+                            $luogoNascita = $cerca;
+                            break;
+                        case "6":
+                            $indirizzo = $cerca;
+                            break;
+                    }
+                }
+          
                 $sql = readPersoneFromDb ($cf, $nome, $cognome, $dataNascita, $luogoNascita ,$indirizzo);
             
                 // Prepara la query per poi essere eseguita successivamente

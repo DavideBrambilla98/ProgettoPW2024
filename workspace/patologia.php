@@ -17,18 +17,24 @@
             include 'navigation.html';
             include 'gestioneDB.php';
         ?>
-
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="codicePatologia" name="codicePatologia" type="text" placeholder="codice patologia"/>
-                <input id="nomePatologia" name="nomePatologia" type="text" placeholder="nome patologia"/>
-                <input id="criticita" name="criticita" type="text" placeholder="criticità"/>
-                <input id="cronica" name="cronica" type="text" placeholder="cronica = X"/>
-                <input id="mortale" name="mortale" type="text" placeholder="mortale = X"/>
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                <div class="select-wrapper">
+                    <select id="search" name="search" >
+                        <option value="1">codice patologia</option>
+                        <option value="2">nome patologia</option>
+                        <option value="3">criticità</option>
+                        <option value="4">cronica(X)</option>
+                        <option value="5">mortale(X)</option>
+                    </select>
+                    <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                </div>
+                    <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                    <button type="submit">
+                        <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                    </button>
             </form>
+        </div>
         <div id="results">
 
         <?php
@@ -42,11 +48,29 @@
             }
             try {
 
-                $cod = $_POST["codicePatologia"] ?? "";
-                $nome = $_POST["nomePatologia"] ?? "";
-                $criticita  = $_POST["criticita"] ?? "";
-                $cronica = $_POST["cronica"] ?? "";
-                $mortale  = $_POST["mortale"] ?? "";
+                $cod = $nome = $criticita = $cronica = $mortale = "";
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $search = $_POST['search'];
+                    $cerca = $_POST['cerca'];
+            
+                    switch ($search) {
+                        case "1":
+                            $cod = $cerca;
+                            break;
+                        case "2":
+                            $nome = $cerca;
+                            break;
+                        case "3":
+                            $criticita = $cerca;
+                            break;
+                        case "4":
+                            $cronica = $cerca;
+                            break;
+                        case "5":
+                            $mortale = $cerca;
+                            break;
+                    }
+                }
             
                 $sql = readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale);
             
