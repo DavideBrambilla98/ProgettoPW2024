@@ -55,7 +55,7 @@ nav ul li a::after{
     content: '';
     width: 0;
     height: 3px;
-    background:#ff4500;
+    background:#0047AB;
     position: absolute;
     left: 0;
     bottom: -6px;
@@ -63,7 +63,7 @@ nav ul li a::after{
 }
 
 nav ul li a:hover{
-    color: #ff4500;
+    color: #0047AB;
 }
 
 nav ul li a:hover::after{
@@ -134,7 +134,7 @@ nav ul li a i{
 }
 
 #research form i:hover{
-    color: #ff4500;
+    color: #0047AB;
 }
 .scroll-table {
     margin-top: 2%;
@@ -183,6 +183,17 @@ table tr:last-of-type {
     border-bottom: 2px solid #FFB347;
 }
 
+  /* Stile per la riga con sopra il mouse*/
+  .hovered {
+    background-color: rgba(255,179,71,0.5)!important;
+  }
+  
+  /* Stile per la riga selezionata */
+  .selected {
+    background-color: rgba(0, 71, 171,0.5)!important;
+    color: #fff !important;
+  }
+
 footer{
     width: 100%;
     text-align: center;
@@ -197,7 +208,7 @@ footer{
 }
 
 footer i{
-    color: #ff004f;
+    color: #0047AB;
     font-size: 20px;
 }
 

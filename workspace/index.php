@@ -82,7 +82,7 @@
                 $statoPDO->execute();
             
                 if ($statoPDO->rowCount() > 0) {
-                    echo "<table><tr><th>Codice ricovero</th><th>Nome ospedale</th><th>Paziente</th><th>Nome</th><th>Cognome</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
+                    echo "<table id='tabella'><tr><th>Codice ricovero</th><th>Nome ospedale</th><th>Paziente</th><th>Nome</th><th>Cognome</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
                     // output data of each row
                     while($row = $statoPDO->fetch()) {
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
@@ -101,5 +101,5 @@
     <?php	
         include 'footer.html';
     ?>
-    
+    <script src='gestioneAzioni.js'></script>
 </html>
