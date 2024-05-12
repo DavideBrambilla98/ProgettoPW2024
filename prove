@@ -1,0 +1,693 @@
+<?php
+$servername = "localhost";
+$username = "username";
+$password = "password";
+$dbname = "myDB";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+
+
+
+<?php
+require_once 'db_connection.php';
+
+function SingleQuery($queri)
+{
+    global $conn;
+    if($conn->query($queri) === TRUE)
+    {
+        return true;
+    }
+    else
+    {
+        return $conn->error;
+    }
+}
+
+function PreQuery($fname,$lname,$email,$subj)
+{
+    global $conn;
+    $query = $conn->prepare("INSERT INTO myguests(firstname, lastname, email, subject) VALUES (?,?,?,?)");
+    $query->bind_param("ssss", $fname,$lname,$email,$subj);
+
+    if($query->execute())
+    {
+        return true;
+    }
+    else
+    {
+        return $conn->error;
+    }
+}
+
+function UpdateQuery($column,$value,$id)
+{
+    global $conn;
+    $query = $conn->prepare("UPDATE myguests SET $column = ? WHERE id = ?");
+    $query->bind_param("si",$value,$id);
+
+    if($query->execute())
+    {
+        return true;
+    }
+    else
+    {
+        return $conn->error;
+    }
+}
+
+function DeleteQuery($id)
+{
+    global $conn;
+    $query = $conn->prepare("DELETE FROM myguests WHERE id = ?");
+    $query->bind_param("i",$id);
+
+    if($query->execute())
+    {
+        return true;
+    }
+    else
+    {
+        return $conn->error;
+    }
+}
+
+function selectdata($sql)
+{
+    global $conn;
+    $result = $conn->query($sql);
+    if($result)
+    {
+        if($result->num_rows > 0)
+        {
+            return $result;
+        }
+        else
+        {
+            return "zero";
+        }
+    }
+    else
+    {
+        return $conn->error;
+    }
+}
+
+CloseCon($conn);
+?>
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .wrapper{
+            width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="mt-5">Create Record</h2>
+                    <form action="insert.php" method="post">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" name="fname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="lname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" name="subj" class="form-control">
+                        </div>
+                        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="mt-5">Read Records</h2>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Email</th>
+                                <th>Subject</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $sql = "SELECT * FROM myguests";
+                            $result = selectdata($sql);
+
+                            if($result != "zero")
+                            {
+                                while($row = $result->fetch_assoc())
+                                {
+                                    echo "<tr>";
+                                    echo "<td>" . $row['id']. "</td>";
+                                    echo "<td>" . $row["firstname"]. "</td>";
+                                    echo "<td>" . $row["lastname"] . "</td>";
+                                    echo "<td>" . $row['email']. "</td>"; 
+                                    echo "<td>" . $row['subject']. "</td>"; 
+                                    echo "<td>";
+                                    echo "<a href='update.php?id=".$row['id']."' class='btn btn-info'>Edit</a> ";
+                                    echo "<a href='delete.php?id=".$row['id']."' class='btn btn-danger'>Delete</a>";
+                                    echo "</td>";
+                                    echo "</tr>";
+                                }
+                            }
+                            else
+                            {
+                                echo "<tr><td colspan='6'>No records found</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+<?php
+require_once 'crud.php';
+
+if(isset($_POST['submit']))
+{
+    $firstname = $_POST['fname'];
+    $lastname = $_POST['lname'];
+    $email = $_POST['email'];
+    $subject = $_POST['subj'];
+
+    $result = PreQuery($firstname,$lastname,$email,$subject);
+
+    if($result === true)
+    {
+        header("Location: index2.php");
+    }
+    else
+    {
+        echo $result;
+    }
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Record</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .wrapper{
+            width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="mt-5">Update Record</h2>
+                    <?php
+                    if(isset($_GET['id']))
+                    {
+                        $id = $_GET['id'];
+
+                        $sql = "SELECT * FROM myguests WHERE id = $id";
+                        $result = selectdata($sql);
+
+if($result != "zero")
+                        {
+                            while($row = $result->fetch_assoc())
+                            {
+                                $firstname = $row['firstname'];
+                                $lastname = $row['lastname'];
+                                $email = $row['email'];
+                                $subject = $row['subject'];
+                            }
+                        }
+                    }
+                    ?>
+                    <form action="update_process.php" method="post">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" name="fname" value="<?php echo $firstname; ?>" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="lname" value="<?php echo $lastname; ?>" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" value="<?php echo $email; ?>" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" name="subj" value="<?php echo $subject; ?>" class="form-control">
+                        </div>
+                        <input type="hidden" name="id" value="<?php echo $id; ?>">
+                        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Record</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .wrapper{
+            width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="mt-5">Update Record</h2>
+                    <?php
+                    if(isset($_GET['id']))
+                    {
+                        $id = $_GET['id'];
+
+                        $sql = "SELECT * FROM myguests WHERE id = $id";
+                        $result = selectdata($sql);
+
+if($result != "zero")
+                        {
+                            while($row = $result->fetch_assoc())
+                            {
+                                $firstname = $row['firstname'];
+                                $lastname = $row['lastname'];
+                                $email = $row['email'];
+                                $subject = $row['subject'];
+                            }
+                        }
+                    }
+                    ?>
+                    <form action="update_process.php" method="post">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" name="fname" value="<?php echo $firstname; ?>" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="lname" value="<?php echo $lastname; ?>" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" value="<?php echo $email; ?>" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input type="text" name="subj" value="<?php echo $subject; ?>" class="form-control">
+                        </div>
+                        <input type="hidden" name="id" value="<?php echo $id; ?>">
+                        <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+<?php
+require_once 'crud.php';
+
+if(isset($_POST['submit']))
+{
+    $id = $_POST['id'];
+    $firstname = $_POST['fname'];
+    $lastname = $_POST['lname'];
+    $email = $_POST['email'];
+    $subject = $_POST['subj'];
+
+    $result = UpdateQuery('firstname', $firstname, $id);
+    $result = UpdateQuery('lastname', $lastname, $id);
+    $result = UpdateQuery('email', $email, $id);
+    $result = UpdateQuery('subject', $subject, $id);
+
+    if($result === true)
+    {
+        header("Location: index2.php");
+    }
+    else
+    {
+        echo $result;
+    }
+}
+?>
+
+
+
+<?php
+require_once 'crud.php';
+
+if(isset($_GET['id']))
+{
+    $id = $_GET['id'];
+
+    $result = DeleteQuery($id);
+
+    if($result === true)
+    {
+        header("Location: index2.php");
+    }
+    else
+    {
+        echo $result;
+    }
+}
+?>
+
+
+
+
+<?php
+require_once 'connessioneDB.php';
+require_once 'gestioneDB.php';
+
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $codStruttura = $_POST["fCodOsp"]?? "";
+    $codRicovero = $_POST["fCodRic"]?? "";
+    $paziente  = $_POST["fPaziente"]?? "";
+    $data = $_POST["fData"]?? "";
+    $durata  = $_POST["fDurata"]?? "";
+    $motivo  = $_POST["fMotivo"]?? "";
+    $costo  = $_POST["fCosto"]?? "";
+
+    try {
+        $sql = readRicoveriFromDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo);
+        $stmt = $conn->prepare($sql);
+
+        // Bind parameters
+        $stmt->bindParam(':fCodOsp', $codStruttura);
+        $stmt->bindParam(':fCodRic', $codRicovero);
+        $stmt->bindParam(':fpaziente', $paziente);
+        $stmt->bindParam(':fdata', $data);
+        $stmt->bindParam(':fDurata', $durata);
+        $stmt->bindParam(':fMotivo', $motivo);
+        $stmt->bindParam(':fCosto', $costo);
+
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            echo "<table><tr><th>Codice struttura</th><th>Codice ricovero</th><th>Paziente</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
+            while($row = $stmt->fetch()) {
+                echo "<tr><td>". $row["fCodOsp"]. "</td><td>". $row["fCodRic"]. "</td><td>". $row["fpaziente"]. "</td><td>". $row["fdata"]. "</td><td>". $row["fDurata"]. "</td><td>". $row["fMotivo"]. "</td><td>". $row["fCosto"]. "</td></tr>";
+            }
+            echo "</table>";
+        } else {
+            echo "0 results";
+        }
+    } catch (PDOException $e) {
+        die("DB Error: ". $e->getMessage());
+    }
+}
+
+// Handle create operation
+if (isset($_POST['create'])) {
+    $codRicovero = $_POST['codRicovero'];
+    $paziente = $_POST['paziente'];
+    $data = $_POST['data'];
+    $durata = $_POST['durata'];
+    $motivo = $_POST['motivo'];
+    $costo = $_POST['costo'];
+
+    try {
+        $sql = "INSERT INTO ricoveri (fCodRic, fpaziente, fdata, fDurata, fMotivo, fCosto) VALUES (:fCodRic, :fpaziente, :fdata, :fDurata, :fMotivo, :fCosto)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':fCodRic', $codRicovero);
+        $stmt->bindParam(':fpaziente', $paziente);
+        $stmt->bindParam(':fdata', $data);
+        $stmt->bindParam(':fDurata', $durata);
+        $stmt->bindParam(':fMotivo', $motivo);
+        $stmt->bindParam(':fCosto', $costo);
+        $stmt->execute();
+        echo "Record created successfully.";
+    } catch (PDOException $e) {
+        die("DB Error: ". $e->getMessage());
+    }
+}
+
+// Handle update operation
+if (isset($_POST['update'])) {
+    $codRicovero = $_POST['codRicovero'];
+    $paziente = $_POST['paziente'];
+    $data = $_POST['data'];
+    $durata = $_POST['durata'];
+    $motivo = $_POST['motivo'];
+    $costo = $_POST['costo'];
+
+    try {
+        $sql = "UPDATE ricoveri SET fpaziente = :fpaziente, fdata = :fdata, fDurata = :fDurata, fMotivo = :fMotivo, fCosto = :fCosto WHERE fCodRic = :fCodRic";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':fCodRic', $codRicovero);
+        $stmt->bindParam(':fpaziente', $paziente);
+        $stmt->bindParam(':fdata', $data);
+        $stmt->bindParam(':fDurata', $durata);
+        $stmt->bindParam(':fMotivo', $motivo);
+        $stmt->bindParam(':fCosto', $costo);
+        $stmt->execute();
+        echo "Record updated successfully.";
+    } catch (PDOException $e) {
+        die("DB Error: ". $e->getMessage());
+    }
+}
+
+// Handle delete operation
+if (isset($_POST['delete'])) {
+    $codRicovero = $_POST['codRicovero'];
+
+    try {
+        $sql = "DELETE FROM ricoveri WHERE fCodRic = :fCodRic";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':fCodRic', $codRicovero);
+        $stmt->execute();
+        echo "Record deleted successfully.";
+    } catch (PDOException $e) {
+        die("DB Error: ". $e->getMessage());
+    }
+}
+
+// Close the database connection
+$conn = null;
+?>
+
+
+
+
+
+
+
+<?php
+
+function readRicoveriFromDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo) {
+    global $conn;
+    $sql = "SELECT * FROM ricoveri WHERE fCodOsp = :fCodOsp OR fCodRic = :fCodRic OR fpaziente = :fpaziente OR fdata = :fdata OR fDurata = :fDurata OR fMotivo = :fMotivo OR fCosto = :fCosto";
+    if (!empty($codStruttura)) {
+        $sql .= " AND fCodOsp = :fCodOsp";
+    }
+    if (!empty($codRicovero)) {
+        $sql .= " AND fCodRic = :fCodRic";
+    }
+    if (!empty($paziente)) {
+        $sql .= " AND fpaziente = :fpaziente";
+}
+    if (!empty($data)) {
+        $sql .= " AND fdata = :fdata";
+    }
+    if (!empty($durata)) {
+        $sql .= " AND fDurata = :fDurata";
+    }
+    if (!empty($motivo)) {
+        $sql .= " AND fMotivo = :fMotivo";
+    }
+    if (!empty($costo)) {
+        $sql .= " AND fCosto = :fCosto";
+    }
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':fCodOsp', $codStruttura);
+    $stmt->bindParam(':fCodRic', $codRicovero);
+    $stmt->bindParam(':fpaziente', $paziente);
+    $stmt->bindParam(':fdata', $data);
+    $stmt->bindParam(':fDurata', $durata);
+    $stmt->bindParam(':fMotivo', $motivo);
+    $stmt->bindParam(':fCosto', $costo);
+    $stmt->execute();
+    return $stmt;
+}
+
+function updateRicoveriInDb($codRicovero, $paziente, $data, $durata, $motivo, $costo) {
+    global $conn;
+    $sql = "UPDATE ricoveri SET fpaziente = :fpaziente, fdata = :fdata, fDurata = :fDurata, fMotivo = :fMotivo, fCosto = :fCosto WHERE fCodRic = :fCodRic";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':fCodRic', $codRicovero);
+    $stmt->bindParam(':fpaziente', $paziente);
+    $stmt->bindParam(':fdata', $data);
+    $stmt->bindParam(':fDurata', $durata);
+    $stmt->bindParam(':fMotivo', $motivo);
+    $stmt->bindParam(':fCosto', $costo);
+    return $stmt->execute();
+}
+
+function deleteRicoveriFromDb($codRicovero) {
+    global $conn;
+    $sql = "DELETE FROM ricoveri WHERE fCodRic = :fCodRic";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':fCodRic', $codRicovero);
+    return $stmt->execute();
+}
+
+function createRicoveriInDb($codRicovero, $paziente, $data, $durata, $motivo, $costo) {
+    global $conn;
+    $sql = "INSERT INTO ricoveri (fCodRic, fpaziente, fdata, fDurata, fMotivo, fCosto) VALUES (:fCodRic, :fpaziente, :fdata, :fDurata, :fMotivo, :fCosto)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':fCodRic', $codRicovero);
+    $stmt->bindParam(':fpaziente', $paziente);
+    $stmt->bindParam(':fdata', $data);
+    $stmt->bindParam(':fDurata', $durata);
+    $stmt->bindParam(':fMotivo', $motivo);
+    $stmt->bindParam(':fCosto', $costo);
+    return $stmt->execute();
+}
+
+
+
+
+
+<?php
+require_once 'connessioneDB.php';
+require_once 'gestioneDb.php';
+
+// ...
+
+// Handle update operation
+if (isset($_POST['update'])) {
+    $codRicovero = $_POST['codRicovero'];
+    $paziente = $_POST['paziente'];
+    $data = $_POST['data'];
+    $durata = $_POST['durata'];
+    $motivo = $_POST['motivo'];
+    $costo = $_POST['costo'];
+
+    updateRicoveriInDb($codRicovero, $paziente, $data, $durata, $motivo, $costo);
+}
+
+// Handle delete operation
+if (isset($_POST['delete'])) {
+    $codRicovero = $_POST['codRicovero'];
+
+    deleteRicoveriFromDb($codRicovero);
+}
+
+// Handle create operation
+if (isset($_POST['create'])) {
+    $codRicovero = $_POST['codRicovero'];
+    $paziente = $_POST['paziente'];
+    $data = $_POST['data'];
+    $durata = $_POST['durata'];
+    $motivo = $_POST['motivo'];
+    $costo = $_POST['costo'];
+
+    createRicoveriInDb($codRicovero, $paziente, $data, $durata, $motivo, $costo);
+}
+
+
+  /*  $sql = "SELECT * FROM $tableName WHERE cod_ricovero = :codRicovero";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':codRicovero', $codRicovero);
+        $stmt->execute();
+        $data = $stmt->fetch();
+
+        echo '
+        <form method="post" action="">
+            <input type="hidden" name="codRicovero" value="' . $data['cod_ricovero'] . '">
+            <label for="Paziente">Paziente:</label>
+            <input type="text" name="Paziente" id="Paziente" value="' . $data['paziente'] . '" required>
+            <label for="Data">Data:</label>
+            <input type="date" name="Data" id="Data" value="' . $data['data'] . '" required>
+            <label for="Durata">Durata:</label>
+            <input type="number" name="Durata" id="Durata" value="' . $data['durata'] . '" required>
+            <label for="Motivo">Motivo:</label>
+            <input type="text" name="Motivo" id="Motivo" value="' . $data['motivo'] . '" required>
+            <label for="Costo">Costo:</label>
+            <input type="number" name="Costo" id="Costo" value="' . $data['costo'] . '" required>
+            <input type="submit" value="Update">
+        </form>
+        ';
+        $sql = 'UPDATE Ricoveri SET
+                    Paziente = Ppaziente,
+                    Data = :Data,
+                    Durata = :Durata,
+                    Motivo = :Motivo,
+                    Costo = :Costo
+                WHERE cod_ricovero = :codRicovero';
+             $stmt = $conn->prepare($sql);
+             $stmt->bindParam(':codRicovero', $codRicovero);
+             $stmt->bindParam(':Paziente', $paziente);
+             $stmt->bindParam(':Data', $data);
+             $stmt->bindParam(':Durata', $durata);
+             $stmt->bindParam(':Motivo', $motivo);
+             $stmt->bindParam(':Costo', $costo);
+         
+             try {
+                 $stmt->execute();
+                 return true;
+             } catch (PDOException $e) {
+                 throw new Exception('Error updating database: '. $e->getMessage());
+             }*/
+             $query = "UPDATE $table SET Paziente = ?, Data = ?, Durata = ?, Motivo = ?, Costo = ? WHERE CodRic = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("ssisiis", $paziente, $data, $durata, $motivo, $costo, $codRicovero);
+                $stmt->execute();
+                $stmt->close();
