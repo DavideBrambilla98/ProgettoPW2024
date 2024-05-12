@@ -16,6 +16,15 @@ ed è caratterizzata dal nome, e da un livello di criticità (tipicamente, un nu
 In particolare, si vogliono gestire due sottoinsiemi: quello delle patologie mortali e quello delle patologie croniche
 (i due sottoinsiemi potrebbero essere non disgiunti e sicuramente non sono esaustivi).
 
+### Gestione delle molteplicità
+
+Le query di ricerca su una tabella devono prevedere diversi criteri (dipende dalla tabella). In generale:  
+- se una tabella A è legata da una relazione (0:1) o (1:1) ad un’altra tabella B sarebbe il caso di mostrare insieme alla riga di A i dati caratteristici di B (oltre all’ID).
+  Es.: nel DB1, insieme ai dati di un’ Opera mostrare il nome dell’ Autore
+- se una tabella A è legata da una reazione (0:n) o (1:n) ad un’altra tabella B allora mostrate il numero di entità di B legate ad ogni riga di A.
+  Es.: nel DB1, insieme ai dati di un Autore mostrare il numero di Opere
+  Fate le vostre considerazioni caso per caso
+
 ## Struttura del DB:
 
 <img width="649" alt="StrutturaDB1" src="https://github.com/DavideBrambilla98/ProgettoPW2024/assets/145765934/2f42509f-1882-4c23-8095-6af598d8211c">
