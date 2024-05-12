@@ -3,7 +3,7 @@
     <head>
         <meta charset='utf-8'>
         <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-        <title>Gestionale</title>
+        <title>Cittadini</title>
         <link rel="stylesheet" href="style.css">
         <meta name='viewport' content='width=device-width, initial-scale=1'>
         <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
@@ -75,10 +75,10 @@
                     $statoPDO->execute();
                     
                         if ($statoPDO->rowCount() > 0) {
-                            echo "<table><tr><th>CF</th><th>Nome</th><th>Cognome</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th></tr>";
+                            echo "<table><tr><th>CF</th><th>Nome</th><th>Cognome</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th># Ricoveri</th></tr>";
                             // stampa i dati di ogni riga
                             while($row = $statoPDO->fetch()) {
-                                echo "<tr><td>".$row["codFiscale"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td></tr>";
+                                echo "<tr><td>".$row["codFiscale"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td><td>".$row["numRicoveri"]."</td></tr>";
                             }
                             echo "</table>";
                         } else {
