@@ -20,19 +20,24 @@
 
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="codiceRicovero" name="codiceRicovero" type="text" placeholder="codice ricovero"/>
-                <input id="codiceOspedale" name="codiceOspedale" type="text" placeholder="codice ospedale"/>
-                <input id="nomeOspedale" name="nomeOspedale" type="text" placeholder="nome ospedale"/>
-                <input id="paziente" name="paziente" type="text" placeholder="paziente(CF)"/>
-                <input id="dataRicovero" name="dataRicovero" type="text" placeholder="data"/>
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                <div class="select-wrapper">
+                    <select id="search" name="search" >
+                        <option value="1">codice ricovero</option>
+                        <option value="2">codice ospedale</option>
+                        <option value="3">nome ospedale</option>
+                        <option value="4">paziente(CF)</option>
+                        <option value="5">data</option>
+                    </select>
+                    <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                </div>
+                    <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                    <button type="submit">
+                        <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                    </button>
             </form>
+        </div>
         <div id="results">
-
         <?php
-
             //stabilisce la connessione con il DB
             include 'ConnessioneDB.php';
 
@@ -42,16 +47,30 @@
             }
             try {
 
-                $codRicovero = $_POST["codiceRicovero"] ?? "";
-                $codOsp = $_POST["codiceOspedale"] ?? "";
-                $nomOsp = $_POST["nomeOspedale"] ?? "";
-                $paziente = $_POST["paziente"] ?? "";
-                $dataRic = $_POST["dataRicovero"] ?? "";
-                $durata = $_POST["durata"] ?? "";
-                $motivo = $_POST["motivo"] ?? "";
-                $costo = $_POST["costo"] ?? "";
-                $nomePaziente = $_POST["nomePaziente"] ?? "";
+                $codRicovero = $codOsp = $nomOsp = $paziente = $dataRic = "";
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $search = $_POST['search'];
+                    $cerca = $_POST['cerca'];
             
+                    switch ($search) {
+                        case "1":
+                            $codRicovero = $cerca;
+                            break;
+                        case "2":
+                            $codOsp = $cerca;
+                            break;
+                        case "3":
+                            $nomOsp = $cerca;
+                            break;
+                        case "4":
+                            $paziente = $cerca;
+                            break;
+                        case "5":
+                            $dataRic = $cerca;
+                            break;
+                    }
+                }
+
                 $sql = readRicoveriFromDb ($codRicovero, $codOsp, $nomOsp, $paziente, $dataRic, $durata, $motivo, $costo);
             
                 // Prepara la query per poi essere eseguita successivamente
@@ -68,12 +87,6 @@
                     $statoPDO->bindValue(':paziente', "%$paziente%");
                 if ($dataRic != "")
                     $statoPDO->bindValue(':dataRic', "%$dataRic%");
-                if ($durata != "")
-                    $statoPDO->bindValue(':durata', "%$durata%");
-                if ($motivo != "")
-                    $statoPDO->bindValue(':motivo', "%$motivo%");
-                if ($costo != "")
-                    $statoPDO->bindValue(':costo', "%$costo%");
 
         ?>
         <div class="scroll-table">
@@ -97,7 +110,7 @@
             }
             ?>
         </div>
-
+    </body>
     <?php	
         include 'footer.html';
     ?>
