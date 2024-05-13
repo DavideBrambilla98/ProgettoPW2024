@@ -35,7 +35,6 @@
                     </button>
             </form>
         </div>
-        <div id="results">
 
         <?php
 

@@ -89,8 +89,9 @@ nav ul li a i{
     background-color:  #FFB347;
     border: none;
     border-radius: 10px;
-    margin-left: 5%;
-    margin-right: 5%;
+    height: 1.7em; /*vuol dire 1.7 volte la grandezza del testo*/
+    margin-left: 25%;
+    margin-right: 25%;
 }
 
 select {
@@ -118,6 +119,7 @@ select:focus{
     display: inline-block;
 }
 
+
 .select-wrapper i {
     position: absolute;
     right: 5px;
@@ -129,21 +131,30 @@ select:focus{
 
 #research form input{
     text-decoration: none;
-    color: #FFB347;
+    color: #4A9DEC;
     box-shadow: none;
     outline-color: transparent;
     font-size: 16px;
-    outline: none;
     background-color:  #fff;
     width: 100%;
-    border: none;
-    /*border: 3px solid #FFB347;*/
     font-size: 18px;
-    border-radius: 0px;
-    /*margin: 10px;*/
     padding: 14px;
-
+    border: 2px solid transparent;
+    height: 2em;
+    outline: none;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: all 0.5s;
 }
+
+  
+#research form input:hover,
+#research form input:focus {
+  border: 2px solid #4A9DEC;
+  box-shadow: 0px 0px 0px 7px rgba(245, 212, 146, 0.2);
+  background-color: white;
+}
+
 #research form input::placeholder{
     color: #080808;
     opacity: 0.5;
@@ -164,12 +175,13 @@ select:focus{
     color: #fff;
     text-shadow: transparent;
     box-shadow: none;
-    font-size: 16px;
+    font-size: 20px;
     cursor: pointer;
+    transition: all 0.5s;
 }
 
 #pulsRicerca:hover{
-    color: #0047AB;
+    color: #4A9DEC;;
 }
 
 .scroll-table {
@@ -198,10 +210,14 @@ table tr {
 
 /*Titolo della tabella*/
 table th {
-    color: #FFB347;
+    color: #fff;
+    background-color: #FFB347;
+    opacity: 0.8;
+    font-size: 16px;
+    padding: 12px 15px;
+    border-radius: 5px;
 }
 
-table th,
 table td {
     padding: 12px 15px;
     font-size: 14px;
@@ -221,7 +237,7 @@ table tr:last-of-type {
 
   /* Stile per la riga con sopra il mouse*/
   .hovered {
-    background-color: rgba(255,179,71,0.5)!important;
+    background-color: rgba(74, 157, 236,0.5)!important;
   }
   
   /* Stile per la riga selezionata */

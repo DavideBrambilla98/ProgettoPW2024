@@ -36,7 +36,7 @@
                     </button>
             </form>
         </div>
-        <div id="results">
+
         <?php
             //stabilisce la connessione con il DB
             include 'ConnessioneDB.php';
