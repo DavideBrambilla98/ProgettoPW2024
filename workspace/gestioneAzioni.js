@@ -17,7 +17,7 @@ switch(true) {
     case pagina.includes("index.php"):
         pulsanteHome.style.color = "#0047AB";
         break;
-    case"":
+    case pagina===(""):
         pulsanteHome.style.color = "#0047AB";
         break;
     case pagina.includes("cittadino.php"):
