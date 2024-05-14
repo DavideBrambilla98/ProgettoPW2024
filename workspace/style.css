@@ -227,6 +227,20 @@ table tr {
     border-bottom: 1px solid #FFB347;
 }
 
+
+table tr a{
+    color:#FFB347;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold; 
+    position: relative;
+    transition: 0.5s;
+}
+
+table tr a:hover{
+    color: #fff;
+}
+
 table tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
