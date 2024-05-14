@@ -92,25 +92,29 @@
         ?>
         <div class="scroll-table">
             <?php
-                    // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
-                    $statoPDO->execute();
-                    
-                        if ($statoPDO->rowCount() > 0) {
-                            echo "<table id='tabella'><tr><th>Codice struttura</th><th>Nome</th><th>Indirizzo</th><th>Comune</th><th>Direttore sanitario</th><th>Nome direttore</th><th>Cognome direttore</th><th># Ricoveri</th></tr>";
-                            // stampa i dati di ogni riga
-                            while($row = $statoPDO->fetch()) {
-                                echo "<tr><td>".$row["CodiceStruttura"]."</td><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Indirizzo"]."</td><td>".$row["Comune"]."</td><td>".$row["DirettoreSanitario"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td><a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."'>".$row["countRicoveri"]."</a></td></tr>";
-                            }
-                            echo "</table>";
-                        } else {
-                            echo "0 results";
-                        }
-                    } catch (PDOException $e) {
-                        die("DB Error: " . $e->getMessage());
-                    }
-            ?>
-        </div>
+                // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
+                $statoPDO->execute();
 
+                if ($statoPDO->rowCount() > 0) {
+                    echo "<table id='tabella'><tr><th>Codice struttura</th><th>Nome</th><th>Indirizzo</th><th>Comune</th><th>Direttore sanitario</th><th>Nome direttore</th><th>Cognome direttore</th><th>Ricoveri</th></tr>";
+                    // stampa i dati di ogni riga
+                    while($row = $statoPDO->fetch()) {
+                        if($row["countRicoveri"] > 0) {
+                            $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codiceStruttura=".$row["CodiceStruttura"]."&linkClicked=true'>trovati: ".$row["countRicoveri"]."</a>";
+                        } else {
+                            $countRicoveri = "no ricoveri";
+                        }
+                        echo "<tr><td>".$row["CodiceStruttura"]."</td><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Indirizzo"]."</td><td>".$row["Comune"]."</td><td>".$row["DirettoreSanitario"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$countRicoveri."</td></tr>";
+                    }
+                    echo "</table>";
+                } else {
+                    echo "0 results";
+                }
+            } catch (PDOException $e) {
+                die("DB Error: " . $e->getMessage());
+            }
+        ?>
+        </div>
     <?php	
         include 'footer.html';
     ?>

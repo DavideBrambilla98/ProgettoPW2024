@@ -64,4 +64,16 @@ document.querySelectorAll('#tabella tr').forEach(function(row) {
       }
     });
   });
+
+
+  //Script per pulire l'url--------------------------------------
+
+  function deleteUrl(){
+    if (window.history.replaceState) {
+      var url = window.location.href;
+      var cleanedUrl = url.split("?")[0];
+      window.history.replaceState({}, document.title, cleanedUrl);
+    }
+  }
+  
   

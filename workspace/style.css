@@ -229,16 +229,33 @@ table tr {
 
 
 table tr a{
-    color:#FFB347;
+    color:#4A9DEC;
     text-decoration: none;
-    font-size: 16px;
-    font-weight: bold; 
-    position: relative;
+    font-size: 14px;
     transition: 0.5s;
+    line-height: 2;
+    position: relative;
+}
+
+
+table tr a::before{
+    content: '';
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background-color: #ff004f;
+    position: absolute;
+    bottom: -.25rem;
+    left: 0;
+    transition: width .4s;
+}
+
+table tr a:hover::before{
+    width: 100%;
 }
 
 table tr a:hover{
-    color: #fff;
+    color: #ff004f;
 }
 
 table tr:nth-of-type(even) {
@@ -251,12 +268,12 @@ table tr:last-of-type {
 
   /* Stile per la riga con sopra il mouse*/
   .hovered {
-    background-color: rgba(74, 157, 236,0.5)!important;
+    background-color: rgba(74, 157, 236,0.3)!important;
   }
   
   /* Stile per la riga selezionata */
   .selected {
-    background-color: rgba(0, 71, 171,0.5)!important;
+    background-color: rgba(74, 157, 236,0.3)!important;
     color: #fff !important;
   }
 
