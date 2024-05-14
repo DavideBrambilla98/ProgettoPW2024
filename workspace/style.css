@@ -88,10 +88,10 @@ nav ul li a i{
     border-radius: 0px;
     background-color:  #FFB347;
     border: none;
-    border-radius: 10px;
+    border-radius: 14px;
     height: 1.7em; /*vuol dire 1.7 volte la grandezza del testo*/
-    margin-left: 25%;
-    margin-right: 25%;
+    margin-left: 6%;
+    margin-right: 35%;
 }
 
 select {
@@ -143,7 +143,7 @@ select:focus{
     height: 2em;
     outline: none;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 12px;
     transition: all 0.5s;
 }
 
