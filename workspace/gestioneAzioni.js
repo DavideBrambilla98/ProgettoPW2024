@@ -13,20 +13,20 @@ var pulsanteOspedale = document.getElementById("ospNav");
 var pulsanteVirus = document.getElementById("patoNav");
 
 // Cambia il colore del pulsante in base alla pagina
-switch(pagina) {
-    case "index.php":
+switch(true) {
+    case pagina.includes("index.php"):
         pulsanteHome.style.color = "#0047AB";
         break;
     case"":
         pulsanteHome.style.color = "#0047AB";
         break;
-    case "cittadino.php":
+    case pagina.includes("cittadino.php"):
         pulsantePersona.style.color = "#0047AB";
         break;
-    case "ospedale.php":
+    case pagina.includes("ospedale.php"):
         pulsanteOspedale.style.color = "#0047AB";
         break;
-    case "patologia.php":
+    case pagina.includes("patologia.php"):
         pulsanteVirus.style.color = "#0047AB";
         break;
     default:
