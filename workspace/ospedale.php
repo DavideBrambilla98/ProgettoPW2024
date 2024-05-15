@@ -100,7 +100,7 @@
                     // stampa i dati di ogni riga
                     while($row = $statoPDO->fetch()) {
                         if($row["countRicoveri"] > 0) {
-                            $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codiceStruttura=".$row["CodiceStruttura"]."&linkClicked=true'>trovati: ".$row["countRicoveri"]."</a>";
+                            $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codiceStruttura=".$row["CodiceStruttura"]."'>trovati: ".$row["countRicoveri"]."</a>";
                         } else {
                             $countRicoveri = "no ricoveri";
                         }

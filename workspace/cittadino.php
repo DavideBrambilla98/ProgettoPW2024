@@ -94,21 +94,26 @@
                 if ($indirizzo != "")
                     $statoPDO->bindValue(':indirizzo', "%$indirizzo%");
         ?>
-        <div class="scroll-table">
-            <?php
+            <div class="scroll-table">
+                <?php
                     // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
                     $statoPDO->execute();
                     
-                        if ($statoPDO->rowCount() > 0) {
-                            echo "<table id='tabella'><tr><th>CF</th><th>Nome</th><th>Cognome</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th># Ricoveri</th></tr>";
-                            // stampa i dati di ogni riga
-                            while($row = $statoPDO->fetch()) {
-                                echo "<tr><td>".$row["codFiscale"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td><td><a href='index.php?countRicoveri=".$row["numRicoveri"]."'>".$row["numRicoveri"]."</a></td></tr>";
+                    if ($statoPDO->rowCount() > 0) {
+                        echo "<table id='tabella'><tr><th>CF</th><th>Nome</th><th>Cognome</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th>Ricoveri</th></tr>";
+                        // stampa i dati di ogni riga
+                        while($row = $statoPDO->fetch()) {
+                            if($row["countRicoveri"] > 0) {
+                                $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codFiscale=".$row["codFiscale"]."'>trovati: ".$row["countRicoveri"]."</a>";
+                            } else {
+                                $countRicoveri = "no ricoveri";
                             }
-                            echo "</table>";
-                        } else {
-                            echo "0 results";
+                            echo "<tr><td>".$row["codFiscale"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td><td>".$countRicoveri."</td></tr>";
                         }
+                        echo "</table>";
+                    } else {
+                        echo "0 results";
+                    }
                     } catch (PDOException $e) {
                         die("DB Error: " . $e->getMessage());
                     }

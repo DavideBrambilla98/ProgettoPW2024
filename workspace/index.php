@@ -50,18 +50,22 @@
                 $codRicovero = $codOsp = $nomOsp = $paziente = $dataRic = "";
 
                 //per prendere il valore dalle altre pagine ---------------------------------
-
-                if(isset($_GET['codiceStruttura']) && isset($_GET['linkClicked'])){
-                    $codOsp = $_GET['codiceStruttura'];
-                    ?>
-                    <script>
-                        if (window.history.replaceState) {
-                            var url = window.location.href;
-                            var cleanedUrl = url.split("?")[0];
-                            window.history.replaceState({}, document.title, cleanedUrl);
-                        }
-                      </script>
-                      <?php
+                if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if(isset($_GET['codiceStruttura'])){
+                        $codOsp = $_GET['codiceStruttura'];
+                    }
+                    if(isset($_GET['codFiscale'])){
+                        $paziente = $_GET['codFiscale'];
+                    }
+        ?>
+                        <script>
+                            if (window.history.replaceState) {
+                                var url = window.location.href;
+                                var cleanedUrl = url.split("?")[0];
+                                window.history.replaceState({}, document.title, cleanedUrl);
+                            }
+                        </script>
+        <?php
                 }
                 //-----------------------------------------------------------------------------
 
