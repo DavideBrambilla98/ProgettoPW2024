@@ -96,7 +96,7 @@
                 $statoPDO->execute();
 
                 if ($statoPDO->rowCount() > 0) {
-                    echo "<table id='tabella'><tr><th>Codice struttura</th><th>Nome</th><th>Indirizzo</th><th>Comune</th><th>Direttore sanitario</th><th>Nome direttore</th><th>Cognome direttore</th><th>Ricoveri</th></tr>";
+                    echo "<table id='tabella'><tr><th>Nome</th><th>Indirizzo</th><th>Comune</th><th>Direttore sanitario</th><th>Ricoveri</th></tr>";
                     // stampa i dati di ogni riga
                     while($row = $statoPDO->fetch()) {
                         if($row["countRicoveri"] > 0) {
@@ -104,7 +104,8 @@
                         } else {
                             $countRicoveri = "no ricoveri";
                         }
-                        echo "<tr><td>".$row["CodiceStruttura"]."</td><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Indirizzo"]."</td><td>".$row["Comune"]."</td><td>".$row["DirettoreSanitario"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$countRicoveri."</td></tr>";
+                        $direttore = "<a href='cittadino.php?direttore=".$row["DirettoreSanitario"]."'>".$row["nome"]." ".$row["cognome"]."</a>";
+                        echo "<tr><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Indirizzo"]."</td><td>".$row["Comune"]."</td><td>".$direttore."</td><td>".$countRicoveri."</td></tr>";
                     }
                     echo "</table>";
                 } else {
