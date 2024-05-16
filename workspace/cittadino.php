@@ -49,6 +49,25 @@
             try {
 
                 $cf = $nome = $cognome = $dataNascita = $luogoNascita = $indirizzo = "";
+
+                  //per prendere il valore dalle altre pagine ---------------------------------
+                  if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if(isset($_GET['direttore'])){
+                        $cf = $_GET['direttore'];
+                    }
+        ?>
+                        <script>
+                            if (window.history.replaceState) {
+                                var url = window.location.href;
+                                var cleanedUrl = url.split("?")[0];
+                                window.history.replaceState({}, document.title, cleanedUrl);
+                            }
+                        </script>
+                        
+        <?php
+                }
+                //-----------------------------------------------------------------------------   
+
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $search = $_POST['search'];
                     $cerca = $_POST['cerca'];
@@ -100,7 +119,7 @@
                     $statoPDO->execute();
                     
                     if ($statoPDO->rowCount() > 0) {
-                        echo "<table id='tabella'><tr><th>CF</th><th>Nome</th><th>Cognome</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th>Ricoveri</th></tr>";
+                        echo "<table id='tabella'><tr><th>Nome</th><th>Cognome</th><th>Codice fiscale</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th>Ricoveri</th></tr>";
                         // stampa i dati di ogni riga
                         while($row = $statoPDO->fetch()) {
                             if($row["countRicoveri"] > 0) {
@@ -108,7 +127,7 @@
                             } else {
                                 $countRicoveri = "no ricoveri";
                             }
-                            echo "<tr><td>".$row["codFiscale"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td><td>".$countRicoveri."</td></tr>";
+                            echo "<tr><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["codFiscale"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td><td>".$countRicoveri."</td></tr>";
                         }
                         echo "</table>";
                     } else {

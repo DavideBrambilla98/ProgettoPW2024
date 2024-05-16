@@ -65,7 +65,7 @@
         if ($comuneStruttura != "")
             $sql .= " AND Comune LIKE :comuneStruttura";
         if ($direttoreSanitario != "")
-            $sql .= " AND DirettoreSanitario LIKE :direttoreSanitario";
+            $sql .= " AND Persone.nome LIKE :direttoreSanitario OR Persone.cognome LIKE :direttoreSanitario ";
 
         $sql .= " GROUP BY Ospedali.CodiceStruttura";
         
