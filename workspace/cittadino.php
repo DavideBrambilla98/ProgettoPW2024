@@ -52,8 +52,8 @@
 
                   //per prendere il valore dalle altre pagine ---------------------------------
                   if ($_SERVER["REQUEST_METHOD"] == "GET") {
-                    if(isset($_GET['direttore'])){
-                        $cf = $_GET['direttore'];
+                    if(isset($_GET['citt'])){
+                        $cf = $_GET['citt'];
                     }
         ?>
                         <script>

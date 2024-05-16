@@ -49,6 +49,25 @@
             try {
 
                 $codStruttura = $nomeStruttura = $indirizzoStruttura = $pazicomuneStrutturaente = $direttoreSanitario = "";
+            
+                  //per prendere il valore dalle altre pagine ---------------------------------
+                  if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if(isset($_GET['osp'])){
+                        $codStruttura = $_GET['osp'];
+                    }
+        ?>
+                        <script>
+                            if (window.history.replaceState) {
+                                var url = window.location.href;
+                                var cleanedUrl = url.split("?")[0];
+                                window.history.replaceState({}, document.title, cleanedUrl);
+                            }
+                        </script>
+                        
+        <?php
+                }
+                //-----------------------------------------------------------------------------  
+
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $search = $_POST['search'];
                     $cerca = $_POST['cerca'];
@@ -104,7 +123,7 @@
                         } else {
                             $countRicoveri = "no ricoveri";
                         }
-                        $direttore = "<a href='cittadino.php?direttore=".$row["DirettoreSanitario"]."'>".$row["nome"]." ".$row["cognome"]."</a>";
+                        $direttore = "<a href='cittadino.php?citt=".$row["DirettoreSanitario"]."'>".$row["nome"]." ".$row["cognome"]."</a>";
                         echo "<tr><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Indirizzo"]."</td><td>".$row["Comune"]."</td><td>".$direttore."</td><td>".$countRicoveri."</td></tr>";
                     }
                     echo "</table>";

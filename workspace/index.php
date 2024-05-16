@@ -115,11 +115,13 @@
                 $statoPDO->execute();
             
                 if ($statoPDO->rowCount() > 0) {
-                    echo "<table id='tabella'><tr><th>Codice ricovero</th><th>Nome ospedale</th><th>Paziente</th><th>Nome</th><th>Cognome</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
+                    echo "<table id='tabella'><tr><th>Nome paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th></tr>";
                     // output data of each row
                     while($row = $statoPDO->fetch()) {
+                        $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
+                        $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
-                        echo "<tr><td>".$row["CodiceRicovero"]."</td><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Paziente"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Motivo"]."</td><td>".$row["Costo"]."</td></tr>";
+                        echo "<tr><td>".$row["nome"]." ".$row["cognome"]."</td><td>".$paz."</td><td>".$osp."</td><td>".$row["Motivo"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Costo"]."</td></tr>";
                     }
                     echo "</table>";
                 } else {
