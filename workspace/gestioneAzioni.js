@@ -36,6 +36,16 @@ switch(true) {
         pulsanteVirus.style.color = "#fff";
 }
 
+// per non far visualizzare la linea sotto al link delle pagine se si è già in quella pagina
+document.addEventListener("DOMContentLoaded", function() {
+  var links = document.querySelectorAll("nav ul li a");
+  for (var i = 0; i < links.length; i++) {
+      if (links[i].href == window.location.href) {
+          links[i].classList.add("current-page");
+      }
+  }
+});
+
 
 // Script per evidenziare le righe della tabella -------------------------------------------------------------------------
 
