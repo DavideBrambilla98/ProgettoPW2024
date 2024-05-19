@@ -139,8 +139,10 @@
             $statoPDO->execute();
             try {
                 if ($statoPDO->rowCount() > 0) {
-                    echo "<table><tr><th>Nome struttura</th><th>Codice ricovero</th><th>Nome paziente</th><th>Cognome paziente</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
-                    // stampa i dati di ogni riga
+
+                    echo "<table id='tabella'><tr><th>Codice ricovero</th><th>Nome ospedale</th><th>Paziente</th><th>Nome</th><th>Cognome</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
+                    // output data of each row
+
                     while($row = $statoPDO->fetch()) {
                         echo
                         "<tr>
@@ -196,5 +198,5 @@
     <?php	
         include 'footer.html';
     ?>
-    
+    <script src='gestioneAzioni.js'></script>
 </html>

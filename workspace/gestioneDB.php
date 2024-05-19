@@ -45,6 +45,7 @@
         
         return $sql;
     }
+
     	/*function readRicoveriFromDb ($codOsp,$nomOsp,$codRicovero,  $paziente ,$nome,$cognome, $dataRic, $durata, $motivo, $costo) : string {
         $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
                 FROM Ricoveri
@@ -126,12 +127,15 @@
     
         return array($sql, $params);
     }
+
         function createRicoveriInDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo){
             global $conn;
             $sql = 'INSERT INTO Ricoveri (CodOspedale, CodiceRicovero, Paziente, Data, Durata, Motivo, Costo) VALUES (:CodOspedale, :CodiceRicovero, :Paziente, :Data, :Durata, :Motivo, :Costo)';
             $stmt = $conn->prepare($sql);
+
             $stmt->bindParam(':CodOspedale', $codStruttura);
             $stmt->bindParam(':CodiceRicovero', $codRicovero);
+
             $stmt->bindParam(':Paziente', $paziente);
             $stmt->bindParam(':Data', $data);
             $stmt->bindParam(':Durata', $durata);
@@ -154,6 +158,7 @@
     
 
     function deleteRicoveriFromDb($codRicovero, $tableName, $conn) {
+
         $sql = "DELETE FROM Ricoveri WHERE CodiceRicovero = :CodiceRicovero";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':CodiceRicovero', $codRicovero);
@@ -162,6 +167,7 @@
             echo "Record deleted successfully.";
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
+
     }
 }
 

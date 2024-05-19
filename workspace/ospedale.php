@@ -72,7 +72,7 @@
                     $statoPDO->execute();
                     
                         if ($statoPDO->rowCount() > 0) {
-                            echo "<table><tr><th>Codice struttura</th><th>Nome</th><th>Indirizzo</th><th>Comune</th><th>Direttore sanitario</th><th>Nome direttore</th><th>Cognome direttore</th><th># Ricoveri</th></tr>";
+                            echo "<table id='tabella'><tr><th>Codice struttura</th><th>Nome</th><th>Indirizzo</th><th>Comune</th><th>Direttore sanitario</th><th>Nome direttore</th><th>Cognome direttore</th><th># Ricoveri</th></tr>";
                             // stampa i dati di ogni riga
                             while($row = $statoPDO->fetch()) {
                                 echo "<tr><td>".$row["CodiceStruttura"]."</td><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Indirizzo"]."</td><td>".$row["Comune"]."</td><td>".$row["DirettoreSanitario"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["countRicoveri"]."</td></tr>";
@@ -90,5 +90,5 @@
     <?php	
         include 'footer.html';
     ?>
-    
+    <script src='gestioneAzioni.js'></script>
 </html>
