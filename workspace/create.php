@@ -1,4 +1,7 @@
-<DOCTYPE html>
+<?php
+    session_start();
+?>
+<!DOCTYPE html>
 <html>
 <head>
         <meta charset='utf-8'>
@@ -17,9 +20,36 @@
 <p> CRUD LAME, Crea record</p>
 
 
-<form action ="create.php" method ="POST">
-    <input type = "text" id = "CodiceStruttura" name = "CodiceStruttura" placeholder ="Codice Struttura"><br>
-    <input type = "text" id = "CodRic" name = "CodRic" placeholder ="Codice Ricovero"><br>
+
+<?php
+    include 'ConnessioneDB.php';
+    include 'gestioneDB.php';
+    ?>
+<?php
+$codric = uniqid('RIC-');
+if ($_POST){
+    $codosp = $_POST['CodOspedale'];
+    $paziente =  $_POST['Paziente'];
+    $data = $_POST['Data'];
+    $durata =  $_POST['Durata'];
+    $motivo = $_POST['Motivo'];
+    $costo =  $_POST['Costo'] ;
+    
+    $result = createRicoveriInDb($codosp,$codric, $paziente, $data, $durata, $motivo, $costo);
+
+    if ($result) {
+        $_SESSION['flash_message'] = 'Nuovo record creato correttamente';    } else {
+        $_SESSION['flash_message'] = 'Errore nella creazione del record: ' . $conn->error;
+        }
+    header('Location: index.php' );
+    exit;
+
+}
+$conn = null;
+?>
+<form action ="create.php" method ="POST" onsubmit="return verificaCampi()">
+    <input type = "text" id = "CodOspedale" name = "CodOspedale" placeholder ="Codice Struttura"><br>
+    <input type="text" id="CodiceRicovero" name="CodiceRicovero" placeholder="Codice Ricovero" value="<?php echo $codric; ?>" readonly><br>
     <input type = "text" id = "Paziente" name = "Paziente" placeholder ="Paziente"><br>
     <input type = "text" id = "Data" name = "Data" placeholder ="Data"><br>
     <input type = "text" id = "Durata" name = "Durata" placeholder ="Durata"><br>
@@ -27,31 +57,24 @@
     <input type = "text" id = "Costo" name = "Costo" placeholder ="Costo"><br>
     <input type = "submit" value = "INVIO">
 </form>
-<?php
-    include 'ConnessioneDB.php';
-    include 'gestioneDB.php';
-    ?>
-<?php
-if ($_POST['CodRic']){
-    $codosp = $_POST['CodiceStruttura'];
-    $codric = $_POST['CodRic'];
-    $paziente =  $_POST['Paziente'];
-    $data = $_POST['Data'];
-    $durata =  $_POST['Durata'];
-    $motivo = $_POST['Motivo'];
-    $costo =  $_POST['Costo'] ;
-    $result = createRicoveriInDb($codosp,$codric, $paziente, $data, $durata, $motivo, $costo);
+<script>
+function verificaCampi() {
+    var codOspedale = document.getElementById("CodOspedale").value;
+    var paziente = document.getElementById("Paziente").value;
+    var data = document.getElementById("Data").value;
+    var durata = document.getElementById("Durata").value;
+    var motivo = document.getElementById("Motivo").value;
+    var costo = document.getElementById("Costo").value;
 
-    if ($result) {
-        echo "Nuovo record creato correttamente";
-    } else {
-        echo "Error: " . $conn->error;
+    if (codOspedale === "" || paziente === "" || data === "" || durata === "" || motivo === "" || costo === "") {
+        alert("Tutti i campi sono obbligatori!");
+        return false;
     }
-    header('Location: read.php ' );
-    exit;
 
+    // Puoi aggiungere altri controlli qui, ad esempio per il formato della data o la validità del costo
+
+    return true;
 }
-$conn = null;
-?>
+</script>
 </html>
 </body>

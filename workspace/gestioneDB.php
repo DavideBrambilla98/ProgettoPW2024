@@ -1,32 +1,7 @@
 
 <?php      
-	function readRicoveriFromDb ($codRicovero, $codOsp,$nomOsp, $paziente, $dataRic, $durata, $motivo, $costo) : string {
-        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
-                FROM Ricoveri
-                JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
-                JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
-                WHERE 1=1";
-                
-        if ($codRicovero != "")
-            $sql .= " AND Ricoveri.CodiceRicovero LIKE  :codiceRicovero";
-        if ($codOsp != "")
-            $sql .= " AND Ricoveri.CodOspedale LIKE :codiceOspedale";
-        if ($nomOsp != "")
-            $sql .= " AND Ospedali.DenominazioneStruttura LIKE :nomeOspedale";
-        if ($paziente != "")
-            $sql .= " AND Ricoveri.Paziente LIKE  :paziente";
-        if ($dataRic != "")
-             $sql .= " AND Ricoveri.Data LIKE  :dataRic";
-        if ($durata != "")
-            $sql .= " AND Ricoveri.Durata LIKE  :durata";
-        if ($motivo != "")
-            $sql .= " AND Ricoveri.Motivo LIKE  :motivo";
-         if ($costo != "")
-            $sql .= " AND Ricoveri.Costo LIKE  :costo";
+    include 'ConnessioneDB.php';
 
-        return $sql;
-    }
-    
     function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale) : string {
         $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale
                 FROM Patologie
@@ -55,7 +30,6 @@
                 LEFT JOIN Ricoveri ON Ospedali.CodiceStruttura = Ricoveri.CodOspedale
                 WHERE 1=1";
 
-            
         if ($codStruttura != "")
             $sql .= " AND CodiceStruttura LIKE :codStruttura";
         if ($nomeStruttura != "")
@@ -71,36 +45,93 @@
         
         return $sql;
     }
-    
-    function readRicoveriFromDb ($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo) : string {
-        $sql = "SELECT CodiceStruttura, CodRic, Paziente, Data, Durata, Motivo, Costo FROM Ricoveri WHERE 1=1";
-
-        if ($codStruttura != "")
-            $sql .= " AND CodiceStruttura LIKE :fCodOsp";
+    	/*function readRicoveriFromDb ($codOsp,$nomOsp,$codRicovero,  $paziente ,$nome,$cognome, $dataRic, $durata, $motivo, $costo) : string {
+        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
+                FROM Ricoveri
+                JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
+                JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
+                WHERE 1=1";
+        if ($codOsp != "")
+            $sql .= " AND Ricoveri.CodOspedale LIKE :codiceOspedale";       
+        if ($nomOsp != "")
+            $sql .= " AND Ospedali.DenominazioneStruttura LIKE :nomeOspedale";
         if ($codRicovero != "")
-            $sql .= " AND CodRic LIKE :fCodRic";
+            $sql .= " AND Ricoveri.CodiceRicovero LIKE  :codiceRicovero";
         if ($paziente != "")
-            $sql .= " AND Paziente LIKE :fpaziente";
-        if ($data != "")
-            $sql .= " AND Data LIKE :fdata";
+            $sql .= " AND Ricoveri.Paziente LIKE  :paziente";
+        if ($nome != "")
+            $sql .= " AND nome LIKE :nome";
+        if ($cognome != "")
+            $sql .= " AND cognome LIKE :cognome";
+        if ($dataRic != "")
+             $sql .= " AND Ricoveri.Data LIKE  :dataRic";
         if ($durata != "")
-            $sql .= " AND Durata LIKE :fDurata";
+            $sql .= " AND Ricoveri.Durata LIKE  :durata";
         if ($motivo != "")
-            $sql .= " AND Motivo LIKE :fMotivo";
-        if ($costo != "")
-            $sql .= " AND Costo LIKE :fCosto";
-            
-            return $sql;
+            $sql .= " AND Ricoveri.Motivo LIKE  :motivo";
+         if ($costo != "")
+            $sql .= " AND Ricoveri.Costo LIKE  :costo";
+
+        return $sql;
+    }*/
+    function readRicoveriFromDb ($codOsp,$nomOsp,$codRicovero,  $paziente,$nome,$cognome, $dataRic, $durata, $motivo, $costo) : array {
+        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
+                FROM Ricoveri
+                JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
+                JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
+                WHERE 1=1";
+    
+        $params = array();
+    
+        if ($codOsp!= "") {
+            $sql.= " AND Ricoveri.CodOspedale LIKE :codiceOspedale";
+            $params[':codiceOspedale'] = "%$codOsp%";
         }
-
-
-
+        if ($nomOsp!= "") {
+            $sql.= " AND Ospedali.DenominazioneStruttura LIKE :nomeOspedale";
+            $params[':nomeOspedale'] = "%$nomOsp%";
+        }
+        if ($codRicovero!= "") {
+            $sql.= " AND Ricoveri.CodiceRicovero LIKE :codiceRicovero";
+            $params[':codiceRicovero'] = "%$codRicovero%";
+        }
+        if ($paziente!= "") {
+            $sql.= " AND Ricoveri.Paziente LIKE :paziente";
+            $params[':paziente'] = "%$paziente%";
+        }
+        if ($nome!= "") {
+            $sql.= " AND Persone.nome LIKE :nome";
+            $params[':nome'] = "%$nome%";
+        }
+        if ($cognome!= "") {
+            $sql.= " AND Persone.cognome LIKE :cognome";
+            $params[':cognome'] = "%$cognome%";
+        }
+        if ($dataRic!= "") {
+            $sql.= " AND Ricoveri.Data LIKE :dataRic";
+            $params[':dataRic'] = "%$dataRic%";
+        }
+        if ($durata!= "") {
+            $sql.= " AND Ricoveri.Durata LIKE :durata";
+            $params[':durata'] = "%$durata%";
+        }
+        if ($motivo!= "") {
+            $sql.= " AND Ricoveri.Motivo LIKE :motivo";
+            $params[':motivo'] = "%$motivo%";
+        }
+        if ($costo!= "") {
+            $sql.= " AND Ricoveri.Costo LIKE :costo";
+            $params[':costo'] = "%$costo%";
+        }
+    
+        return array($sql, $params);
+    }
         function createRicoveriInDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo){
             global $conn;
-            $sql = 'INSERT INTO Ricoveri (CodiceStruttura, CodRic, Paziente, Data, Durata, Motivo, Costo) VALUES (:CodiceStruttura, :CodRic, :Paziente, :Data, :Durata, :Motivo, :Costo)';
+            $sql = 'INSERT INTO Ricoveri (CodOspedale, CodiceRicovero, Paziente, Data, Durata, Motivo, Costo) VALUES (:CodOspedale, :CodiceRicovero, :Paziente, :Data, :Durata, :Motivo, :Costo)';
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':CodiceStruttura', $codStruttura);
-            $stmt->bindParam(':CodRic', $codRicovero);
+            $stmt->bindParam(':CodOspedale', $codStruttura);
+            $stmt->bindParam(':CodiceRicovero', $codRicovero);
             $stmt->bindParam(':Paziente', $paziente);
             $stmt->bindParam(':Data', $data);
             $stmt->bindParam(':Durata', $durata);
@@ -112,7 +143,7 @@
       
     function updateRicoveriInDb($codRicovero, $paziente, $data, $durata, $motivo, $costo, $conn) {
         try {
-            $sql = "UPDATE Ricoveri SET Paziente = ?, Data = ?, Durata = ?, Motivo = ?, Costo = ? WHERE CodRic = ?";
+            $sql = "UPDATE Ricoveri SET Paziente = ?, Data = ?, Durata = ?, Motivo = ?, Costo = ? WHERE CodiceRicovero = ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$paziente, $data, $durata, $motivo, $costo, $codRicovero]);
         } catch (PDOException $e) {
@@ -123,11 +154,16 @@
     
 
     function deleteRicoveriFromDb($codRicovero, $tableName, $conn) {
-        $sql = "DELETE FROM Ricoveri WHERE CodRic = :fCodRic";
+        $sql = "DELETE FROM Ricoveri WHERE CodiceRicovero = :CodiceRicovero";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':fCodRic', $codRicovero);
-        $stmt->execute();
+        $stmt->bindParam(':CodiceRicovero', $codRicovero);
+        try {
+            $stmt->execute();
+            echo "Record deleted successfully.";
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
     }
+}
 
 
     function readPersoneFromDb ($cf, $nome, $cognome, $dataNascita, $luogoNascita ,$indirizzo) : string {
