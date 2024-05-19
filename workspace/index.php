@@ -1,3 +1,11 @@
+<?php
+    session_start();
+
+    if (isset($_SESSION['flash_message'])) {
+        echo "<script>alert(\"" . $_SESSION['flash_message'] . "\");</script>";
+        unset($_SESSION['flash_message']);
+    }
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,23 +24,29 @@
             include 'header.html';	
             include 'navigation.html';
             include 'gestioneDB.php';
+            
         ?>
 
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="codiceRicovero" name="codiceRicovero" type="text" placeholder="codice ricovero"/>
-                <input id="codiceOspedale" name="codiceOspedale" type="text" placeholder="codice ospedale"/>
-                <input id="nomeOspedale" name="nomeOspedale" type="text" placeholder="nome ospedale"/>
-                <input id="paziente" name="paziente" type="text" placeholder="paziente(CF)"/>
-                <input id="dataRicovero" name="dataRicovero" type="text" placeholder="data"/>
+                <input id="CodOspedale" name="CodOspedale" type="text" placeholder="codice ospedale"/>
+                <input id="DenominazioneStruttura" name="DenominazioneStruttura" type="text" placeholder="nome ospedale"/>
+                <input id="CodiceRicovero" name="CodiceRicovero" type="text" placeholder="codice ricovero"/>
+                <input id="Paziente" name="Paziente" type="text" placeholder="paziente(CF)"/>
+                <input id="Data" name="Data" type="text" placeholder="data"/>
                 <button type="submit">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </form>
-        <div id="results">
-
+           
+            <form name="createForm" method="GET" action="create.php">
+        <button type="submit">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+    </form>
+    <div id="results">
         <?php
-
+       
             //stabilisce la connessione con il DB
             include 'ConnessioneDB.php';
 
@@ -40,63 +54,146 @@
             if ($conn->connect_error) {
                 die("Connessione fallita: " . $conn->connect_error);
             }
-            try {
+           
+                try {
+                
 
-                $codRicovero = $_POST["codiceRicovero"] ?? "";
-                $codOsp = $_POST["codiceOspedale"] ?? "";
-                $nomOsp = $_POST["nomeOspedale"] ?? "";
-                $paziente = $_POST["paziente"] ?? "";
-                $dataRic = $_POST["dataRicovero"] ?? "";
+                $codOsp = $_POST["CodOspedale"] ?? "";
+                $codRicovero = $_POST["CodiceRicovero"] ?? "";
+                $nomOsp = $_POST["DenominazioneStruttura"] ?? "";
+                $paziente = $_POST["Paziente"] ?? "";
+                $dataRic = $_POST["Data"] ?? "";
                 $durata = $_POST["durata"] ?? "";
                 $motivo = $_POST["motivo"] ?? "";
                 $costo = $_POST["costo"] ?? "";
-                $nomePaziente = $_POST["nomePaziente"] ?? "";
-            
-                $sql = readRicoveriFromDb ($codRicovero, $codOsp, $nomOsp, $paziente, $dataRic, $durata, $motivo, $costo);
+                $nomePaziente = $_POST["nome"] ?? "";
+                $cognomePaziente = $_POST["cognome"] ?? "";
+                list($sql, $params) = readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero, $paziente, $nome, $cognome, $dataRic, $durata, $motivo, $costo);
+
+                $statoPDO = $conn->prepare($sql);
+                
+                foreach ($params as $key=> $value) {
+                    $statoPDO->bindValue($key, $value);
+                }
+                
+                $statoPDO->execute();
+              /*  $sql = readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero, $paziente, $nomePaziente,$cognomePaziente, $dataRic, $durata, $motivo, $costo);
             
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
 
                 //per associare i valori al segnaposto (:cod è un segnaposto usato nella query)
-                if ($codRicovero != "")
-                    $statoPDO->bindValue(':codiceRicovero', "%$codRicovero%");
                 if ($codOsp != "")
-                    $statoPDO->bindValue(':codiceOspedale', "%$codOsp%");
+                    $statoPDO->bindValue(':CodOspedale', "%$codOsp%");
+                else
+                    $statoPDO->bindValue(':CodOspedale', "%" );
+                if ($codRicovero != "")
+                    $statoPDO->bindValue(':CodiceRicovero', "%$codRicovero%");
+                else
+                    $statoPDO->bindValue(':CodiceRicovero', "%" );
                 if ($nomOsp != "")
-                    $statoPDO->bindValue(':nomeOspedale', "%$nomOsp%");
+                    $statoPDO->bindValue(':DenominazioneStruttura', "%$nomOsp%");
+                    else
+                    $statoPDO->bindValue(':DenominazioneStruttura', "%" );
                 if ($paziente != "")
-                    $statoPDO->bindValue(':paziente', "%$paziente%");
+                    $statoPDO->bindValue(':Paziente', "%$paziente%");
+                    else
+                    $statoPDO->bindValue(':Paziente', "%" );
+                if ($nomePaziente != "")
+                    $statoPDO->bindValue(':nome', "%$nomePaziente%");
+                    else
+                    $statoPDO->bindValue(':nome', "%" );
+                if ($cognomePaziente != "")
+                    $statoPDO->bindValue(':cognome', "%$cognomePaziente%");
+                    else
+                    $statoPDO->bindValue(':cognome', "%" );
                 if ($dataRic != "")
-                    $statoPDO->bindValue(':dataRic', "%$dataRic%");
+                    $statoPDO->bindValue(':Data', "%$dataRic%");
+                    else
+                    $statoPDO->bindValue(':Data', "%" );
                 if ($durata != "")
                     $statoPDO->bindValue(':durata', "%$durata%");
+                    else
+                    $statoPDO->bindValue(':durata', "%" );
                 if ($motivo != "")
                     $statoPDO->bindValue(':motivo', "%$motivo%");
+                    else
+                    $statoPDO->bindValue(':motivo', "%" );
                 if ($costo != "")
                     $statoPDO->bindValue(':costo', "%$costo%");
+                    else
+                    $statoPDO->bindValue(':costo', "%" );*/
+                } catch (Exception $e) {
 
-        ?>
-        <div class="scroll-table">
-            <?php
-                // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
-                $statoPDO->execute();
+                    error_log("Error: ". $e->getMessage());
+                    echo "An error occurred. Please try again later.";
+                
+                }
             
+            
+        ?>
+    
+        <div class="scroll-table">
+        <?php
+// eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
+            $statoPDO->execute();
+            try {
                 if ($statoPDO->rowCount() > 0) {
+
                     echo "<table id='tabella'><tr><th>Codice ricovero</th><th>Nome ospedale</th><th>Paziente</th><th>Nome</th><th>Cognome</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
                     // output data of each row
+
                     while($row = $statoPDO->fetch()) {
-                        // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
-                        echo "<tr><td>".$row["CodiceRicovero"]."</td><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Paziente"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Motivo"]."</td><td>".$row["Costo"]."</td></tr>";
+                        echo
+                        "<tr>
+                        
+                        <td>".$row["DenominazioneStruttura"]."</td>
+                        <td>".$row["CodiceRicovero"]."</td>
+                        
+                        <td>".$row["nome"]."</td>
+                        <td>".$row["cognome"]."</td>
+                        <td>".$row["Data"]."</td>
+                        <td>".$row["Durata"]."</td>
+                        <td>".$row["Motivo"]."</td>
+                        <td>".$row["Costo"]."</td>
+                        <td> 
+                        <form id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
+                            <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
+                            <input type='hidden' name='delete' value='1'>
+                            <button type='button' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
+                        </form>
+                        </td>
+                        <td>
+                        <form action='update.php' method='get'>
+                            <input type='hidden' name='CodiceRicovero' value='".$row["CodiceRicovero"]."'>
+                            <button type='submit' name='update'><i class='fa-solid fa-pen'></i></button>
+                        </form>
+                        </td>
+                        </tr>";
+                     
                     }
                     echo "</table>";
+                    
                 } else {
                     echo "0 results";
                 }
             } catch (PDOException $e) {
                 die("DB Error: " . $e->getMessage());
             }
-            ?>
-        </div>
+        ?>
+
+     
+    </div>
+<script>
+    function confirmDelete(codiceRicovero) {
+        if (confirm("Sei sicuro di voler cancellare questo record?")) {
+            document.getElementById('delete-form-' + codiceRicovero).submit();
+        }
+    }
+</script>
+
+   
+</body>
 
     <?php	
         include 'footer.html';
