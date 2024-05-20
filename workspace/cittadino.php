@@ -17,20 +17,25 @@
             include 'navigation.html';
             include 'gestioneDB.php';
         ?>
-
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="cf" name="cf" type="text" placeholder="codice fiscale"/>
-                <input id="nome" name="nome" type="text" placeholder="nome"/>
-                <input id="cognome" name="cognome" type="text" placeholder="cognome"/>
-                <input id="dataNascita" name="dataNascita" type="text" placeholder="data di nascita"/>
-                <input id="luogoNascita" name="luogoNascita" type="text" placeholder="luogo di nascita"/>
-                <input id="indirizzo" name="indirizzo" type="text" placeholder="indirizzo"/>
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                <div class="select-wrapper">
+                    <select id="search" name="search" >
+                        <option value="1">codice fiscale</option>
+                        <option value="2">nome</option>
+                        <option value="3">cognome</option>
+                        <option value="4">data di nascita</option>
+                        <option value="5">luogo di nascita</option>
+                        <option value="6">indirizzo</option>
+                    </select>
+                    <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                </div>
+                    <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                    <button type="submit">
+                        <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                    </button>
             </form>
-        <div id="results">
+        </div>
 
         <?php
 
@@ -43,13 +48,52 @@
             }
             try {
 
-                $cf  = $_POST["cf"] ?? "";
-                $nome = $_POST["nome"] ?? "";
-                $cognome = $_POST["cognome"] ?? "";
-                $dataNascita = $_POST["dataNascita"] ?? "";
-                $luogoNascita  = $_POST["luogoNascita"] ?? "";
-                $indirizzo  = $_POST["indirizzo"] ?? "";
+                $cf = $nome = $cognome = $dataNascita = $luogoNascita = $indirizzo = "";
+
+                  //per prendere il valore dalle altre pagine ---------------------------------
+                  if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if(isset($_GET['citt'])){
+                        $cf = $_GET['citt'];
+                    }
+        ?>
+                        <script>
+                            if (window.history.replaceState) {
+                                var url = window.location.href;
+                                var cleanedUrl = url.split("?")[0];
+                                window.history.replaceState({}, document.title, cleanedUrl);
+                            }
+                        </script>
+                        
+        <?php
+                }
+                //-----------------------------------------------------------------------------   
+
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $search = $_POST['search'];
+                    $cerca = $_POST['cerca'];
             
+                    switch ($search) {
+                        case "1":
+                            $cf = $cerca;
+                            break;
+                        case "2":
+                            $nome = $cerca;
+                            break;
+                        case "3":
+                            $cognome = $cerca;
+                            break;
+                        case "4":
+                            $dataNascita = $cerca;
+                            break;
+                        case "5":
+                            $luogoNascita = $cerca;
+                            break;
+                        case "6":
+                            $indirizzo = $cerca;
+                            break;
+                    }
+                }
+          
                 $sql = readPersoneFromDb ($cf, $nome, $cognome, $dataNascita, $luogoNascita ,$indirizzo);
             
                 // Prepara la query per poi essere eseguita successivamente
@@ -69,21 +113,26 @@
                 if ($indirizzo != "")
                     $statoPDO->bindValue(':indirizzo', "%$indirizzo%");
         ?>
-        <div class="scroll-table">
-            <?php
+            <div class="scroll-table">
+                <?php
                     // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
                     $statoPDO->execute();
                     
-                        if ($statoPDO->rowCount() > 0) {
-                            echo "<table id='tabella'><tr><th>CF</th><th>Nome</th><th>Cognome</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th># Ricoveri</th></tr>";
-                            // stampa i dati di ogni riga
-                            while($row = $statoPDO->fetch()) {
-                                echo "<tr><td>".$row["codFiscale"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td><td>".$row["numRicoveri"]."</td></tr>";
+                    if ($statoPDO->rowCount() > 0) {
+                        echo "<table id='tabella'><tr><th>Nome</th><th>Cognome</th><th>Codice fiscale</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th>Ricoveri</th></tr>";
+                        // stampa i dati di ogni riga
+                        while($row = $statoPDO->fetch()) {
+                            if($row["countRicoveri"] > 0) {
+                                $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codFiscale=".$row["codFiscale"]."'>trovati: ".$row["countRicoveri"]."</a>";
+                            } else {
+                                $countRicoveri = "no ricoveri";
                             }
-                            echo "</table>";
-                        } else {
-                            echo "0 results";
+                            echo "<tr><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["codFiscale"]."</td><td>".$row["dataNascita"]."</td><td>".$row["nasLuogo"]."</td><td>".$row["indirizzo"]."</td><td>".$countRicoveri."</td></tr>";
                         }
+                        echo "</table>";
+                    } else {
+                        echo "0 results";
+                    }
                     } catch (PDOException $e) {
                         die("DB Error: " . $e->getMessage());
                     }

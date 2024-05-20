@@ -39,7 +39,7 @@
         if ($comuneStruttura != "")
             $sql .= " AND Comune LIKE :comuneStruttura";
         if ($direttoreSanitario != "")
-            $sql .= " AND DirettoreSanitario LIKE :direttoreSanitario";
+            $sql .= " AND Persone.nome LIKE :direttoreSanitario OR Persone.cognome LIKE :direttoreSanitario ";
 
         $sql .= " GROUP BY Ospedali.CodiceStruttura";
         
@@ -173,7 +173,7 @@
 
 
     function readPersoneFromDb ($cf, $nome, $cognome, $dataNascita, $luogoNascita ,$indirizzo) : string {
-        $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo, COUNT(Ricoveri.CodiceRicovero) AS numRicoveri
+        $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo, COUNT(Ricoveri.CodiceRicovero) AS countRicoveri
                 FROM Persone
                 LEFT JOIN Ricoveri ON Persone.codFiscale= Ricoveri.Paziente
                 WHERE 1=1";

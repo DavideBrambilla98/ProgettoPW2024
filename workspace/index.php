@@ -29,24 +29,26 @@
 
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="CodOspedale" name="CodOspedale" type="text" placeholder="codice ospedale"/>
-                <input id="DenominazioneStruttura" name="DenominazioneStruttura" type="text" placeholder="nome ospedale"/>
-                <input id="CodiceRicovero" name="CodiceRicovero" type="text" placeholder="codice ricovero"/>
-                <input id="Paziente" name="Paziente" type="text" placeholder="paziente(CF)"/>
-                <input id="Data" name="Data" type="text" placeholder="data"/>
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+
+                <div class="select-wrapper">
+                    <select id="search" name="search" >
+                        <option value="1">codice ricovero</option>
+                        <option value="2">codice ospedale</option>
+                        <option value="3">nome ospedale</option>
+                        <option value="4">paziente(CF)</option>
+                        <option value="5">data</option>
+                    </select>
+                    <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                </div>
+                    <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                    <button type="submit">
+                        <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                    </button>
             </form>
-           
-            <form name="createForm" method="GET" action="create.php">
-        <button type="submit">
-            <i class="fa-solid fa-plus"></i>
-        </button>
-    </form>
-    <div id="results">
+        </div>
+
         <?php
-       
+
             //stabilisce la connessione con il DB
             include 'ConnessioneDB.php';
 
@@ -58,26 +60,54 @@
                 try {
                 
 
-                $codOsp = $_POST["CodOspedale"] ?? "";
-                $codRicovero = $_POST["CodiceRicovero"] ?? "";
-                $nomOsp = $_POST["DenominazioneStruttura"] ?? "";
-                $paziente = $_POST["Paziente"] ?? "";
-                $dataRic = $_POST["Data"] ?? "";
-                $durata = $_POST["durata"] ?? "";
-                $motivo = $_POST["motivo"] ?? "";
-                $costo = $_POST["costo"] ?? "";
-                $nomePaziente = $_POST["nome"] ?? "";
-                $cognomePaziente = $_POST["cognome"] ?? "";
-                list($sql, $params) = readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero, $paziente, $nome, $cognome, $dataRic, $durata, $motivo, $costo);
 
-                $statoPDO = $conn->prepare($sql);
-                
-                foreach ($params as $key=> $value) {
-                    $statoPDO->bindValue($key, $value);
+                $codRicovero = $codOsp = $nomOsp = $paziente = $dataRic = "";
+
+                //per prendere il valore dalle altre pagine ---------------------------------
+                if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if(isset($_GET['codiceStruttura'])){
+                        $codOsp = $_GET['codiceStruttura'];
+                    }
+                    if(isset($_GET['codFiscale'])){
+                        $paziente = $_GET['codFiscale'];
+                    }
+        ?>
+                        <script>
+                            if (window.history.replaceState) {
+                                var url = window.location.href;
+                                var cleanedUrl = url.split("?")[0];
+                                window.history.replaceState({}, document.title, cleanedUrl);
+                            }
+                        </script>
+        <?php
                 }
-                
-                $statoPDO->execute();
-              /*  $sql = readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero, $paziente, $nomePaziente,$cognomePaziente, $dataRic, $durata, $motivo, $costo);
+                //-----------------------------------------------------------------------------
+
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $search = $_POST['search'];
+                    $cerca = $_POST['cerca'];
+            
+                    switch ($search) {
+                        case "1":
+                            $codRicovero = $cerca;
+                            break;
+                        case "2":
+                            $codOsp = $cerca;
+                            break;
+                        case "3":
+                            $nomOsp = $cerca;
+                            break;
+                        case "4":
+                            $paziente = $cerca;
+                            break;
+                        case "5":
+                            $dataRic = $cerca;
+                            break;
+                    }
+                }
+ 
+                $sql = readRicoveriFromDb ($codRicovero, $codOsp, $nomOsp, $paziente, $dataRic, $durata, $motivo, $costo);
+
             
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
@@ -108,29 +138,9 @@
                     else
                     $statoPDO->bindValue(':cognome', "%" );
                 if ($dataRic != "")
-                    $statoPDO->bindValue(':Data', "%$dataRic%");
-                    else
-                    $statoPDO->bindValue(':Data', "%" );
-                if ($durata != "")
-                    $statoPDO->bindValue(':durata', "%$durata%");
-                    else
-                    $statoPDO->bindValue(':durata', "%" );
-                if ($motivo != "")
-                    $statoPDO->bindValue(':motivo', "%$motivo%");
-                    else
-                    $statoPDO->bindValue(':motivo', "%" );
-                if ($costo != "")
-                    $statoPDO->bindValue(':costo', "%$costo%");
-                    else
-                    $statoPDO->bindValue(':costo', "%" );*/
-                } catch (Exception $e) {
 
-                    error_log("Error: ". $e->getMessage());
-                    echo "An error occurred. Please try again later.";
-                
-                }
-            
-            
+                    $statoPDO->bindValue(':dataRic', "%$dataRic%");
+
         ?>
     
         <div class="scroll-table">
@@ -140,37 +150,17 @@
             try {
                 if ($statoPDO->rowCount() > 0) {
 
-                    echo "<table id='tabella'><tr><th>Codice ricovero</th><th>Nome ospedale</th><th>Paziente</th><th>Nome</th><th>Cognome</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
+                    echo "<table id='tabella'><tr><th>Nome paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th></tr>";
+
                     // output data of each row
 
                     while($row = $statoPDO->fetch()) {
-                        echo
-                        "<tr>
-                        
-                        <td>".$row["DenominazioneStruttura"]."</td>
-                        <td>".$row["CodiceRicovero"]."</td>
-                        
-                        <td>".$row["nome"]."</td>
-                        <td>".$row["cognome"]."</td>
-                        <td>".$row["Data"]."</td>
-                        <td>".$row["Durata"]."</td>
-                        <td>".$row["Motivo"]."</td>
-                        <td>".$row["Costo"]."</td>
-                        <td> 
-                        <form id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
-                            <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
-                            <input type='hidden' name='delete' value='1'>
-                            <button type='button' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
-                        </form>
-                        </td>
-                        <td>
-                        <form action='update.php' method='get'>
-                            <input type='hidden' name='CodiceRicovero' value='".$row["CodiceRicovero"]."'>
-                            <button type='submit' name='update'><i class='fa-solid fa-pen'></i></button>
-                        </form>
-                        </td>
-                        </tr>";
-                     
+
+                        $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
+                        $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
+                        // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
+                        echo "<tr><td>".$row["nome"]." ".$row["cognome"]."</td><td>".$paz."</td><td>".$osp."</td><td>".$row["Motivo"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Costo"]."</td></tr>";
+
                     }
                     echo "</table>";
                     
@@ -180,9 +170,11 @@
             } catch (PDOException $e) {
                 die("DB Error: " . $e->getMessage());
             }
-        ?>
 
-     
+            ?>
+        </div>
+    </body>
+
     </div>
 <script>
     function confirmDelete(codiceRicovero) {
@@ -194,6 +186,7 @@
 
    
 </body>
+
 
     <?php	
         include 'footer.html';

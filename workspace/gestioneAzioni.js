@@ -13,17 +13,20 @@ var pulsanteOspedale = document.getElementById("ospNav");
 var pulsanteVirus = document.getElementById("patoNav");
 
 // Cambia il colore del pulsante in base alla pagina
-switch(pagina) {
-    case "index.php":
+switch(true) {
+    case pagina.includes("index.php"):
         pulsanteHome.style.color = "#0047AB";
         break;
-    case "cittadino.php":
+    case pagina===(""):
+        pulsanteHome.style.color = "#0047AB";
+        break;
+    case pagina.includes("cittadino.php"):
         pulsantePersona.style.color = "#0047AB";
         break;
-    case "ospedale.php":
+    case pagina.includes("ospedale.php"):
         pulsanteOspedale.style.color = "#0047AB";
         break;
-    case "patologia.php":
+    case pagina.includes("patologia.php"):
         pulsanteVirus.style.color = "#0047AB";
         break;
     default:
@@ -31,8 +34,18 @@ switch(pagina) {
         pulsantePersona.style.color = "#fff";
         pulsanteOspedale.style.color = "#fff";
         pulsanteVirus.style.color = "#fff";
-
 }
+
+// per non far visualizzare la linea sotto al link delle pagine se si è già in quella pagina
+document.addEventListener("DOMContentLoaded", function() {
+  var links = document.querySelectorAll("nav ul li a");
+  for (var i = 0; i < links.length; i++) {
+      if (links[i].href == window.location.href) {
+          links[i].classList.add("current-page");
+      }
+  }
+});
+
 
 // Script per evidenziare le righe della tabella -------------------------------------------------------------------------
 
@@ -61,4 +74,6 @@ document.querySelectorAll('#tabella tr').forEach(function(row) {
       }
     });
   });
+
+  
   

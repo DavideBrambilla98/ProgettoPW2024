@@ -20,16 +20,22 @@
 
         <div id="research">      
             <form name="researchForm" method="POST">
-                <input id="codStruttura" name="codStruttura" type="text" placeholder="codice"/>
-                <input id="nomeStruttura" name="nomeStruttura" type="text" placeholder="nome"/>
-                <input id="indirizzo" name="indirizzo" type="text" placeholder="indirizzo"/>
-                <input id="comuneStruttura" name="comuneStruttura" type="text" placeholder="comune"/>
-                <input id="direttoreSanitario" name="direttoreSanitario" type="text" placeholder="direttore sanitario(CF)"/>
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+                <div class="select-wrapper">
+                    <select id="search" name="search" >
+                        <!-- <option value="1">codice ospedale</option> -->
+                        <option value="2">nome ospedale</option>
+                        <option value="3">indirizzo ospedale</option>
+                        <option value="4">comune ospedale</option>
+                        <option value="5">direttore sanitario</option>
+                    </select>
+                    <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                </div>
+                    <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                    <button type="submit">
+                        <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                    </button>
             </form>
-        <div id="results">
+        </div>
 
         <?php
 
@@ -42,11 +48,48 @@
             }
             try {
 
-                $codStruttura = $_POST["codStruttura"] ?? "";
-                $nomeStruttura = $_POST["nomeStruttura"] ?? "";
-                $indirizzoStruttura  = $_POST["indirizzo"] ?? "";
-                $comuneStruttura = $_POST["comuneStruttura"] ?? "";
-                $direttoreSanitario  = $_POST["direttoreSanitario"] ?? "";
+                $codStruttura = $nomeStruttura = $indirizzoStruttura = $pazicomuneStrutturaente = $direttoreSanitario = "";
+            
+                  //per prendere il valore dalle altre pagine ---------------------------------
+                  if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if(isset($_GET['osp'])){
+                        $codStruttura = $_GET['osp'];
+                    }
+        ?>
+                        <script>
+                            if (window.history.replaceState) {
+                                var url = window.location.href;
+                                var cleanedUrl = url.split("?")[0];
+                                window.history.replaceState({}, document.title, cleanedUrl);
+                            }
+                        </script>
+                        
+        <?php
+                }
+                //-----------------------------------------------------------------------------  
+
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $search = $_POST['search'];
+                    $cerca = $_POST['cerca'];
+            
+                    switch ($search) {
+                        case "1":
+                            $codStruttura = $cerca;
+                            break;
+                        case "2":
+                            $nomeStruttura = $cerca;
+                            break;
+                        case "3":
+                            $indirizzoStruttura = $cerca;
+                            break;
+                        case "4":
+                            $comuneStruttura = $cerca;
+                            break;
+                        case "5":
+                            $direttoreSanitario = $cerca;
+                            break;
+                    }
+                }
             
                 $sql = readOspedaliFromDb ($codStruttura, $nomeStruttura, $indirizzoStruttura, $comuneStruttura, $direttoreSanitario);
             
@@ -68,25 +111,30 @@
         ?>
         <div class="scroll-table">
             <?php
-                    // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
-                    $statoPDO->execute();
-                    
-                        if ($statoPDO->rowCount() > 0) {
-                            echo "<table id='tabella'><tr><th>Codice struttura</th><th>Nome</th><th>Indirizzo</th><th>Comune</th><th>Direttore sanitario</th><th>Nome direttore</th><th>Cognome direttore</th><th># Ricoveri</th></tr>";
-                            // stampa i dati di ogni riga
-                            while($row = $statoPDO->fetch()) {
-                                echo "<tr><td>".$row["CodiceStruttura"]."</td><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Indirizzo"]."</td><td>".$row["Comune"]."</td><td>".$row["DirettoreSanitario"]."</td><td>".$row["nome"]."</td><td>".$row["cognome"]."</td><td>".$row["countRicoveri"]."</td></tr>";
-                            }
-                            echo "</table>";
-                        } else {
-                            echo "0 results";
-                        }
-                    } catch (PDOException $e) {
-                        die("DB Error: " . $e->getMessage());
-                    }
-            ?>
-        </div>
+                // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
+                $statoPDO->execute();
 
+                if ($statoPDO->rowCount() > 0) {
+                    echo "<table id='tabella'><tr><th>Nome</th><th>Indirizzo</th><th>Comune</th><th>Direttore sanitario</th><th>Ricoveri</th></tr>";
+                    // stampa i dati di ogni riga
+                    while($row = $statoPDO->fetch()) {
+                        if($row["countRicoveri"] > 0) {
+                            $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codiceStruttura=".$row["CodiceStruttura"]."'>trovati: ".$row["countRicoveri"]."</a>";
+                        } else {
+                            $countRicoveri = "no ricoveri";
+                        }
+                        $direttore = "<a href='cittadino.php?citt=".$row["DirettoreSanitario"]."'>".$row["nome"]." ".$row["cognome"]."</a>";
+                        echo "<tr><td>".$row["DenominazioneStruttura"]."</td><td>".$row["Indirizzo"]."</td><td>".$row["Comune"]."</td><td>".$direttore."</td><td>".$countRicoveri."</td></tr>";
+                    }
+                    echo "</table>";
+                } else {
+                    echo "0 results";
+                }
+            } catch (PDOException $e) {
+                die("DB Error: " . $e->getMessage());
+            }
+        ?>
+        </div>
     <?php	
         include 'footer.html';
     ?>
