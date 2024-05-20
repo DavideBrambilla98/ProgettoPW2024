@@ -75,57 +75,37 @@
 
         return $sql;
     }*/
-    function readRicoveriFromDb ($codOsp,$nomOsp,$codRicovero,  $paziente,$nome,$cognome, $dataRic, $durata, $motivo, $costo) : array {
+    
+    function readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero,  $paziente, $nome, $cognome, $dataRic) {
         $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
                 FROM Ricoveri
                 JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
                 JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
                 WHERE 1=1";
     
-        $params = array();
-    
+
         if ($codOsp!= "") {
-            $sql.= " AND Ricoveri.CodOspedale LIKE :codiceOspedale";
-            $params[':codiceOspedale'] = "%$codOsp%";
+            $sql.= " AND Ricoveri.CodOspedale LIKE :CodOspedale";
         }
         if ($nomOsp!= "") {
-            $sql.= " AND Ospedali.DenominazioneStruttura LIKE :nomeOspedale";
-            $params[':nomeOspedale'] = "%$nomOsp%";
+            $sql.= " AND Ospedali.DenominazioneStruttura LIKE :DenominazioneStruttura";
         }
         if ($codRicovero!= "") {
-            $sql.= " AND Ricoveri.CodiceRicovero LIKE :codiceRicovero";
-            $params[':codiceRicovero'] = "%$codRicovero%";
+            $sql.= " AND Ricoveri.CodiceRicovero LIKE :CodiceRicovero";
         }
         if ($paziente!= "") {
-            $sql.= " AND Ricoveri.Paziente LIKE :paziente";
-            $params[':paziente'] = "%$paziente%";
+            $sql.= " AND Ricoveri.Paziente LIKE :Paziente";
         }
         if ($nome!= "") {
             $sql.= " AND Persone.nome LIKE :nome";
-            $params[':nome'] = "%$nome%";
         }
         if ($cognome!= "") {
             $sql.= " AND Persone.cognome LIKE :cognome";
-            $params[':cognome'] = "%$cognome%";
         }
-        if ($dataRic!= "") {
-            $sql.= " AND Ricoveri.Data LIKE :dataRic";
-            $params[':dataRic'] = "%$dataRic%";
-        }
-        if ($durata!= "") {
-            $sql.= " AND Ricoveri.Durata LIKE :durata";
-            $params[':durata'] = "%$durata%";
-        }
-        if ($motivo!= "") {
-            $sql.= " AND Ricoveri.Motivo LIKE :motivo";
-            $params[':motivo'] = "%$motivo%";
-        }
-        if ($costo!= "") {
-            $sql.= " AND Ricoveri.Costo LIKE :costo";
-            $params[':costo'] = "%$costo%";
-        }
+        if ($dataRic != "")
+        $sql = " AND Ricoveri.Data LIKE :dataRic"; 
     
-        return array($sql, $params);
+        return $sql;
     }
 
         function createRicoveriInDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo){

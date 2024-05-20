@@ -191,14 +191,32 @@ select:focus{
     color: #4A9DEC;;
 }
 
+
+#pulsCreate{
+    margin-top: 30px!important;
+    width: 60px;
+    cursor: pointer;
+}
+#pulsCreate i{
+    transition: transform 0.5s;
+    font-size: 24px;
+    color: #fff;
+}
+
+#pulsCreate i:hover{
+    color: #ff004f;
+    transform: translateY(-5px);
+}
+
 .scroll-table {
-    margin-top: 2%;
+    margin-top: 0.5%;
     margin-right: 6%;
     margin-left: 6%;
-    height: 55vh;
+    height: 50vh;
     overflow: auto;
     border: 2px solid #cdc8c857;
     border-radius: 10px;
+
 }
 
 table {
@@ -206,7 +224,6 @@ table {
     border-collapse: separate;
     font-size: 0.9em;
     font-family: 'Poppins', sans-serif;
-    margin-bottom: 1%;
 }
 
 table tr {
@@ -218,16 +235,47 @@ table tr {
 /*Titolo della tabella*/
 table th {
     color: #fff;
-    background-color: #FFB347;
-    opacity: 0.8;
+    background-color: #f5c076;
+    opacity: 1;
     font-size: 16px;
-    padding: 12px 15px;
+    padding: 12px 10px;
     border-radius: 5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 table td {
-    padding: 12px 15px;
+    padding: 6px 10px;
     font-size: 14px;
+}
+
+table td form{
+    padding: 6px 10px;
+    font-size: 14px;
+    background-color: transparent!important;
+}
+
+table td form button{
+    background-color: #FFB347 !important;
+}
+
+.pulsCrud{
+    border: none;
+}
+
+.pulsCrud i{
+    background-color: transparent !important;
+    transition: transform 0.5s;
+    cursor: pointer;
+    font-size: 16px;
+    background-color: transparent;
+    color: #fff;
+}
+
+.pulsCrud i:hover{
+    color: #ff004f;
+    transform: translateY(-5px);
 }
 
 table tr {
@@ -238,9 +286,8 @@ table tr {
 table tr a{
     color:#4A9DEC;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 14px!important;
     transition: 0.5s;
-    line-height: 2;
     position: relative;
 }
 

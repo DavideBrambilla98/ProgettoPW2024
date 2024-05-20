@@ -111,5 +111,6 @@
     <?php	
         include 'footer.html';
     ?>
+    </body>
     <script src='gestioneAzioni.js'></script>
 </html>

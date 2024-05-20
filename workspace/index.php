@@ -45,7 +45,15 @@
                         <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
                     </button>
             </form>
-        </div>
+
+            <form id='pulsCreate' name="createForm" method="GET" action="create.php">
+                <button type="submit">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </form>
+
+            <div id="results">
+            </div>
 
         <?php
 
@@ -56,12 +64,9 @@
             if ($conn->connect_error) {
                 die("Connessione fallita: " . $conn->connect_error);
             }
-           
-                try {
-                
+            try {
 
-
-                $codRicovero = $codOsp = $nomOsp = $paziente = $dataRic = "";
+                $codRicovero = $codOsp = $nomOsp = $paziente = $nome = $cognome = $dataRic = "";
 
                 //per prendere il valore dalle altre pagine ---------------------------------
                 if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -81,6 +86,7 @@
                         </script>
         <?php
                 }
+            
                 //-----------------------------------------------------------------------------
 
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -103,54 +109,48 @@
                         case "5":
                             $dataRic = $cerca;
                             break;
+                        case "6":
+                            $nome = $cerca;
+                            break;
+                        case "6":
+                            $cognome = $cerca;
+                            break;
+
                     }
                 }
  
-                $sql = readRicoveriFromDb ($codRicovero, $codOsp, $nomOsp, $paziente, $dataRic, $durata, $motivo, $costo);
-
-            
+                $sql = readRicoveriFromDb($codOsp, $nomOsp, $codRicovero, $paziente, $nome, $cognome, $dataRic);
+                
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
 
                 //per associare i valori al segnaposto (:cod è un segnaposto usato nella query)
                 if ($codOsp != "")
-                    $statoPDO->bindValue(':CodOspedale', "%$codOsp%");
-                else
-                    $statoPDO->bindValue(':CodOspedale', "%" );
-                if ($codRicovero != "")
-                    $statoPDO->bindValue(':CodiceRicovero', "%$codRicovero%");
-                else
-                    $statoPDO->bindValue(':CodiceRicovero', "%" );
+                    $statoPDO->bindValue(':CodOspedale', $codOsp);
                 if ($nomOsp != "")
                     $statoPDO->bindValue(':DenominazioneStruttura', "%$nomOsp%");
-                    else
-                    $statoPDO->bindValue(':DenominazioneStruttura', "%" );
+                if ($codRicovero != "")
+                    $statoPDO->bindValue(':CodiceRicovero', $codRicovero);
                 if ($paziente != "")
-                    $statoPDO->bindValue(':Paziente', "%$paziente%");
-                    else
-                    $statoPDO->bindValue(':Paziente', "%" );
-                if ($nomePaziente != "")
-                    $statoPDO->bindValue(':nome', "%$nomePaziente%");
-                    else
-                    $statoPDO->bindValue(':nome', "%" );
-                if ($cognomePaziente != "")
-                    $statoPDO->bindValue(':cognome', "%$cognomePaziente%");
-                    else
-                    $statoPDO->bindValue(':cognome', "%" );
+                    $statoPDO->bindValue(':Paziente', $paziente);
+                if ($nome != "")
+                    $statoPDO->bindValue(':nome', $nome);
+                if ($cognome != "")
+                    $statoPDO->bindValue(':cognome', $cognome);
                 if ($dataRic != "")
-
-                    $statoPDO->bindValue(':dataRic', "%$dataRic%");
+                    $statoPDO->bindValue(':dataRic', $dataRic);
 
         ?>
     
         <div class="scroll-table">
+
         <?php
-// eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
+            // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
             $statoPDO->execute();
-            try {
+
                 if ($statoPDO->rowCount() > 0) {
 
-                    echo "<table id='tabella'><tr><th>Nome paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th></tr>";
+                    echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
 
                     // output data of each row
 
@@ -159,7 +159,28 @@
                         $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
                         $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
-                        echo "<tr><td>".$row["nome"]." ".$row["cognome"]."</td><td>".$paz."</td><td>".$osp."</td><td>".$row["Motivo"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Costo"]."</td></tr>";
+                        echo 
+                        "<tr>
+                        <td>".$row["nome"]." ".$row["cognome"]."</td>
+                        <td>".$paz."</td><td>".$osp."</td>
+                        <td>".$row["Motivo"]."</td>
+                        <td>".$row["Data"]."</td>
+                        <td>".$row["Durata"]."</td>
+                        <td>".$row["Costo"]."</td>
+                        <td> 
+                        <form class= 'pulsCrud' id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
+                            <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
+                            <input type='hidden' name='delete' value='1'>
+                            <button type='button' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
+                        </form>
+                        </td>
+                        <td>
+                        <form class= 'pulsCrud' action='update.php' method='get'>
+                            <input type='hidden' name='CodiceRicovero' value='".$row["CodiceRicovero"]."'>
+                            <button type='submit' name='update'><i class='fa-solid fa-pen'></i></button>
+                        </form>
+                        </td>
+                        </tr>";
 
                     }
                     echo "</table>";
@@ -173,9 +194,9 @@
 
             ?>
         </div>
-    </body>
 
     </div>
+
 <script>
     function confirmDelete(codiceRicovero) {
         if (confirm("Sei sicuro di voler cancellare questo record?")) {
@@ -184,12 +205,9 @@
     }
 </script>
 
-   
-</body>
-
-
     <?php	
         include 'footer.html';
     ?>
+    </body>
     <script src='gestioneAzioni.js'></script>
 </html>
