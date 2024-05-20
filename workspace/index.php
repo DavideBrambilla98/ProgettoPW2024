@@ -1,3 +1,11 @@
+<?php
+    session_start();
+
+    if (isset($_SESSION['flash_message'])) {
+        echo "<script>alert(\"" . $_SESSION['flash_message'] . "\");</script>";
+        unset($_SESSION['flash_message']);
+    }
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,10 +24,12 @@
             include 'header.html';	
             include 'navigation.html';
             include 'gestioneDB.php';
+            
         ?>
 
         <div id="research">      
             <form name="researchForm" method="POST">
+
                 <div class="select-wrapper">
                     <select id="search" name="search" >
                         <option value="1">codice ricovero</option>
@@ -38,6 +48,7 @@
         </div>
 
         <?php
+
             //stabilisce la connessione con il DB
             include 'ConnessioneDB.php';
 
@@ -45,7 +56,10 @@
             if ($conn->connect_error) {
                 die("Connessione fallita: " . $conn->connect_error);
             }
-            try {
+           
+                try {
+                
+
 
                 $codRicovero = $codOsp = $nomOsp = $paziente = $dataRic = "";
 
@@ -93,46 +107,87 @@
                 }
  
                 $sql = readRicoveriFromDb ($codRicovero, $codOsp, $nomOsp, $paziente, $dataRic, $durata, $motivo, $costo);
+
             
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
 
                 //per associare i valori al segnaposto (:cod è un segnaposto usato nella query)
-                if ($codRicovero != "")
-                    $statoPDO->bindValue(':codiceRicovero', "%$codRicovero%");
                 if ($codOsp != "")
-                    $statoPDO->bindValue(':codiceOspedale', "%$codOsp%");
+                    $statoPDO->bindValue(':CodOspedale', "%$codOsp%");
+                else
+                    $statoPDO->bindValue(':CodOspedale', "%" );
+                if ($codRicovero != "")
+                    $statoPDO->bindValue(':CodiceRicovero', "%$codRicovero%");
+                else
+                    $statoPDO->bindValue(':CodiceRicovero', "%" );
                 if ($nomOsp != "")
-                    $statoPDO->bindValue(':nomeOspedale', "%$nomOsp%");
+                    $statoPDO->bindValue(':DenominazioneStruttura', "%$nomOsp%");
+                    else
+                    $statoPDO->bindValue(':DenominazioneStruttura', "%" );
                 if ($paziente != "")
-                    $statoPDO->bindValue(':paziente', "%$paziente%");
+                    $statoPDO->bindValue(':Paziente', "%$paziente%");
+                    else
+                    $statoPDO->bindValue(':Paziente', "%" );
+                if ($nomePaziente != "")
+                    $statoPDO->bindValue(':nome', "%$nomePaziente%");
+                    else
+                    $statoPDO->bindValue(':nome', "%" );
+                if ($cognomePaziente != "")
+                    $statoPDO->bindValue(':cognome', "%$cognomePaziente%");
+                    else
+                    $statoPDO->bindValue(':cognome', "%" );
                 if ($dataRic != "")
+
                     $statoPDO->bindValue(':dataRic', "%$dataRic%");
+
         ?>
+    
         <div class="scroll-table">
-            <?php
-                // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
-                $statoPDO->execute();
-            
+        <?php
+// eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
+            $statoPDO->execute();
+            try {
                 if ($statoPDO->rowCount() > 0) {
+
                     echo "<table id='tabella'><tr><th>Nome paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th></tr>";
+
                     // output data of each row
+
                     while($row = $statoPDO->fetch()) {
+
                         $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
                         $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
                         echo "<tr><td>".$row["nome"]." ".$row["cognome"]."</td><td>".$paz."</td><td>".$osp."</td><td>".$row["Motivo"]."</td><td>".$row["Data"]."</td><td>".$row["Durata"]."</td><td>".$row["Costo"]."</td></tr>";
+
                     }
                     echo "</table>";
+                    
                 } else {
                     echo "0 results";
                 }
             } catch (PDOException $e) {
                 die("DB Error: " . $e->getMessage());
             }
+
             ?>
         </div>
     </body>
+
+    </div>
+<script>
+    function confirmDelete(codiceRicovero) {
+        if (confirm("Sei sicuro di voler cancellare questo record?")) {
+            document.getElementById('delete-form-' + codiceRicovero).submit();
+        }
+    }
+</script>
+
+   
+</body>
+
+
     <?php	
         include 'footer.html';
     ?>
