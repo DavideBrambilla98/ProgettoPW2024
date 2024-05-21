@@ -239,7 +239,8 @@ table th {
     opacity: 1;
     font-size: 16px;
     padding: 12px 10px;
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
     position: sticky;
     top: 0;
     z-index: 10;
@@ -251,13 +252,15 @@ table td {
 }
 
 table td form{
-    padding: 6px 10px;
+    padding: 6px 0px;
     font-size: 14px;
     background-color: transparent!important;
 }
 
 table td form button{
-    background-color: #FFB347 !important;
+    background-color: transparent !important;
+    border-radius: 5px;
+    border-color: #FFB347;
 }
 
 .pulsCrud{
@@ -268,9 +271,9 @@ table td form button{
     background-color: transparent !important;
     transition: transform 0.5s;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
     background-color: transparent;
-    color: #fff;
+    color: #FFB347;
 }
 
 .pulsCrud i:hover{
