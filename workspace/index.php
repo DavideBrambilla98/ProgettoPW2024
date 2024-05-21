@@ -26,34 +26,34 @@
             include 'gestioneDB.php';
             
         ?>
+        <div id="ricerca">
+            <div id="research">      
+                <form name="researchForm" method="POST">
 
-        <div id="research">      
-            <form name="researchForm" method="POST">
-
-                <div class="select-wrapper">
-                    <select id="search" name="search" >
-                        <option value="1">codice ricovero</option>
-                        <option value="2">codice ospedale</option>
-                        <option value="3">nome ospedale</option>
-                        <option value="4">paziente(CF)</option>
-                        <option value="5">data</option>
-                    </select>
-                    <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
-                </div>
-                    <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                    <div class="select-wrapper">
+                        <select id="search" name="search" >
+                            <option value="1">codice ricovero</option>
+                            <option value="2">codice ospedale</option>
+                            <option value="3">nome ospedale</option>
+                            <option value="4">paziente(CF)</option>
+                            <option value="5">data</option>
+                        </select>
+                        <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                    </div>
+                        <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                        <button type="submit">
+                            <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                </form>
+                <div id="crudCreate">
+                <form id='pulsCreate' name="createForm" method="GET" action="create.php">
                     <button type="submit">
-                        <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                        <i class="fa-solid fa-plus"></i>
                     </button>
-            </form>
-
-            <form id='pulsCreate' name="createForm" method="GET" action="create.php">
-                <button type="submit">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </form>
-
-            <div id="results">
+                </form>
+                </div>
             </div>
+        </div>
 
         <?php
 
@@ -150,7 +150,7 @@
 
                 if ($statoPDO->rowCount() > 0) {
 
-                    echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th>Azioni</th></tr>";
+                    echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
 
                     // output data of each row
 
@@ -172,6 +172,8 @@
                             <input type='hidden' name='CodiceRicovero' value='".$row["CodiceRicovero"]."'>
                             <button type='submit' name='update'><i class='fa-solid fa-pen'></i></button>
                         </form>
+                        </td>
+                        <td>
                         <form class= 'pulsCrud' id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
                         <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
                         <input type='hidden' name='delete' value='1'>

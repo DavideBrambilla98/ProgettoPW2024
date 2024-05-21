@@ -259,8 +259,7 @@ table td form{
 
 table td form button{
     background-color: transparent !important;
-    border-radius: 5px;
-    border-color: #FFB347;
+    border: none;
 }
 
 .pulsCrud{
