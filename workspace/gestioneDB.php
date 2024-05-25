@@ -45,37 +45,7 @@
         
         return $sql;
     }
-
-    	/*function readRicoveriFromDb ($codOsp,$nomOsp,$codRicovero,  $paziente ,$nome,$cognome, $dataRic, $durata, $motivo, $costo) : string {
-        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
-                FROM Ricoveri
-                JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
-                JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
-                WHERE 1=1";
-        if ($codOsp != "")
-            $sql .= " AND Ricoveri.CodOspedale LIKE :codiceOspedale";       
-        if ($nomOsp != "")
-            $sql .= " AND Ospedali.DenominazioneStruttura LIKE :nomeOspedale";
-        if ($codRicovero != "")
-            $sql .= " AND Ricoveri.CodiceRicovero LIKE  :codiceRicovero";
-        if ($paziente != "")
-            $sql .= " AND Ricoveri.Paziente LIKE  :paziente";
-        if ($nome != "")
-            $sql .= " AND nome LIKE :nome";
-        if ($cognome != "")
-            $sql .= " AND cognome LIKE :cognome";
-        if ($dataRic != "")
-             $sql .= " AND Ricoveri.Data LIKE  :dataRic";
-        if ($durata != "")
-            $sql .= " AND Ricoveri.Durata LIKE  :durata";
-        if ($motivo != "")
-            $sql .= " AND Ricoveri.Motivo LIKE  :motivo";
-         if ($costo != "")
-            $sql .= " AND Ricoveri.Costo LIKE  :costo";
-
-        return $sql;
-    }*/
-    
+ 
     function readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero,  $paziente, $nome, $cognome, $dataRic) {
         $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
                 FROM Ricoveri
@@ -102,9 +72,9 @@
         if ($cognome!= "") {
             $sql.= " AND Persone.cognome LIKE :cognome";
         }
-        if ($dataRic != "")
-        $sql = " AND Ricoveri.Data LIKE :dataRic"; 
-    
+        if ($dataRic!= "") {
+            $sql.= " AND Ricoveri.Data LIKE :dataRic";
+        }
         return $sql;
     }
 

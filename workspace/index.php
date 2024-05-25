@@ -47,7 +47,7 @@
                 </form>
                 <div id="crudCreate">
                 <form id='pulsCreate' name="createForm" method="GET" action="create.php">
-                    <button type="submit">
+                    <button type="submit" title="inserisci ricovero">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </form>
@@ -126,19 +126,19 @@
 
                 //per associare i valori al segnaposto (:cod è un segnaposto usato nella query)
                 if ($codOsp != "")
-                    $statoPDO->bindValue(':CodOspedale', $codOsp);
+                    $statoPDO->bindValue(':CodOspedale', "%$codOsp%");
                 if ($nomOsp != "")
                     $statoPDO->bindValue(':DenominazioneStruttura', "%$nomOsp%");
                 if ($codRicovero != "")
-                    $statoPDO->bindValue(':CodiceRicovero', $codRicovero);
+                    $statoPDO->bindValue(':CodiceRicovero', "%$codRicovero%");
                 if ($paziente != "")
-                    $statoPDO->bindValue(':Paziente', $paziente);
+                    $statoPDO->bindValue(':Paziente', "%$paziente%");
                 if ($nome != "")
-                    $statoPDO->bindValue(':nome', $nome);
+                    $statoPDO->bindValue(':nome', "%$nome%");
                 if ($cognome != "")
-                    $statoPDO->bindValue(':cognome', $cognome);
+                    $statoPDO->bindValue(':cognome', "%$cognome%");
                 if ($dataRic != "")
-                    $statoPDO->bindValue(':dataRic', $dataRic);
+                    $statoPDO->bindValue(':dataRic', "%$dataRic%");
 
         ?>
     
@@ -170,14 +170,14 @@
                         <td> 
                         <form class= 'pulsCrud' action='update.php' method='get'>
                             <input type='hidden' name='CodiceRicovero' value='".$row["CodiceRicovero"]."'>
-                            <button type='submit' name='update'><i class='fa-solid fa-pen'></i></button>
+                            <button type='submit'  title='modifica' name='update'><i class='fa-solid fa-pen'></i></button>
                         </form>
                         </td>
                         <td>
                         <form class= 'pulsCrud' id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
                         <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
                         <input type='hidden' name='delete' value='1'>
-                        <button type='button' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
+                        <button type='button' title='elimina' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
                         </form>
                         </td>
                         </tr>";
@@ -210,4 +210,6 @@
     ?>
     </body>
     <script src='gestioneAzioni.js'></script>
+    <script src='reloadPage()'></script> <!--  faccio ricaricare la pagina per correggere il problema della tabella che si abbassa
+                                                quando viene premuto modifica o crea record  -->
 </html>
