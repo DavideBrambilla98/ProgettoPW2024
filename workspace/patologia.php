@@ -24,8 +24,10 @@
                         <option value="1">codice patologia</option>
                         <option value="2">nome patologia</option>
                         <option value="3">criticità</option>
-                        <option value="4">cronica(X)</option>
-                        <option value="5">mortale(X)</option>
+                        <option value="4">cronica</option>
+                        <option value="5">mortale</option>
+                        <option value="6">cronica e mortale</option>
+                        <option value="7">nè cronica nè mortale</option>
                     </select>
                     <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
                 </div>
@@ -35,7 +37,6 @@
                     </button>
             </form>
         </div>
-
         <?php
 
             //stabilisce la connessione con il DB
@@ -82,10 +83,20 @@
                             $criticita = $cerca;
                             break;
                         case "4":
-                            $cronica = $cerca;
+                            $cronica = 1;
+                            $mortale = 0;
                             break;
                         case "5":
-                            $mortale = $cerca;
+                            $cronica = 0;
+                            $mortale = 1;
+                            break;
+                        case "6":
+                            $cronica = 1;
+                            $mortale = 1;
+                            break;
+                        case "7":
+                            $cronica = 0;
+                            $mortale = 0;
                             break;
                     }
                 }
@@ -97,11 +108,11 @@
 
                 //per associare i valori al segnaposto (:cod è un segnaposto usato nella query)
                 if ($cod != "")
-                    $statoPDO->bindValue(':cod', $cod);
+                    $statoPDO->bindValue(':cod', "%$cod%");
                 if ($nome != "")
                     $statoPDO->bindValue(':nome', "%$nome%");
                 if ($criticita != "")
-                    $statoPDO->bindValue(':criticita', $criticita);
+                    $statoPDO->bindValue(':criticita', "%$criticita%");
                 if ($cronica != "")
                     $statoPDO->bindValue(':cronica', $cronica);
                 if ($mortale != "")
@@ -111,12 +122,47 @@
             <?php
                     // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
                     $statoPDO->execute();
-                    
+                    $type = $tipoPat = "";
                     if ($statoPDO->rowCount() > 0) {
-                        echo "<table id='tabella'><tr><th>Codice</th><th>Nome</th><th>Criticità</th><th>Cronica</th><th>Mortale</th></tr>";
+
+                        $type = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
+
+
+                        echo "<table id='tabella'><tr><th>Codice</th><th>Nome</th><th>Criticità</th><th>Tipo</th><th>Ricoveri</th></tr>";
                         // output data of each row
                         while($row = $statoPDO->fetch()) {
-                            echo "<tr><td>".$row["Codice"]."</td><td>".$row["Nome"]."</td><td>".$row["Criticita"]."</td><td>".$row["Cronica"]."</td><td>".$row["Mortale"]."</td></tr>";
+
+                            if($row["countRicoveri"] > 0) {
+                                $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codPat=".$row["Codice"]."'>trovati: ".$row["countRicoveri"]."</a>";
+                            } else {
+                                $countRicoveri = "no ricoveri";
+                            }
+
+
+                            if($row["Cronica"] == 0 && $row["Mortale"] == 0)
+                                $type = 1;
+                            if($row["Cronica"] == 0 && $row["Mortale"] == 1)
+                                $type = 3;
+                            if($row["Cronica"] == 1 && $row["Mortale"] == 0)
+                                $type = 2;
+                            if($row["Cronica"] == 1 && $row["Mortale"] == 1)
+                                $type = 4;
+
+                            switch ($type) {
+                                case "1":
+                                    $tipoPat = "Non cronica e non mortale";
+                                    break;
+                                case "2":
+                                    $tipoPat = "Cronica";
+                                    break;
+                                case "3":
+                                    $tipoPat = "Mortale";
+                                    break;
+                                case "4":
+                                    $tipoPat = "Cronica e mortale";
+                                    break;
+                            }
+                            echo "<tr><td>".$row["Codice"]."</td><td>".$row["Nome"]."</td><td>".$row["Criticita"]."</td><td>".$tipoPat."</td><td>".$countRicoveri."</td></tr>";
                         }
                         echo "</table>";
                     } else {
@@ -132,4 +178,5 @@
     ?>
     </body>
     <script src='gestioneAzioni.js'></script>
+    <script>document.addEventListener('DOMContentLoaded', cercaSelezionata());</script>
 </html>

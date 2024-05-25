@@ -3,21 +3,27 @@
     include 'ConnessioneDB.php';
 
     function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale) : string {
-        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale
+        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale ,  COUNT(Ricoveri.CodiceRicovero) AS countRicoveri
                 FROM Patologie
+                JOIN PatologiaRicovero ON Patologie.Codice = PatologiaRicovero.CodPatologia
+                LEFT JOIN Ricoveri ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
                 WHERE 1=1";
 
             
         if ($cod != "")
-            $sql .= " AND Codice = :cod";
+            $sql .= " AND Codice LIKE :cod";
         if ($nome != "")
             $sql .= " AND Nome LIKE :nome";
         if ($criticita != "")
-            $sql .= " AND Criticita = :criticita";
+            $sql .= " AND Criticita LIKE :criticita";
         if ($cronica != "")
             $sql .= " AND Cronica = :cronica";
         if ($mortale != "")
             $sql .= " AND Mortale = :mortale";
+        
+
+        $sql .= " GROUP BY Patologie.Nome";
+        $sql .= " ORDER BY Codice";
 
         return $sql;
 	}
@@ -42,6 +48,7 @@
             $sql .= " AND Persone.nome LIKE :direttoreSanitario OR Persone.cognome LIKE :direttoreSanitario ";
 
         $sql .= " GROUP BY Ospedali.CodiceStruttura";
+        $sql .= " ORDER BY DenominazioneStruttura";
         
         return $sql;
     }
@@ -53,7 +60,8 @@
                 JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
                 JOIN PatologiaRicovero ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
                 JOIN Patologie ON PatologiaRicovero.CodPatologia = Patologie.codice
-                WHERE 1=1";
+                WHERE 1=1
+                ORDER BY Persone.nome";
     
         if ($nomOsp!= "") {
             $sql.= " AND Ospedali.DenominazioneStruttura LIKE :DenominazioneStruttura";
@@ -140,6 +148,7 @@
             $sql .= " AND indirizzo LIKE :indirizzo";
     
         $sql .= " GROUP BY Persone.codFiscale";
+        $sql .= " ORDER BY nome";
     
         return $sql;
     }

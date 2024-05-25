@@ -78,6 +78,10 @@
                     if(isset($_GET['codFiscale'])){
                         $paziente = $_GET['codFiscale'];
                     }
+                    if(isset($_GET['codPat'])){
+                        $patologia = $_GET['codPat'];
+                    }
+
         ?>
                         <script>
                             if (window.history.replaceState) {
