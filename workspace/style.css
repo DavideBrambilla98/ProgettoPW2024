@@ -192,7 +192,7 @@ select:focus{
 }
 
 #pulsRicerca:hover{
-    color: #4A9DEC;;
+    color: #4A9DEC;
 }
 
 #crudCreate{
@@ -214,6 +214,7 @@ select:focus{
     align-items: center;
     margin-right: 0 !important;
     padding-right: 0 !important;
+
 }
 
 #pulsCreate button{
@@ -224,14 +225,14 @@ select:focus{
 }
 
 #pulsCreate i{
-    transition: transform 0.5s;
     font-size: 20px;
     color: #fff;
+    transition: all 0.5s;
 }
 
 #pulsCreate i:hover{
-    color: #ff004f;
-    transform: translateY(-5px);
+    color: #4A9DEC;
+    cursor: pointer !important;
 }
 
 .scroll-table {
