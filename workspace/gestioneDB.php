@@ -23,7 +23,6 @@
         
 
         $sql .= " GROUP BY Patologie.Nome";
-        $sql .= " ORDER BY Codice";
 
         return $sql;
 	}
@@ -48,23 +47,24 @@
             $sql .= " AND Persone.nome LIKE :direttoreSanitario OR Persone.cognome LIKE :direttoreSanitario ";
 
         $sql .= " GROUP BY Ospedali.CodiceStruttura";
-        $sql .= " ORDER BY DenominazioneStruttura";
         
         return $sql;
     }
  
-    function readRicoveriFromDb ($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia) {
+    function readRicoveriFromDb ($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia,$codOsp) {
         $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo,Patologie.Nome,Patologie.Codice AS codRicovero
                 FROM Ricoveri
                 JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
                 JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
                 JOIN PatologiaRicovero ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
                 JOIN Patologie ON PatologiaRicovero.CodPatologia = Patologie.codice
-                WHERE 1=1
-                ORDER BY Persone.nome";
+                WHERE 1=1";
     
         if ($nomOsp!= "") {
             $sql.= " AND Ospedali.DenominazioneStruttura LIKE :DenominazioneStruttura";
+        }
+        if ($codOsp!= "") {
+            $sql.= " AND Ospedali.CodiceStruttura LIKE :CodOspedale";
         }
         if ($paziente!= "") {
             $sql.= " AND Ricoveri.Paziente LIKE :Paziente";
@@ -148,7 +148,6 @@
             $sql .= " AND indirizzo LIKE :indirizzo";
     
         $sql .= " GROUP BY Persone.codFiscale";
-        $sql .= " ORDER BY nome";
     
         return $sql;
     }

@@ -90,6 +90,7 @@
                                 window.history.replaceState({}, document.title, cleanedUrl);
                             }
                         </script>
+
         <?php
                 }
             
@@ -122,7 +123,7 @@
                     }
                 }
  
-                $sql = readRicoveriFromDb($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia);
+                $sql = readRicoveriFromDb($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia,$codOsp);
                 
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
