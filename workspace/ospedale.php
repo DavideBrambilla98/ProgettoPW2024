@@ -24,7 +24,7 @@
                     <select id="search" name="search" >
                         <!-- <option value="1">codice ospedale</option> -->
                         <option value="2">nome ospedale</option>
-                        <option value="3">indirizzo ospedale</option>
+                        <!-- <option value="3">indirizzo ospedale</option> -->
                         <option value="4">comune ospedale</option>
                         <option value="5">direttore sanitario</option>
                     </select>

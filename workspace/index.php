@@ -32,11 +32,12 @@
 
                     <div class="select-wrapper">
                         <select id="search" name="search" >
-                            <option value="1">codice ricovero</option>
-                            <option value="2">codice ospedale</option>
-                            <option value="3">nome ospedale</option>
-                            <option value="4">paziente(CF)</option>
+                            <option value="1">nome paziente</option>
+                            <option value="2">cognome paziente</option>
+                            <option value="3">paziente(CF)</option>
+                            <option value="4">nome ospedale</option>
                             <option value="5">data</option>
+                            <!-- <option value="6">patologia</option> -->
                         </select>
                         <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
                     </div>
@@ -67,6 +68,7 @@
             try {
 
                 $codRicovero = $codOsp = $nomOsp = $paziente = $nome = $cognome = $dataRic = "";
+                $nome=$cognome=$paziente=$nomOsp=$dataRic=$patologia="";
 
                 //per prendere il valore dalle altre pagine ---------------------------------
                 if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -76,6 +78,10 @@
                     if(isset($_GET['codFiscale'])){
                         $paziente = $_GET['codFiscale'];
                     }
+                    if(isset($_GET['codPat'])){
+                        $patologia = $_GET['codPat'];
+                    }
+
         ?>
                         <script>
                             if (window.history.replaceState) {
@@ -84,6 +90,7 @@
                                 window.history.replaceState({}, document.title, cleanedUrl);
                             }
                         </script>
+
         <?php
                 }
             
@@ -95,31 +102,28 @@
             
                     switch ($search) {
                         case "1":
-                            $codRicovero = $cerca;
+                            $nome = $cerca;
                             break;
                         case "2":
-                            $codOsp = $cerca;
+                            $cognome = $cerca;
                             break;
                         case "3":
-                            $nomOsp = $cerca;
+                            $paziente = $cerca;
                             break;
                         case "4":
-                            $paziente = $cerca;
+                            $nomOsp = $cerca;
                             break;
                         case "5":
                             $dataRic = $cerca;
                             break;
                         case "6":
-                            $nome = $cerca;
-                            break;
-                        case "6":
-                            $cognome = $cerca;
+                            $patologia = $cerca;
                             break;
 
                     }
                 }
  
-                $sql = readRicoveriFromDb($codOsp, $nomOsp, $codRicovero, $paziente, $nome, $cognome, $dataRic);
+                $sql = readRicoveriFromDb($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia,$codOsp);
                 
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
@@ -139,6 +143,8 @@
                     $statoPDO->bindValue(':cognome', "%$cognome%");
                 if ($dataRic != "")
                     $statoPDO->bindValue(':dataRic', "%$dataRic%");
+                if ($patologia != "")
+                    $statoPDO->bindValue(':patologia', "%$patologia%");
 
         ?>
     
@@ -150,7 +156,7 @@
 
                 if ($statoPDO->rowCount() > 0) {
 
-                    echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
+                    echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Patologia</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
 
                     // output data of each row
 
@@ -158,11 +164,14 @@
 
                         $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
                         $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
+                        $patolog = "<a href='patologia.php?pat=".$row["codRicovero"]."'> ".$row["Nome"]."</a>";
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
                         echo 
                         "<tr>
                         <td>".$row["nome"]." ".$row["cognome"]."</td>
-                        <td>".$paz."</td><td>".$osp."</td>
+                        <td>".$paz."</td>
+                        <td>".$osp."</td>
+                        <td>".$patolog."</td>
                         <td>".$row["Motivo"]."</td>
                         <td>".$row["Data"]."</td>
                         <td>".$row["Durata"]."</td>

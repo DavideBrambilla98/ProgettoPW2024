@@ -3,21 +3,26 @@
     include 'ConnessioneDB.php';
 
     function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale) : string {
-        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale
+        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale ,  COUNT(Ricoveri.CodiceRicovero) AS countRicoveri
                 FROM Patologie
+                JOIN PatologiaRicovero ON Patologie.Codice = PatologiaRicovero.CodPatologia
+                LEFT JOIN Ricoveri ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
                 WHERE 1=1";
 
             
         if ($cod != "")
-            $sql .= " AND Codice = :cod";
+            $sql .= " AND Codice LIKE :cod";
         if ($nome != "")
             $sql .= " AND Nome LIKE :nome";
         if ($criticita != "")
-            $sql .= " AND Criticita = :criticita";
+            $sql .= " AND Criticita LIKE :criticita";
         if ($cronica != "")
             $sql .= " AND Cronica = :cronica";
         if ($mortale != "")
             $sql .= " AND Mortale = :mortale";
+        
+
+        $sql .= " GROUP BY Patologie.Nome";
 
         return $sql;
 	}
@@ -46,22 +51,20 @@
         return $sql;
     }
  
-    function readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero,  $paziente, $nome, $cognome, $dataRic) {
-        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
+    function readRicoveriFromDb ($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia,$codOsp) {
+        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo,Patologie.Nome,Patologie.Codice AS codRicovero
                 FROM Ricoveri
                 JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
                 JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
+                JOIN PatologiaRicovero ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
+                JOIN Patologie ON PatologiaRicovero.CodPatologia = Patologie.codice
                 WHERE 1=1";
     
-
-        if ($codOsp!= "") {
-            $sql.= " AND Ricoveri.CodOspedale LIKE :CodOspedale";
-        }
         if ($nomOsp!= "") {
             $sql.= " AND Ospedali.DenominazioneStruttura LIKE :DenominazioneStruttura";
         }
-        if ($codRicovero!= "") {
-            $sql.= " AND Ricoveri.CodiceRicovero LIKE :CodiceRicovero";
+        if ($codOsp!= "") {
+            $sql.= " AND Ospedali.CodiceStruttura LIKE :CodOspedale";
         }
         if ($paziente!= "") {
             $sql.= " AND Ricoveri.Paziente LIKE :Paziente";
@@ -74,6 +77,9 @@
         }
         if ($dataRic!= "") {
             $sql.= " AND Ricoveri.Data LIKE :dataRic";
+        }
+        if ($patologia!= "") {
+            $sql.= " AND PatologiaRicovero.CodPatologia LIKE :patologia";
         }
         return $sql;
     }
