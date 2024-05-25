@@ -48,6 +48,25 @@
             try {
 
                 $cod = $nome = $criticita = $cronica = $mortale = "";
+
+                  //per prendere il valore dalle altre pagine ---------------------------------
+                  if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if(isset($_GET['pat'])){
+                        $cod = $_GET['pat'];
+                    }
+        ?>
+                        <script>
+                            if (window.history.replaceState) {
+                                var url = window.location.href;
+                                var cleanedUrl = url.split("?")[0];
+                                window.history.replaceState({}, document.title, cleanedUrl);
+                            }
+                        </script>
+                        
+        <?php
+                }
+                //-----------------------------------------------------------------------------  
+
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $search = $_POST['search'];
                     $cerca = $_POST['cerca'];

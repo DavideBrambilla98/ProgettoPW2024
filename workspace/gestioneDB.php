@@ -46,22 +46,17 @@
         return $sql;
     }
  
-    function readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero,  $paziente, $nome, $cognome, $dataRic) {
-        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo
+    function readRicoveriFromDb ($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia) {
+        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo,Patologie.Nome,Patologie.Codice AS codRicovero
                 FROM Ricoveri
                 JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
                 JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
+                JOIN PatologiaRicovero ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
+                JOIN Patologie ON PatologiaRicovero.CodPatologia = Patologie.codice
                 WHERE 1=1";
     
-
-        if ($codOsp!= "") {
-            $sql.= " AND Ricoveri.CodOspedale LIKE :CodOspedale";
-        }
         if ($nomOsp!= "") {
             $sql.= " AND Ospedali.DenominazioneStruttura LIKE :DenominazioneStruttura";
-        }
-        if ($codRicovero!= "") {
-            $sql.= " AND Ricoveri.CodiceRicovero LIKE :CodiceRicovero";
         }
         if ($paziente!= "") {
             $sql.= " AND Ricoveri.Paziente LIKE :Paziente";
@@ -74,6 +69,9 @@
         }
         if ($dataRic!= "") {
             $sql.= " AND Ricoveri.Data LIKE :dataRic";
+        }
+        if ($patologia!= "") {
+            $sql.= " AND PatologiaRicovero.CodPatologia LIKE :patologia";
         }
         return $sql;
     }
