@@ -75,5 +75,18 @@ document.querySelectorAll('#tabella tr').forEach(function(row) {
     });
   });
 
+function reloadPage() {
+  // Controlla se la funzione è già stata eseguita
+  if (!window.reloaded) {
+    location.reload();
+    window.reloaded = true; // Imposta il flag a true dopo l'esecuzione
+  }
+}
+
+// Reset del flag quando viene caricata un'altra pagina
+window.addEventListener('beforeunload', function() {
+  window.reloaded = false; // Reset del flag prima di caricare un'altra pagina
+});
+  
   
   
