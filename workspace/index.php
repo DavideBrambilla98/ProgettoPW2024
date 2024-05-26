@@ -144,7 +144,7 @@
                 if ($dataRic != "")
                     $statoPDO->bindValue(':dataRic', "%$dataRic%");
                 if ($patologia != "")
-                    $statoPDO->bindValue(':patologia', "%$patologia%");
+                    $statoPDO->bindValue(':patologia', "$patologia");
 
         ?>
     
@@ -156,7 +156,7 @@
 
                 if ($statoPDO->rowCount() > 0) {
 
-                    echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Patologia</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
+                    echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Patologie</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
 
                     // output data of each row
 
@@ -164,7 +164,7 @@
 
                         $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
                         $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
-                        $patolog = "<a href='patologia.php?pat=".$row["codRicovero"]."'> ".$row["Nome"]."</a>";
+                        $patolog = "<a href='patologia.php?pat=".$row["codRicovero"]."'>trovate: ".$row["numPatol"]."</a>";
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
                         echo 
                         "<tr>

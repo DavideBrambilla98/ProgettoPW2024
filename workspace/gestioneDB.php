@@ -52,7 +52,7 @@
     }
  
     function readRicoveriFromDb ($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia,$codOsp) {
-        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo,Patologie.Nome,Patologie.Codice AS codRicovero
+        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo,Patologie.Nome,Patologie.Codice AS codRicovero,COUNT(Patologie.Codice) AS numPatol
                 FROM Ricoveri
                 JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
                 JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
@@ -81,6 +81,8 @@
         if ($patologia!= "") {
             $sql.= " AND PatologiaRicovero.CodPatologia LIKE :patologia";
         }
+
+        $sql .= " GROUP BY Ricoveri.CodiceRicovero";
         return $sql;
     }
 
