@@ -91,22 +91,22 @@ window.addEventListener('beforeunload', function() {
 
 
 function cercaSelezionata(){
-  document.addEventListener('DOMContentLoaded', function(){
-    document.getElementById('search').addEventListener('change', function(){
-        if(this.value == '4'){ // Se l'utente seleziona "cronica"
-            document.forms['researchForm'].submit(); // Invia il form
-        }
-        if(this.value == '5'){ // Se l'utente seleziona "cronica"
-          document.forms['researchForm'].submit(); // Invia il form
-      }
-      if(this.value == '6'){ // Se l'utente seleziona "cronica"
+  document.getElementById('search').addEventListener('change', function(){
+    if(this.value == '4'){ // Se l'utente seleziona "cronica"
         document.forms['researchForm'].submit(); // Invia il form
     }
-    if(this.value == '7'){ // Se l'utente seleziona "cronica"
+    if(this.value == '5'){ // Se l'utente seleziona "mortale"
       document.forms['researchForm'].submit(); // Invia il form
-  }
-    });
+    }
+    if(this.value == '6'){ // Se l'utente seleziona "cronica e mortale"
+      document.forms['researchForm'].submit(); // Invia il form
+    }
+    if(this.value == '7'){ // Se l'utente seleziona "nè cronica nè mortale"
+      document.forms['researchForm'].submit(); // Invia il form
+    }
   });
 }
+
+
   
   

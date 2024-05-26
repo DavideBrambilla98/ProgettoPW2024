@@ -48,12 +48,12 @@
             }
             try {
 
-                $cod = $nome = $criticita = $cronica = $mortale = "";
+                $cod = $codRico= $nome = $criticita = $cronica = $mortale = "";
 
                   //per prendere il valore dalle altre pagine ---------------------------------
                   if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     if(isset($_GET['pat'])){
-                        $cod = $_GET['pat'];
+                        $codRico = $_GET['pat'];
                     }
         ?>
                         <script>
@@ -101,14 +101,14 @@
                     }
                 }
             
-                $sql = readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale);
+                $sql = readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale,$codRico);
             
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
 
                 //per associare i valori al segnaposto (:cod è un segnaposto usato nella query)
                 if ($cod != "")
-                    $statoPDO->bindValue(':cod', "%$cod%");
+                    $statoPDO->bindValue(':cod', "$cod");
                 if ($nome != "")
                     $statoPDO->bindValue(':nome', "%$nome%");
                 if ($criticita != "")
@@ -117,6 +117,9 @@
                     $statoPDO->bindValue(':cronica', $cronica);
                 if ($mortale != "")
                     $statoPDO->bindValue(':mortale', $mortale);
+                if($codRico!="")
+                    $statoPDO->bindValue(':codRico', $codRico);
+
         ?>
         <div class="scroll-table">
             <?php
@@ -133,11 +136,10 @@
                         while($row = $statoPDO->fetch()) {
 
                             if($row["countRicoveri"] > 0) {
-                                $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codPat=".$row["Codice"]."'>trovati: ".$row["countRicoveri"]."</a>";
+                                $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codPat=".$row["Codice"]."'>presenti</a>";
                             } else {
                                 $countRicoveri = "no ricoveri";
                             }
-
 
                             if($row["Cronica"] == 0 && $row["Mortale"] == 0)
                                 $type = 1;
