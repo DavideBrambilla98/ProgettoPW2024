@@ -123,7 +123,7 @@
                     }
                 }
  
-                $sql = readRicoveriFromDb($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia,$codOsp);
+                $sql = readRicoveriFromDb($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia,$codOsp, $cr);
                 
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
@@ -145,6 +145,8 @@
                     $statoPDO->bindValue(':dataRic', "%$dataRic%");
                 if ($patologia != "")
                     $statoPDO->bindValue(':patologia', "$patologia");
+                if ($cr != "")
+                    $statoPDO->bindValue(':codR', "$cr");
 
         ?>
     
@@ -164,7 +166,7 @@
 
                         $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
                         $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
-                        $patolog = "<a href='patologia.php?pat=".$row["codRicovero"]."'>trovate: ".$row["numPatol"]."</a>";
+                        $patolog = "<a href='patologia.php?pat=".$row["CodiceRicovero"]."'>trovate: ".$row["numPatol"]."</a>";
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
                         echo 
                         "<tr>
