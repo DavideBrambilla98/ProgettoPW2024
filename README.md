@@ -1,6 +1,9 @@
-# Servizio Sanitario
-
+# UniHeal
 Repository del progetto di *programmazione web*.
+
+### Sito web per la gestione di un servizio sanitario
+
+<img width="1079" alt="UniHealScreen" src="https://github.com/DavideBrambilla98/ProgettoPW2024/assets/145765934/bb91b620-aa69-4007-afce-da0879be2719">
 
 ## Consegna:
 ### Base di dati di una Regione per la gestione delle informazioni sui ricoveri ospedalieri
