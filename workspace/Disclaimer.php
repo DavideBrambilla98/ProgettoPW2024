@@ -22,7 +22,7 @@
                 Disclaimer
             </h1>
             <h2>
-                Avvertenze di rischio per gli utenti e i visitatori del Sito<br>
+                Avvertenze di rischio per gli utenti e i visitatori del Sito
             </h2>
             <h4>
                 Il presente disclaimer si applica ai contenuti e servizi del sito web davidebrambilla.altervista.org (il "Sito") <br>
