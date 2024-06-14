@@ -136,7 +136,7 @@
                         while($row = $statoPDO->fetch()) {
 
                             if($row["countRicoveri"] > 0) {
-                                $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codPat=".$row["Codice"]."'>presenti</a>";
+                                $countRicoveri = "<a id='riferimento' href='index.php?countRicoveri=".$row["countRicoveri"]."&codPat=".$row["Codice"]."'>trovate: ".$row["countRicoveri"]."</a>";
                             } else {
                                 $countRicoveri = "no ricoveri";
                             }
