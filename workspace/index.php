@@ -37,6 +37,7 @@
                             <option value="3">paziente(CF)</option>
                             <option value="4">nome ospedale</option>
                             <option value="5">data</option>
+                            <option value="6">patologia</option>
                             <!-- <option value="6">patologia</option> -->
                         </select>
                         <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>

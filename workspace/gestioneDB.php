@@ -3,10 +3,10 @@
     include 'ConnessioneDB.php';
 
     function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale, $codRico) : string {
-        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale ,  COUNT(Ricoveri.CodiceRicovero) AS countRicoveri, Ricoveri.CodiceRicovero AS codRicov
+        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale ,  COUNT(*) AS countRicoveri, Ricoveri.CodiceRicovero AS codRicov
                 FROM Patologie
-                JOIN PatologiaRicovero ON Patologie.Codice = PatologiaRicovero.CodPatologia
-                JOIN Ricoveri ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
+                LEFT JOIN PatologiaRicovero ON Patologie.Codice = PatologiaRicovero.CodPatologia
+                RIGHT JOIN Ricoveri ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
                 WHERE 1=1";
          
         if ($cod != "")
@@ -23,14 +23,14 @@
             $sql .= " AND Mortale = :mortale";
         
 
-        $sql .= " GROUP BY Codice ";
+        $sql .= " GROUP BY PatologiaRicovero.CodPatologia";
         $sql .= " ORDER BY Patologie.Codice";
         return $sql;
 	}
 
 
     function readOspedaliFromDb ($codStruttura, $nomeStruttura, $indirizzoStruttura, $comuneStruttura, $direttoreSanitario) : string {
-        $sql = "SELECT Ospedali.CodiceStruttura, Ospedali.DenominazioneStruttura, Ospedali.Indirizzo, Ospedali.Comune, Ospedali.DirettoreSanitario, Persone.nome,Persone.cognome, COUNT(Ricoveri.CodiceRicovero) AS countRicoveri
+        $sql = "SELECT Ospedali.CodiceStruttura, Ospedali.DenominazioneStruttura, Ospedali.Indirizzo, Ospedali.Comune, Ospedali.DirettoreSanitario, Persone.nome,Persone.cognome, COUNT(*) AS countRicoveri
                 FROM Ospedali
                 JOIN Persone ON Persone.codFiscale = Ospedali.Direttoresanitario
                 LEFT JOIN Ricoveri ON Ospedali.CodiceStruttura = Ricoveri.CodOspedale
