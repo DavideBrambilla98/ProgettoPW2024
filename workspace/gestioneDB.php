@@ -3,30 +3,38 @@
     include 'ConnessioneDB.php';
 
     function readPatologieFromDb ($cod, $nome, $criticita, $cronica, $mortale, $codRico) : string {
-        $sql = "SELECT Codice, Nome, Criticita, Cronica, Mortale ,  COUNT(*) AS countRicoveri, Ricoveri.CodiceRicovero AS codRicov
+        $sql = "SELECT Patologie.Codice, Patologie.Nome, Patologie.Criticita, Patologie.Cronica, Patologie.Mortale ,  SubQuery.countRicoveri
                 FROM Patologie
-                LEFT JOIN PatologiaRicovero ON Patologie.Codice = PatologiaRicovero.CodPatologia
-                RIGHT JOIN Ricoveri ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
+                LEFT JOIN (
+                    SELECT PatologiaRicovero.CodPatologia, COUNT(*) AS countRicoveri
+                    FROM PatologiaRicovero
+                    LEFT JOIN Ricoveri ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
+                    GROUP BY PatologiaRicovero.CodPatologia
+                ) AS SubQuery ON Patologie.Codice = SubQuery.CodPatologia
                 WHERE 1=1";
          
         if ($cod != "")
-            $sql .= " AND Codice LIKE :cod";
+            $sql .= " AND Patologie.Codice LIKE :cod";
         if ($codRico != "")
-            $sql .= " AND Ricoveri.CodiceRicovero LIKE :codRico";
+            $sql .= " AND EXISTS (
+                SELECT 1 FROM PatologiaRicovero
+                INNER JOIN Ricoveri ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
+                WHERE PatologiaRicovero.CodPatologia = Patologie.Codice AND Ricoveri.CodiceRicovero LIKE :codRico
+            )";
         if ($nome != "")
-            $sql .= " AND Nome LIKE :nome";
+            $sql .= " AND Patologie.Nome LIKE :nome";
         if ($criticita != "")
-            $sql .= " AND Criticita LIKE :criticita";
+            $sql .= " AND Patologie.Criticita LIKE :criticita";
         if ($cronica != "")
-            $sql .= " AND Cronica = :cronica";
+            $sql .= " AND Patologie.Cronica = :cronica";
         if ($mortale != "")
-            $sql .= " AND Mortale = :mortale";
-        
-
-        $sql .= " GROUP BY PatologiaRicovero.CodPatologia";
+            $sql .= " AND Patologie.Mortale = :mortale";
+    
         $sql .= " ORDER BY Patologie.Codice";
         return $sql;
-	}
+    }
+    
+    
 
 
     function readOspedaliFromDb ($codStruttura, $nomeStruttura, $indirizzoStruttura, $comuneStruttura, $direttoreSanitario) : string {
@@ -54,14 +62,19 @@
     }
  
     function readRicoveriFromDb ($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia, $codOsp, $cr) {
-        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente,Persone.nome,Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo,Patologie.Nome,Patologie.Codice AS codRicovero,COUNT(Patologie.Codice) AS numPatol
+        $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente, Persone.nome, Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo, Patologie.Nome, Patologie.Codice AS codRicovero, SubQuery.numPatol
                 FROM Ricoveri
                 JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
                 JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
-                JOIN PatologiaRicovero ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
-                JOIN Patologie ON PatologiaRicovero.CodPatologia = Patologie.codice
+                JOIN (
+                    SELECT PatologiaRicovero.CodiceRicovero, COUNT(*) AS numPatol
+                    FROM PatologiaRicovero
+                    GROUP BY PatologiaRicovero.CodiceRicovero
+                ) AS SubQuery ON Ricoveri.CodiceRicovero = SubQuery.CodiceRicovero
+                LEFT JOIN PatologiaRicovero ON Ricoveri.CodiceRicovero = PatologiaRicovero.CodiceRicovero
+                LEFT JOIN Patologie ON PatologiaRicovero.CodPatologia = Patologie.codice
                 WHERE 1=1";
-    
+        
         if ($nomOsp!= "") {
             $sql.= " AND Ospedali.DenominazioneStruttura LIKE :DenominazioneStruttura";
         }
@@ -81,16 +94,20 @@
             $sql.= " AND Ricoveri.Data LIKE :dataRic";
         }
         if ($patologia!= "") {
-            $sql.= " AND PatologiaRicovero.CodPatologia LIKE :patologia";
+            $sql.= " AND EXISTS (
+                SELECT 1 FROM PatologiaRicovero
+                WHERE PatologiaRicovero.CodiceRicovero = Ricoveri.CodiceRicovero AND PatologiaRicovero.CodPatologia LIKE :patologia
+            )";
         }
         if ($cr!= "") {
             $sql.= " AND Ricoveri.CodiceRicovero LIKE :codR";
         }
-
+    
         $sql .= " GROUP BY Ricoveri.CodiceRicovero";
         $sql .= " ORDER BY Persone.nome";
         return $sql;
     }
+    
 
         function createRicoveriInDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo){
             global $conn;
