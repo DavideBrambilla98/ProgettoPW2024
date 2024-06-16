@@ -30,7 +30,7 @@
         if ($mortale != "")
             $sql .= " AND Patologie.Mortale = :mortale";
     
-        $sql .= " ORDER BY Patologie.Codice";
+        $sql .= " ORDER BY Patologie.Nome";
         return $sql;
     }
     

@@ -124,7 +124,7 @@
                         $type = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
 
 
-                        echo "<table id='tabella'><tr><th>Codice</th><th>Nome</th><th>Criticità</th><th>Tipo</th><th>Ricoveri</th></tr>";
+                        echo "<table id='tabella'><tr><th>Nome</th><th>Criticità</th><th>Tipo</th><th>Ricoveri</th></tr>";
                         // output data of each row
                         while($row = $statoPDO->fetch()) {
 
@@ -157,7 +157,7 @@
                                     $tipoPat = "Cronica e mortale";
                                     break;
                             }
-                            echo "<tr><td>".$row["Codice"]."</td><td>".$row["Nome"]."</td><td>".$row["Criticita"]."</td><td>".$tipoPat."</td><td>".$countRicoveri."</td></tr>";
+                            echo "<tr><td>".$row["Nome"]."</td><td>".$row["Criticita"]."</td><td>".$tipoPat."</td><td>".$countRicoveri."</td></tr>";
                         }
                         echo "</table>";
                     } else {
