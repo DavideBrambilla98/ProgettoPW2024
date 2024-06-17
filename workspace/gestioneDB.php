@@ -126,6 +126,36 @@
     
         return array($sql, $params);
     }
+    function createPatologiaRicoveroInDb($codOspedale, $codiceRicovero, $codPatologia) {
+        global $conn;
+        $sql = 'INSERT INTO PatologiaRicovero (CodOspedale, CodiceRicovero, CodPatologia) VALUES (:CodOspedale, :CodiceRicovero, :CodPatologia)';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':CodOspedale', $codOspedale);
+        $stmt->bindParam(':CodiceRicovero', $codiceRicovero);
+        $stmt->bindParam(':CodPatologia', $codPatologia);
+        $stmt->execute();
+        return $stmt->rowCount(); 
+    }
+   /* function updatePatologiaRicoveroInDb($codOspedale, $codiceRicovero, $codPatologia, $conn) {
+        try {
+            $sql = "UPDATE PatologiaRicovero SET CodOspedale = ?, CodiceRicovero = ?, CodPatologia = ? WHERE CodOspedale = ? AND CodiceRicovero = ? AND CodPatologia = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$codOspedale, $codiceRicovero, $codPatologia]);
+        } catch (PDOException $e) {
+            die("DB Error: " . $e->getMessage());
+        }
+    }*/
+    function deletePatologiaRicoveroFromDb($codRicovero, $tableName, $conn) {
+        $sql = "DELETE FROM PatologiaRicovero WHERE CodiceRicovero = :CodiceRicovero";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':CodiceRicovero', $codRicovero);
+        try {
+            $stmt->execute();
+            echo "Record deleted successfully.";
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+    }
+}
         function createRicoveriInDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo){
             global $conn;
             $sql = 'INSERT INTO Ricoveri (CodOspedale, CodiceRicovero, Paziente, Data, Durata, Motivo, Costo) VALUES (:CodOspedale, :CodiceRicovero, :Paziente, :Data, :Durata, :Motivo, :Costo)';

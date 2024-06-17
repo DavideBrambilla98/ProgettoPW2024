@@ -34,10 +34,12 @@ if ($_POST){
     $durata =  $_POST['Durata'];
     $motivo = $_POST['Motivo'];
     $costo =  $_POST['Costo'] ;
-    
-    $result = createRicoveriInDb($codosp,$codric, $paziente, $data, $durata, $motivo, $costo);
+    $codPatologia = $_POST['Codice'];
 
-    if ($result) {
+    $result = createRicoveriInDb($codosp,$codric, $paziente, $data, $durata, $motivo, $costo);
+    $result2 = createPatologiaRicoveroInDb($codosp, $codric, $codPatologia);
+
+    if ($result && $result2) {
         $_SESSION['flash_message'] = 'Nuovo record creato correttamente';    } else {
         $_SESSION['flash_message'] = 'Errore nella creazione del record: ' . $conn->error;
         }
@@ -48,10 +50,12 @@ if ($_POST){
 $conn = null;
 ?>
 <form action ="create.php" method ="POST" onsubmit="return verificaCampi()">
-    <input type = "text" id = "CodOspedale" name = "CodOspedale" placeholder ="Codice Struttura"><br>
+
     <input type="text" id="CodiceRicovero" name="CodiceRicovero" placeholder="Codice Ricovero" value="<?php echo $codric; ?>" readonly><br>
+    <input type = "text" id = "CodOspedale" name = "CodOspedale" placeholder ="Codice Struttura"><br>
     <input type = "text" id = "Paziente" name = "Paziente" placeholder ="Paziente"><br>
-    <input type = "text" id = "Data" name = "Data" placeholder ="Data"><br>
+    <input type = "text" id = "Codice" name = "Codice Patologia" placeholder ="Codice Patologia"><br>
+    <input type = "date" id = "Data" name = "Data" placeholder ="Data"><br>
     <input type = "text" id = "Durata" name = "Durata" placeholder ="Durata"><br>
     <input type = "text" id = "Motivo" name = "Motivo" placeholder ="Motivo"><br>
     <input type = "text" id = "Costo" name = "Costo" placeholder ="Costo"><br>
@@ -65,8 +69,9 @@ function verificaCampi() {
     var durata = document.getElementById("Durata").value;
     var motivo = document.getElementById("Motivo").value;
     var costo = document.getElementById("Costo").value;
+    var codice = document.getElementById("Codice").value;
 
-    if (codOspedale === "" || paziente === "" || data === "" || durata === "" || motivo === "" || costo === "") {
+    if (codOspedale === "" || paziente === "" || data === "" || durata === "" || motivo === "" || costo === "" || Codice === "") {
         alert("Tutti i campi sono obbligatori!");
         return false;
     }

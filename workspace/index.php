@@ -142,29 +142,40 @@
                     echo "<table><tr><th>Nome struttura</th><th>Codice ricovero</th><th>Nome paziente</th><th>Cognome paziente</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
                     // stampa i dati di ogni riga
                     while($row = $statoPDO->fetch()) {
-                        echo
+
+                        $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
+                        $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
+                        $patolog = "<a href='patologia.php?pat=".$row["CodiceRicovero"]."'>trovate: ".$row["numPatol"]."</a>";
+                        // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
+                        $dateString = $row["Data"];
+                        $date = strtotime($dateString);
+                        if ($date !== false) {
+                            $formattedDate = date('d/m/Y', $date);
+                        } else {
+                            $formattedDate = $dateString; 
+                        }
+      
+                        echo 
                         "<tr>
-                        
-                        <td>".$row["DenominazioneStruttura"]."</td>
-                        <td>".$row["CodiceRicovero"]."</td>
-                        
-                        <td>".$row["nome"]."</td>
-                        <td>".$row["cognome"]."</td>
-                        <td>".$row["Data"]."</td>
-                        <td>".$row["Durata"]."</td>
+                        <td>".$row["nome"]." ".$row["cognome"]."</td>
+                        <td>".$paz."</td>
+                        <td>".$osp."</td>
+                        <td>".$patolog."</td>
                         <td>".$row["Motivo"]."</td>
+                        <td>".$formattedDate."</td>
+                        <td>".$row["Durata"]."</td>
                         <td>".$row["Costo"]."</td>
                         <td> 
-                        <form id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
-                            <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
-                            <input type='hidden' name='delete' value='1'>
-                            <button type='button' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
+                        <form class= 'pulsCrud' action='update.php' method='get'>
+                            <input type='hidden' name='CodiceRicovero' value='".$row["CodiceRicovero"]."'>
+                            <button type='submit'  title='modifica' name='update'><i class='fa-solid fa-pen'></i></button>
                         </form>
                         </td>
                         <td>
-                        <form action='update.php' method='get'>
-                            <input type='hidden' name='CodiceRicovero' value='".$row["CodiceRicovero"]."'>
-                            <button type='submit' name='update'><i class='fa-solid fa-pen'></i></button>
+                        <form class= 'pulsCrud' id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
+                        <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
+                        <input type='hidden' name='delete' value='1'>
+                        <button type='button' title='elimina' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
                         </form>
                         </td>
                         </tr>";
