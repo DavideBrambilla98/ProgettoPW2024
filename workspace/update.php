@@ -30,7 +30,7 @@ include 'gestioneDB.php';
 <form name="updateForm" method="POST">
     <input type="hidden" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo $row["CodiceRicovero"] ?? ""; ?>">
     <input type="text" id="Paziente" name="Paziente" placeholder="Paziente" value="<?php echo $row["Paziente"] ?? ""; ?>"><br>
-    <input type="date" id="Data" name="Data" placeholder="Data" value="<?php echo $row["Data"] ? date_create($row["Data"])->format('d-m-Y') : ""; ?>"><br>
+    <input type="date" id="Data" name="Data" placeholder="Data" value="<?php echo $row["Data"] ?? ""; ?>"><br>
     <input type="text" id="Durata" name="Durata" placeholder="Durata" value="<?php echo $row["Durata"] ?? ""; ?>"><br>
     <input type="text" id="Motivo" name="Motivo" placeholder="Motivo" value="<?php echo $row["Motivo"] ?? ""; ?>"><br>
     <input type="text" id="Costo" name="Costo" placeholder="Costo" value="<?php echo $row["Costo"] ?? ""; ?>"><br>
