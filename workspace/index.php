@@ -26,27 +26,39 @@
             include 'gestioneDB.php';
             
         ?>
+        <div id="ricerca">
+            <div id="research">      
+                <form name="researchForm" method="POST">
 
-        <div id="research">      
-            <form name="researchForm" method="POST">
-                <input id="CodOspedale" name="CodOspedale" type="text" placeholder="codice ospedale"/>
-                <input id="DenominazioneStruttura" name="DenominazioneStruttura" type="text" placeholder="nome ospedale"/>
-                <input id="CodiceRicovero" name="CodiceRicovero" type="text" placeholder="codice ricovero"/>
-                <input id="Paziente" name="Paziente" type="text" placeholder="paziente(CF)"/>
-                <input id="Data" name="Data" type="text" placeholder="data"/>
-                <button type="submit">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </form>
-           
-            <form name="createForm" method="GET" action="create.php">
-        <button type="submit">
-            <i class="fa-solid fa-plus"></i>
-        </button>
-    </form>
-    <div id="results">
+                    <div class="select-wrapper">
+                        <select id="search" name="search" >
+                            <option value="1">nome paziente</option>
+                            <option value="2">cognome paziente</option>
+                            <option value="3">paziente(CF)</option>
+                            <option value="4">nome ospedale</option>
+                            <option value="5">data</option>
+                            <option value="6">patologia</option>
+                            <!-- <option value="6">patologia</option> -->
+                        </select>
+                        <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
+                    </div>
+                        <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
+                        <button type="submit">
+                            <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                </form>
+                <div id="crudCreate">
+                <form id='pulsCreate' name="createForm" method="GET" action="create.php">
+                    <button type="submit" title="inserisci ricovero">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </form>
+                </div>
+            </div>
+        </div>
+
         <?php
-       
+
             //stabilisce la connessione con il DB
             include 'ConnessioneDB.php';
 
@@ -54,99 +66,103 @@
             if ($conn->connect_error) {
                 die("Connessione fallita: " . $conn->connect_error);
             }
-           
-                try {
-                
+            try {
 
-                $codOsp = $_POST["CodOspedale"] ?? "";
-                $codRicovero = $_POST["CodiceRicovero"] ?? "";
-                $nomOsp = $_POST["DenominazioneStruttura"] ?? "";
-                $paziente = $_POST["Paziente"] ?? "";
-                $dataRic = $_POST["Data"] ?? "";
-                $durata = $_POST["durata"] ?? "";
-                $motivo = $_POST["motivo"] ?? "";
-                $costo = $_POST["costo"] ?? "";
-                $nomePaziente = $_POST["nome"] ?? "";
-                $cognomePaziente = $_POST["cognome"] ?? "";
-                list($sql, $params) = readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero, $paziente, $nome, $cognome, $dataRic, $durata, $motivo, $costo);
+                $codRicovero = $codOsp = $nomOsp = $paziente = $nome = $cognome = $dataRic = "";
+                $nome=$cognome=$paziente=$nomOsp=$dataRic=$patologia="";
 
-                $statoPDO = $conn->prepare($sql);
-                
-                foreach ($params as $key=> $value) {
-                    $statoPDO->bindValue($key, $value);
+                //per prendere il valore dalle altre pagine ---------------------------------
+                if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                    if(isset($_GET['codiceStruttura'])){
+                        $codOsp = $_GET['codiceStruttura'];
+                    }
+                    if(isset($_GET['codFiscale'])){
+                        $paziente = $_GET['codFiscale'];
+                    }
+                    if(isset($_GET['codPat'])){
+                        $patologia = $_GET['codPat'];
+                    }
+
+        ?>
+        
+        <?php
                 }
-                
-                $statoPDO->execute();
-              /*  $sql = readRicoveriFromDb ($codOsp, $nomOsp, $codRicovero, $paziente, $nomePaziente,$cognomePaziente, $dataRic, $durata, $motivo, $costo);
             
+                //-----------------------------------------------------------------------------
+
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $search = $_POST['search'];
+                    $cerca = $_POST['cerca'];
+            
+                    switch ($search) {
+                        case "1":
+                            $nome = $cerca;
+                            break;
+                        case "2":
+                            $cognome = $cerca;
+                            break;
+                        case "3":
+                            $paziente = $cerca;
+                            break;
+                        case "4":
+                            $nomOsp = $cerca;
+                            break;
+                        case "5":
+                            $dataRic = $cerca;
+                            break;
+                        case "6":
+                            $patologia = $cerca;
+                            break;
+
+                    }
+                }
+ 
+                $sql = readRicoveriFromDb($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia,$codOsp, $cr);
+                
                 // Prepara la query per poi essere eseguita successivamente
                 $statoPDO = $conn->prepare($sql);
 
                 //per associare i valori al segnaposto (:cod è un segnaposto usato nella query)
                 if ($codOsp != "")
                     $statoPDO->bindValue(':CodOspedale', "%$codOsp%");
-                else
-                    $statoPDO->bindValue(':CodOspedale', "%" );
-                if ($codRicovero != "")
-                    $statoPDO->bindValue(':CodiceRicovero', "%$codRicovero%");
-                else
-                    $statoPDO->bindValue(':CodiceRicovero', "%" );
                 if ($nomOsp != "")
                     $statoPDO->bindValue(':DenominazioneStruttura', "%$nomOsp%");
-                    else
-                    $statoPDO->bindValue(':DenominazioneStruttura', "%" );
+                if ($codRicovero != "")
+                    $statoPDO->bindValue(':CodiceRicovero', "%$codRicovero%");
                 if ($paziente != "")
                     $statoPDO->bindValue(':Paziente', "%$paziente%");
-                    else
-                    $statoPDO->bindValue(':Paziente', "%" );
-                if ($nomePaziente != "")
-                    $statoPDO->bindValue(':nome', "%$nomePaziente%");
-                    else
-                    $statoPDO->bindValue(':nome', "%" );
-                if ($cognomePaziente != "")
-                    $statoPDO->bindValue(':cognome', "%$cognomePaziente%");
-                    else
-                    $statoPDO->bindValue(':cognome', "%" );
+                if ($nome != "")
+                    $statoPDO->bindValue(':nome', "%$nome%");
+                if ($cognome != "")
+                    $statoPDO->bindValue(':cognome', "%$cognome%");
                 if ($dataRic != "")
-                    $statoPDO->bindValue(':Data', "%$dataRic%");
-                    else
-                    $statoPDO->bindValue(':Data', "%" );
-                if ($durata != "")
-                    $statoPDO->bindValue(':durata', "%$durata%");
-                    else
-                    $statoPDO->bindValue(':durata', "%" );
-                if ($motivo != "")
-                    $statoPDO->bindValue(':motivo', "%$motivo%");
-                    else
-                    $statoPDO->bindValue(':motivo', "%" );
-                if ($costo != "")
-                    $statoPDO->bindValue(':costo', "%$costo%");
-                    else
-                    $statoPDO->bindValue(':costo', "%" );*/
-                } catch (Exception $e) {
+                    $statoPDO->bindValue(':dataRic', "%$dataRic%");
+                if ($patologia != "")
+                    $statoPDO->bindValue(':patologia', "$patologia");
+                if ($cr != "")
+                    $statoPDO->bindValue(':codR', "$cr");
 
-                    error_log("Error: ". $e->getMessage());
-                    echo "An error occurred. Please try again later.";
-                
-                }
-            
-            
         ?>
     
         <div class="scroll-table">
+
         <?php
-// eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
+            // eseguo la query che era stata preparata in precedenza (prima di eseguire la query vanno passati i segnaposto)
             $statoPDO->execute();
-            try {
+
                 if ($statoPDO->rowCount() > 0) {
-                    echo "<table><tr><th>Nome struttura</th><th>Codice ricovero</th><th>Nome paziente</th><th>Cognome paziente</th><th>Data</th><th>Durata</th><th>Motivo</th><th>Costo</th></tr>";
-                    // stampa i dati di ogni riga
+
+                    echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Patologie</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
+
+                    // output data of each row
+
                     while($row = $statoPDO->fetch()) {
 
                         $paz = "<a href='cittadino.php?citt=".$row["Paziente"]."'> ".$row["Paziente"]."</a>";
                         $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
                         $patolog = "<a href='patologia.php?pat=".$row["CodiceRicovero"]."'>trovate: ".$row["numPatol"]."</a>";
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
+
                         $dateString = $row["Data"];
                         $date = strtotime($dateString);
                         if ($date !== false) {
@@ -155,6 +171,7 @@
                             $formattedDate = $dateString; 
                         }
       
+
                         echo 
                         "<tr>
                         <td>".$row["nome"]." ".$row["cognome"]."</td>
@@ -162,7 +179,9 @@
                         <td>".$osp."</td>
                         <td>".$patolog."</td>
                         <td>".$row["Motivo"]."</td>
+
                         <td>".$formattedDate."</td>
+
                         <td>".$row["Durata"]."</td>
                         <td>".$row["Costo"]."</td>
                         <td> 
@@ -179,7 +198,7 @@
                         </form>
                         </td>
                         </tr>";
-                     
+
                     }
                     echo "</table>";
                     
@@ -189,10 +208,12 @@
             } catch (PDOException $e) {
                 die("DB Error: " . $e->getMessage());
             }
-        ?>
 
-     
+            ?>
+        </div>
+
     </div>
+
 <script>
     function confirmDelete(codiceRicovero) {
         if (confirm("Sei sicuro di voler cancellare questo record?")) {
@@ -201,11 +222,11 @@
     }
 </script>
 
-   
-</body>
-
     <?php	
         include 'footer.html';
     ?>
-    
+    </body>
+    <script src='gestioneAzioni.js'></script>
+    <script src='reloadPage()'></script> <!--  faccio ricaricare la pagina per correggere il problema della tabella che si abbassa
+                                                quando viene premuto modifica o crea record  -->
 </html>
