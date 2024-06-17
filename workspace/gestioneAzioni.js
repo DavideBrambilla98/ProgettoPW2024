@@ -59,20 +59,20 @@ document.querySelectorAll('#tabella tr').forEach(function(row) {
     });
     
     // Modifica l'effetto di selezione al clic sulla riga
-    row.addEventListener('click', function() {
+   // row.addEventListener('click', function() {
       // Verifica se la riga ha già la classe 'selected'
-      if (this.classList.contains('selected')) {
+     // if (this.classList.contains('selected')) {
         // Se sì, rimuovi la classe 'selected'
-        this.classList.remove('selected');
-      } else {
+       // this.classList.remove('selected');
+      //} else {
         // Altrimenti, rimuovi la classe 'selected' da tutte le altre righe
-        document.querySelectorAll('.selected').forEach(function(selectedRow) {
-          selectedRow.classList.remove('selected');
-        });
+        //document.querySelectorAll('.selected').forEach(function(selectedRow) {
+          //selectedRow.classList.remove('selected');
+        //});
         // E aggiungi la classe 'selected' alla riga cliccata
-        this.classList.add('selected');
-      }
-    });
+        //this.classList.add('selected');
+      //}
+    //});
   });
 
 function reloadPage() {
