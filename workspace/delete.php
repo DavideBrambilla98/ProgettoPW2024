@@ -8,6 +8,7 @@ if (isset($_POST['delete'])) {
         if (!empty($codRicovero)) {
             try {
                 deleteRicoveriFromDb($codRicovero, 'Ricoveri', $conn);
+                deletePatologiaRicoveroFromDb($codRicovero, 'PatologiaRicovero', $conn);
                 $_SESSION['flash_message'] = 'Ricovero eliminato correttamente!';
                 header('Location: index.php');
                 exit;

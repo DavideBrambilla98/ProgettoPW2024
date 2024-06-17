@@ -162,6 +162,16 @@
                         $osp = "<a href='ospedale.php?osp=".$row["CodOspedale"]."'> ".$row["DenominazioneStruttura"]."</a>";
                         $patolog = "<a href='patologia.php?pat=".$row["CodiceRicovero"]."'>trovate: ".$row["numPatol"]."</a>";
                         // tra le quadre ci va il nome della colonna del DB dal quale prendere il campo
+
+                        $dateString = $row["Data"];
+                        $date = strtotime($dateString);
+                        if ($date !== false) {
+                            $formattedDate = date('d/m/Y', $date);
+                        } else {
+                            $formattedDate = $dateString; 
+                        }
+      
+
                         echo 
                         "<tr>
                         <td>".$row["nome"]." ".$row["cognome"]."</td>
@@ -169,7 +179,9 @@
                         <td>".$osp."</td>
                         <td>".$patolog."</td>
                         <td>".$row["Motivo"]."</td>
-                        <td>".$row["Data"]."</td>
+
+                        <td>".$formattedDate."</td>
+
                         <td>".$row["Durata"]."</td>
                         <td>".$row["Costo"]."</td>
                         <td> 
