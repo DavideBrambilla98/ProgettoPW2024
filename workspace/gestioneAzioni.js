@@ -106,15 +106,6 @@ function cercaSelezionata(){
     }
   });
 
-
-function clearGET(){
-  if (window.history.replaceState) {
-    var url = window.location.href;
-    var cleanedUrl = url.split("?")[0];
-    window.history.replaceState({}, document.title, cleanedUrl);
-  }
-}
-
 }
 
 
