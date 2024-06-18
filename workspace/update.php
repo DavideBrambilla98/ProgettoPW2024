@@ -1,18 +1,13 @@
 <?php
     session_start();
-include 'gestioneDB.php';
-?>
-  <head>
-        <meta charset='utf-8'>
-        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-        <title>Ricoveri</title>
-        <link rel="stylesheet" href="style.css">
-        <meta name='viewport' content='width=device-width, initial-scale=1'>
-        <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <script src='main.js'></script>
-    </head>
-<?php
+    include 'gestioneDB.php';
+    include 'TendinaOspedali.php';
+    include 'TendinaPatologie.php';
+
+    // Ottenere i dati
+    $ospedali = getOspedali($conn);
+    $patologie = getPatologia($conn);
+
     $codRicovero = $_GET["CodiceRicovero"] ?? "";
 
     if ($codRicovero != "") {
@@ -26,30 +21,99 @@ include 'gestioneDB.php';
         }
     }
 ?>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ricoveri</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(function() {
+            // Autocomplete per Ospedale
+            $("#Ospedale").autocomplete({
+                source: <?php echo json_encode(array_map(function($ospedale) {
+                    return ["label" => $ospedale["DenominazioneStruttura"], "value" => $ospedale["CodiceStruttura"]];
+                }, $ospedali)); ?>,
+                minLength: 0,
+                select: function(event, ui) {
+                    $("#Ospedale").val(ui.item.label);
+                    $("#CodOspedale").val(ui.item.value);
+                    return false;
+                }
+            }).focus(function() {
+                $(this).autocomplete("search", "");
+            });
 
+            // Autocomplete per Motivo
+            $("#MotivoDescrizione").autocomplete({
+                source: <?php echo json_encode(array_map(function($patologia) {
+                    return ["label" => $patologia["Nome"], "value" => $patologia["Codice"]];
+                }, $patologie)); ?>,
+                minLength: 0,
+                select: function(event, ui) {
+                    $("#MotivoDescrizione").val(ui.item.label);
+                    $("#Codice").val(ui.item.value);
+                    return false;
+                }
+            }).focus(function() {
+                $(this).autocomplete("search", "");
+            });
+        });
+    </script>
+</head>
+<body>
 <form name="updateForm" method="POST">
-    <input type="hidden" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo $row["CodiceRicovero"] ?? ""; ?>">
-    <input type="text" id="Paziente" name="Paziente" placeholder="Paziente" value="<?php echo $row["Paziente"] ?? ""; ?>"><br>
-    <input type="date" id="Data" name="Data" placeholder="Data" value="<?php echo $row["Data"] ? date_create($row["Data"])->format('d-m-Y') : ""; ?>"><br>
-    <input type="text" id="Durata" name="Durata" placeholder="Durata" value="<?php echo $row["Durata"] ?? ""; ?>"><br>
-    <input type="text" id="Motivo" name="Motivo" placeholder="Motivo" value="<?php echo $row["Motivo"] ?? ""; ?>"><br>
-    <input type="text" id="Costo" name="Costo" placeholder="Costo" value="<?php echo $row["Costo"] ?? ""; ?>"><br>
+    <div>
+        <input type="text" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo isset($row["CodiceRicovero"]) ? $row["CodiceRicovero"] : ""; ?>" readonly>
+    </div>
+    <div>
+        <input type="text" id="Paziente" name="Paziente" placeholder="Paziente" value="<?php echo isset($row["Paziente"]) ? $row["Paziente"] : ""; ?>" readonly>
+    </div>
+    <div>
+        <input type="hidden" id="CodOspedale" name="CodOspedale" value="<?php echo isset($row["CodOspedale"]) ? $row["CodOspedale"] : ""; ?>">
+        <input type="text" id="Ospedale" name="Ospedale" placeholder="Ospedale" value="<?php echo isset($row["DenominazioneStruttura"]) ? $row["DenominazioneStruttura"] : ""; ?>">
+    </div>
+    <div>
+        <input type="hidden" id="Codice" name="Codice" value="<?php echo isset($row["Codice"]) ? $row["Codice"] : ""; ?>">
+        <input type="text" id="MotivoDescrizione" name="MotivoDescrizione" placeholder="Motivo" value="<?php echo isset($row["Nome"]) ? $row["Nome"] : ""; ?>">
+    </div>
+    <div>
+        <input type="date" id="Data" name="Data" value="<?php echo isset($row["Data"]) ? date("Y-m-d", strtotime($row["Data"])) : ''; ?>">
+    </div>
+    <div>
+        <input type="text" id="Durata" name="Durata" placeholder="Durata" value="<?php echo isset($row["Durata"]) ? $row["Durata"] : ""; ?>">
+    </div>
+    <div>
+        <input type="text" id="Motivo" name="Motivo" placeholder="Motivo" value="<?php echo isset($row["Motivo"]) ? $row["Motivo"] : ""; ?>">
+    </div>
+    <div>
+        <input type="text" id="Costo" name="Costo" placeholder="Costo" value="<?php echo isset($row["Costo"]) ? $row["Costo"] : ""; ?>">
+    </div>
     <button type="submit">
         <i class="fa-solid fa-pen"></i>
     </button>
 </form>
 
+
 <?php
 if (isset($_POST["CodiceRicovero"])) {
     $codRicovero = $_POST["CodiceRicovero"];
-    $paziente = $_POST["Paziente"];
+    /*$paziente = $_POST["Paziente"];*/
     $data = $_POST["Data"];
     $durata = $_POST["Durata"];
     $motivo = $_POST["Motivo"];
     $costo = $_POST["Costo"];
+    $codOspedale = $_POST["CodOspedale"];
+    $codPatologia = $_POST["Codice"];
 
-    
-    updateRicoveriInDb($codRicovero, $paziente, $data, $durata, $motivo, $costo, $conn);
+    updateRicoveriInDb($codRicovero, $codOspedale, $data, $durata, $motivo, $costo, $conn);
+    updatePatologiaRicoveroInDb($codOspedale, $codiceRicovero, $codPatologia, $conn);
 
     $_SESSION['flash_message'] = 'Ricovero modificato correttamente!';
     header('Location: index.php');
