@@ -22,19 +22,10 @@
         return $sql;
 	}
     
-    function readPersoneCrud ($cf, $nome, $cognome) : string {
-        $sql = "SELECT  codFiscale,nome, cognome
-                FROM Persone
-                WHERE 1=1";
-                
-        if ($cf != "")
-            $sql .= " AND codFiscale LIKE :cf";
-        if ($nome != "")
-            $sql .= " AND nome LIKE :nome";
-        if ($cognome != "")
-            $sql .= " AND cognome LIKE :cognome";
-    
-        return $sql;
+    function readPersoneCrud() : array {
+        $sql = "SELECT codFiscale, CONCAT(nome, ', ', cognome) AS nomecognome
+                FROM Persone";
+        return array("sql" => $sql, "params" => array());
     }
     function readPatologieCrud($cod,$nome) : string {
         $sql = "SELECT Codice, Nome
@@ -144,15 +135,17 @@
         $stmt->execute();
         return $stmt->rowCount(); 
     }
-    function updatePatologiaRicoveroInDb($codOspedale, $codiceRicovero, $codPatologia, $conn) {
+    function updatePatologiaRicoveroInDb($codRicovero, $codPatologia, $codOspedale, $conn) {
         try {
-            $sql = "UPDATE PatologiaRicovero SET CodPatologia = ? WHERE CodOspedale = ? AND CodiceRicovero = ?";
+            $sql = "UPDATE PatologiaRicovero SET CodPatologia = ?, CodOspedale = ? WHERE CodiceRicovero = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$codPatologia, $codOspedale, $codiceRicovero]);
+            $stmt->execute([$codPatologia, $codOspedale, $codRicovero]);
+            echo "Updated PatologiaRicovero: CodPatologia=$codPatologia, CodOspedale=$codOspedale, CodiceRicovero=$codRicovero"; // Debug
         } catch (PDOException $e) {
             die("DB Error: " . $e->getMessage());
         }
     }
+    
     function deletePatologiaRicoveroFromDb($codRicovero, $tableName, $conn) {
         $sql = "DELETE FROM PatologiaRicovero WHERE CodiceRicovero = :CodiceRicovero";
         $stmt = $conn->prepare($sql);

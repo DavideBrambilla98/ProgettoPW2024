@@ -2,8 +2,8 @@
 include_once 'gestioneDB.php';
 
 function getPersone($conn) {
-    $sql = readPersoneCrud("", "","");
-    $stmt = $conn->prepare($sql);
+    $crud = readPersoneCrud();
+    $stmt = $conn->prepare($crud["sql"]);
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }

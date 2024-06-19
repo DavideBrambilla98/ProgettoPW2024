@@ -10,4 +10,5 @@ function getOspedali($conn) {
 
 $ospedali = getOspedali($conn);
 echo json_encode($ospedali);
+
 ?>

@@ -1,26 +1,33 @@
 <?php
-    session_start();
-    include 'gestioneDB.php';
-    include 'TendinaOspedali.php';
-    include 'TendinaPatologie.php';
+ob_start();
+session_start();
+include 'gestioneDB.php';
+include 'TendinaOspedali.php';
+include 'TendinaPatologie.php';
 
-    // Ottenere i dati
-    $ospedali = getOspedali($conn);
-    $patologie = getPatologia($conn);
+// Ottenere i dati
+$ospedali = getOspedali($conn);
+$patologie = getPatologia($conn);
 
-    $codRicovero = $_GET["CodiceRicovero"] ?? "";
+$codRicovero = $_GET["CodiceRicovero"] ?? "";
 
-    if ($codRicovero != "") {
-        try {
-            $sql = "SELECT * FROM Ricoveri WHERE CodiceRicovero = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$codRicovero]);
-            $row = $stmt->fetch();
-        } catch (PDOException $e) {
-            die("DB Error: " . $e->getMessage());
-        }
+if ($codRicovero != "") {
+    try {
+        $sql = "SELECT R.*, P.CodPatologia, O.DenominazioneStruttura, PA.Nome 
+                FROM Ricoveri R 
+                JOIN PatologiaRicovero P ON R.CodiceRicovero = P.CodiceRicovero 
+                JOIN Ospedali O ON R.CodOspedale = O.CodiceStruttura 
+                JOIN Patologie PA ON P.CodPatologia = PA.Codice
+                WHERE R.CodiceRicovero = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$codRicovero]);
+        $row = $stmt->fetch();
+    } catch (PDOException $e) {
+        die("DB Error: " . $e->getMessage());
     }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -35,11 +42,17 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
         $(function() {
+            var ospedali = <?php echo json_encode(array_map(function($ospedale) {
+                return ["label" => $ospedale["DenominazioneStruttura"], "value" => $ospedale["CodiceStruttura"]];
+            }, $ospedali)); ?>;
+            
+            var patologie = <?php echo json_encode(array_map(function($patologia) {
+                return ["label" => $patologia["Nome"], "value" => $patologia["Codice"]];
+            }, $patologie)); ?>;
+
             // Autocomplete per Ospedale
             $("#Ospedale").autocomplete({
-                source: <?php echo json_encode(array_map(function($ospedale) {
-                    return ["label" => $ospedale["DenominazioneStruttura"], "value" => $ospedale["CodiceStruttura"]];
-                }, $ospedali)); ?>,
+                source: ospedali,
                 minLength: 0,
                 select: function(event, ui) {
                     $("#Ospedale").val(ui.item.label);
@@ -52,9 +65,7 @@
 
             // Autocomplete per Motivo
             $("#MotivoDescrizione").autocomplete({
-                source: <?php echo json_encode(array_map(function($patologia) {
-                    return ["label" => $patologia["Nome"], "value" => $patologia["Codice"]];
-                }, $patologie)); ?>,
+                source: patologie,
                 minLength: 0,
                 select: function(event, ui) {
                     $("#MotivoDescrizione").val(ui.item.label);
@@ -80,8 +91,8 @@
         <input type="text" id="Ospedale" name="Ospedale" placeholder="Ospedale" value="<?php echo isset($row["DenominazioneStruttura"]) ? $row["DenominazioneStruttura"] : ""; ?>">
     </div>
     <div>
-        <input type="hidden" id="Codice" name="Codice" value="<?php echo isset($row["Codice"]) ? $row["Codice"] : ""; ?>">
-        <input type="text" id="MotivoDescrizione" name="MotivoDescrizione" placeholder="Motivo" value="<?php echo isset($row["Nome"]) ? $row["Nome"] : ""; ?>">
+        <input type="hidden" id="Codice" name="Codice" value="<?php echo isset($row["CodPatologia"]) ? $row["CodPatologia"] : ""; ?>">
+        <input type="text" id="MotivoDescrizione" name="MotivoDescrizione" placeholder="patologia" value="<?php echo isset($row["Nome"]) ? $row["Nome"] : ""; ?>">
     </div>
     <div>
         <input type="date" id="Data" name="Data" value="<?php echo isset($row["Data"]) ? date("Y-m-d", strtotime($row["Data"])) : ''; ?>">
@@ -95,16 +106,14 @@
     <div>
         <input type="text" id="Costo" name="Costo" placeholder="Costo" value="<?php echo isset($row["Costo"]) ? $row["Costo"] : ""; ?>">
     </div>
-    <button type="submit">
+    <button type="submit" name ="submit">
         <i class="fa-solid fa-pen"></i>
     </button>
 </form>
 
-
 <?php
-if (isset($_POST["CodiceRicovero"])) {
+if (isset($_POST["submit"]))  {
     $codRicovero = $_POST["CodiceRicovero"];
-    /*$paziente = $_POST["Paziente"];*/
     $data = $_POST["Data"];
     $durata = $_POST["Durata"];
     $motivo = $_POST["Motivo"];
@@ -112,13 +121,28 @@ if (isset($_POST["CodiceRicovero"])) {
     $codOspedale = $_POST["CodOspedale"];
     $codPatologia = $_POST["Codice"];
 
-    updateRicoveriInDb($codRicovero, $codOspedale, $data, $durata, $motivo, $costo, $conn);
-    updatePatologiaRicoveroInDb($codOspedale, $codiceRicovero, $codPatologia, $conn);
+    try {
+        // Debug: Output the variables
+        echo "Update Ricoveri: CodiceRicovero=$codRicovero, CodOspedale=$codOspedale, Data=$data, Durata=$durata, Motivo=$motivo, Costo=$costo";
+        echo "Update PatologiaRicovero: CodiceRicovero=$codRicovero, CodPatologia=$codPatologia, CodOspedale=$codOspedale";
 
-    $_SESSION['flash_message'] = 'Ricovero modificato correttamente!';
-    header('Location: index.php');
-    exit;
+        // Update Ricoveri
+        updateRicoveriInDb($codRicovero, $codOspedale, $data, $durata, $motivo, $costo, $conn);
+        
+        // Update PatologiaRicovero
+        updatePatologiaRicoveroInDb($codRicovero, $codPatologia, $codOspedale, $conn);
+
+        // Redirect only after successful updates
+        $_SESSION['flash_message'] = 'Ricovero modificato correttamente!';
+        header('Location:index.php');
+        exit;
+    } catch (PDOException $e) {
+        die("DB Error: " . $e->getMessage());
+    }
+
 }
+
+ob_end_flush();
 ?>
 </body>
 </html>
