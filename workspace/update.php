@@ -97,7 +97,7 @@ if ($codRicovero != "") {
         <input type="text" id="MotivoDescrizione" name="MotivoDescrizione" placeholder="patologia" value="<?php echo isset($row["Nome"]) ? $row["Nome"] : ""; ?>">
     </div>
     <div>
-        <input type="date" id="Data" name="Data" value="<?php echo isset($row["Data"]) ? date("Y-m-d", strtotime($row["Data"])) : ''; ?>">
+        <input type="date" id="Data" name="Data" value="<?php echo isset($row["Data"]) ? date("Y-m-d", strtotime(convertiData($row["Data"]))) : ''; ?>">
     </div>
     <div>
         <input type="text" id="Durata" name="Durata" placeholder="Durata" value="<?php echo isset($row["Durata"]) ? $row["Durata"] : ""; ?>">
@@ -115,6 +115,15 @@ if ($codRicovero != "") {
 </form>
 
 <?php
+
+function convertiData($data) {
+    $parti = explode("/", $data);
+    if (count($parti) == 3 && $parti[0] > 12) {
+        return $parti[2] . "-" . $parti[1] . "-" . $parti[0];
+    }
+    return  $data;
+}
+
 if (isset($_POST["submit"]))  {
     $codRicovero = $_POST["CodiceRicovero"];
     $data = $_POST["Data"];
