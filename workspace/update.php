@@ -80,6 +80,7 @@ if ($codRicovero != "") {
 </head>
 <body>
 <form name="updateForm" method="POST">
+
     <div>
         <input type="text" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo isset($row["CodiceRicovero"]) ? $row["CodiceRicovero"] : ""; ?>" readonly>
     </div>
@@ -107,6 +108,7 @@ if ($codRicovero != "") {
         <input type="text" id="Costo" name="Costo" placeholder="Costo" value="<?php echo isset($row["Costo"]) ? $row["Costo"] : ""; ?>">
     </div>
     <button type="submit" name ="submit">
+
         <i class="fa-solid fa-pen"></i>
     </button>
 </form>
