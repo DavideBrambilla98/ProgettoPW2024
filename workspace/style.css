@@ -200,4 +200,9 @@ footer i{
     color: #ff004f;
     font-size: 20px;
 }
-
+.ui-autocomplete {
+    max-height: 200px; /* Limita l'altezza del menù a tendina */
+    overflow-y: auto; /* Aggiunge la scrollbar verticale */
+    overflow-x: hidden; /* Nasconde la scrollbar orizzontale */
+    z-index: 1000; /* Assicura che il menù appaia sopra altri elementi */
+}

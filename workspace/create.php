@@ -25,77 +25,77 @@ include 'TendinaPersone.php';
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <script>
     $(function() {
-    var ospedali = <?php echo json_encode(array_map(function($ospedale) {
-        return ["label" => $ospedale["DenominazioneStruttura"], "value" => $ospedale["CodiceStruttura"]];
-    }, $ospedali));?>;
+        var ospedali = <?php echo json_encode(array_map(function($ospedale) {
+            return ["label" => $ospedale["DenominazioneStruttura"], "value" => $ospedale["CodiceStruttura"]];
+        }, $ospedali));?>;
 
-    var patologie = <?php echo json_encode(array_map(function($patologia) {
-        return ["label" => $patologia["Nome"], "value" => $patologia["Codice"]];
-    }, $patologie));?>;
-    var paziente = <?php echo json_encode($paziente_data); ?>;
+        var patologie = <?php echo json_encode(array_map(function($patologia) {
+            return ["label" => $patologia["Nome"], "value" => $patologia["Codice"]];
+        }, $patologie));?>;
+        var paziente = <?php echo json_encode($paziente_data); ?>;
 
-    // Autocomplete per Ospedale
-    $("#Ospedale").autocomplete({
-        source: ospedali,
-        minLength: 0,
-        select: function(event, ui) {
-            $("#Ospedale").val(ui.item.label);
-            $("#CodOspedale").val(ui.item.value);
-            return false;
-        }
-    }).focus(function() {
-        $(this).autocomplete("search", "");
+        // Autocomplete per Ospedale
+        $("#Ospedale").autocomplete({
+            source: ospedali,
+            minLength: 0,
+            select: function(event, ui) {
+                $("#Ospedale").val(ui.item.label);
+                $("#CodOspedale").val(ui.item.value);
+                return false;
+            }
+        }).focus(function() {
+            $(this).autocomplete("search", "");
+        });
+
+        // Autocomplete per Motivo
+        $("#MotivoDescrizione").autocomplete({
+            source: patologie,
+            minLength: 0,
+            select: function(event, ui) {
+                $("#MotivoDescrizione").val(ui.item.label);
+                $("#Codice").val(ui.item.value);
+                return false;
+            }
+        }).focus(function() {
+            $(this).autocomplete("search", "");
+        });
+
+        // Autocomplete per Paziente
+        $("#Paziente").autocomplete({
+            source: paziente,
+            minLength: 0,
+            select: function(event, ui) {
+                $("#Paziente").val(ui.item.label);
+                $("#CodiceFiscale").val(ui.item.value);
+                return false;
+            }
+        }).focus(function() {
+            $(this).autocomplete("search", "");
+        });
     });
 
-    // Autocomplete per Motivo
-    $("#MotivoDescrizione").autocomplete({
-        source: patologie,
-        minLength: 0,
-        select: function(event, ui) {
-            $("#MotivoDescrizione").val(ui.item.label);
-            $("#Codice").val(ui.item.value);
+    function verificaCampi() {
+        var codOspedale = document.getElementById("CodOspedale").value;
+        var paziente = document.getElementById("Paziente").value;
+        var data = document.getElementById("Data").value;
+        var durata = document.getElementById("Durata").value;
+        var motivo = document.getElementById("Motivo").value;
+        var costo = document.getElementById("Costo").value;
+        var codice = document.getElementById("Codice").value;
+
+        if (codOspedale === "" || paziente === "" || data === "" || durata === "" || motivo === "" || costo === "" || codice === "") {
+            alert("Tutti i campi sono obbligatori!");
             return false;
         }
-    }).focus(function() {
-        $(this).autocomplete("search", "");
-    });
 
-    // Autocomplete per Paziente
-    $("#Paziente").autocomplete({
-        source: paziente,
-        minLength: 0,
-        select: function(event, ui) {
-            $("#Paziente").val(ui.item.label);
-            $("#CodiceFiscale").val(ui.item.value);
-            return false;
-        }
-    }).focus(function() {
-        $(this).autocomplete("search", "");
-    });
-});
+        // Puoi aggiungere altri controlli qui, ad esempio per il formato della data o la validità del costo
 
-
-function verificaCampi() {
-    var codOspedale = document.getElementById("CodOspedale").value;
-    var paziente = document.getElementById("Paziente").value;
-    var data = document.getElementById("Data").value;
-    var durata = document.getElementById("Durata").value;
-    var motivo = document.getElementById("Motivo").value;
-    var costo = document.getElementById("Costo").value;
-    var codice = document.getElementById("Codice").value;
-
-    if (codOspedale === "" || paziente === "" || data === "" || durata === "" || motivo === "" || costo === "" || codice === "") {
-        alert("Tutti i campi sono obbligatori!");
-        return false;
+        return true;
     }
-
-    // Puoi aggiungere altri controlli qui, ad esempio per il formato della data o la validità del costo
-
-    return true;
-}
-</script>
+    </script>
 </head>
 <body>
 
@@ -128,9 +128,9 @@ if ($_POST) {
 $conn = null;
 ?>
 <form action ="create.php" method ="POST" onsubmit="return verificaCampi()">
-<div>
-    <input type="text" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo $codric; ?>" readonly>
-</div>
+    <div>
+        <input type="text" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo $codric; ?>" readonly>
+    </div>
     <div>
         <input type="hidden" id="CodiceFiscale" name="CodiceFiscale">
         <input type="text" id="Paziente" name="Paziente" placeholder="Paziente" value="<?php echo isset($row["Paziente"]) ? $row["Paziente"] : ""; ?>">
@@ -155,9 +155,9 @@ $conn = null;
     <div>
         <input type="text" id="Costo" name="Costo" placeholder="Costo" value="<?php echo isset($row["Costo"])? $row["Costo"] : "";?>">
     </div>
-    
+
     <input type = "submit" value = "INVIO">
 </form>
 
-</html>
 </body>
+</html>
