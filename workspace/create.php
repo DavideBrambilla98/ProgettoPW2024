@@ -117,13 +117,7 @@ if ($_POST) {
         createRicoveriInDb($codosp, $codric, $codfisc, $data, $durata, $motivo, $costo);
         createPatologiaRicoveroInDb($codosp, $codric, $codPatologia);
 
-        $_SESSION['flash_message'] = 'Nuovo record creato correttamente';
-
-        // Display a popup message with the result
-        echo '<script>alert("Nuovo record creato correttamente!");</script>';
-
-        // Redirect to index.php
-        header('Location: index.php');
+        echo '<script>alert("Nuovo record creato correttamente!"); window.location.href = "index.php";</script>';
         exit;
     } catch (PDOException $e) {
         die("DB Error: ". $e->getMessage());
