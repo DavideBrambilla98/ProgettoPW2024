@@ -10,5 +10,5 @@ function getPatologia($conn) {
 }
 
 $patologie = getPatologia($conn);
-echo json_encode($motivi);
+//echo json_encode($motivi);
 ?>

@@ -9,5 +9,5 @@ function getPersone($conn) {
 }
 
 $persone = getPersone($conn);
-echo json_encode($persone);
+//echo json_encode($persone);
 ?>

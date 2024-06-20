@@ -26,37 +26,6 @@
             include 'gestioneDB.php';
             
         ?>
-        <div id="ricerca">
-            <div id="research">      
-                <form name="researchForm" method="POST">
-
-                    <div class="select-wrapper">
-                        <select id="search" name="search" >
-                            <option value="1">nome paziente</option>
-                            <option value="2">cognome paziente</option>
-                            <option value="3">paziente(CF)</option>
-                            <option value="4">nome ospedale</option>
-                            <option value="5">data</option>
-                            <option value="6">patologia</option>
-                            <!-- <option value="6">patologia</option> -->
-                        </select>
-                        <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
-                    </div>
-                        <input id="cerca" name="cerca" type="text" placeholder="cerca"/>
-                        <button type="submit">
-                            <i id="pulsRicerca" class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                </form>
-                <div id="crudCreate">
-                <form id='pulsCreate' name="createForm" method="GET" action="create.php">
-                    <button type="submit" title="inserisci ricovero">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
-                </form>
-                </div>
-            </div>
-        </div>
-
 
 <div id="ricerca">
             <div id="research">      
