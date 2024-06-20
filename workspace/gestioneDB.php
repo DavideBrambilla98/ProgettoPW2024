@@ -32,11 +32,39 @@
     
         $sql .= " ORDER BY Patologie.Nome";
         return $sql;
+
+	}
+    
+    function readPersoneCrud() : array {
+        $sql = "SELECT codFiscale, CONCAT(nome, ', ', cognome) AS nomecognome
+                FROM Persone";
+        return array("sql" => $sql, "params" => array());
     }
-    
-    
+    function readPatologieCrud($cod,$nome) : string {
+        $sql = "SELECT Codice, Nome
+        FROM Patologie
+        WHERE 1=1";
 
 
+        if ($cod != "")
+            $sql .= " AND Codice = :cod";
+        if ($nome != "")
+            $sql .= " AND Nome LIKE :nome";
+        return $sql;
+    }
+    function readOspedaliCrud($codStruttura, $nomeStruttura) : string {
+        $sql = "SELECT CodiceStruttura, DenominazioneStruttura
+                FROM Ospedali
+                WHERE 1=1";
+
+        if ($codStruttura != "")
+            $sql .= " AND CodiceStruttura LIKE :codStruttura";
+        if ($nomeStruttura != "")
+            $sql .= " AND DenominazioneStruttura LIKE :nomeStruttura";
+        
+        
+        return $sql;
+    }
     function readOspedaliFromDb ($codStruttura, $nomeStruttura, $indirizzoStruttura, $comuneStruttura, $direttoreSanitario) : string {
         $sql = "SELECT Ospedali.CodiceStruttura, Ospedali.DenominazioneStruttura, Ospedali.Indirizzo, Ospedali.Comune, Ospedali.DirettoreSanitario, Persone.nome,Persone.cognome, COUNT(*) AS countRicoveri
                 FROM Ospedali
@@ -60,6 +88,7 @@
         
         return $sql;
     }
+
  
     function readRicoveriFromDb ($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia, $codOsp, $cr) {
         $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente, Persone.nome, Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo, Patologie.Nome, Patologie.Codice AS codRicovero, SubQuery.numPatol
@@ -75,6 +104,7 @@
                 LEFT JOIN Patologie ON PatologiaRicovero.CodPatologia = Patologie.codice
                 WHERE 1=1";
         
+
         if ($nomOsp!= "") {
             $sql.= " AND Ospedali.DenominazioneStruttura LIKE :DenominazioneStruttura";
         }
@@ -118,15 +148,17 @@
         $stmt->execute();
         return $stmt->rowCount(); 
     }
-   /* function updatePatologiaRicoveroInDb($codOspedale, $codiceRicovero, $codPatologia, $conn) {
+    function updatePatologiaRicoveroInDb($codRicovero, $codPatologia, $codOspedale, $conn) {
         try {
-            $sql = "UPDATE PatologiaRicovero SET CodOspedale = ?, CodiceRicovero = ?, CodPatologia = ? WHERE CodOspedale = ? AND CodiceRicovero = ? AND CodPatologia = ?";
+            $sql = "UPDATE PatologiaRicovero SET CodPatologia = ?, CodOspedale = ? WHERE CodiceRicovero = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->execute([$codOspedale, $codiceRicovero, $codPatologia]);
+            $stmt->execute([$codPatologia, $codOspedale, $codRicovero]);
+            echo "Updated PatologiaRicovero: CodPatologia=$codPatologia, CodOspedale=$codOspedale, CodiceRicovero=$codRicovero"; // Debug
         } catch (PDOException $e) {
             die("DB Error: " . $e->getMessage());
         }
-    }*/
+    }
+    
     function deletePatologiaRicoveroFromDb($codRicovero, $tableName, $conn) {
         $sql = "DELETE FROM PatologiaRicovero WHERE CodiceRicovero = :CodiceRicovero";
         $stmt = $conn->prepare($sql);
@@ -156,15 +188,15 @@
             return $stmt->rowCount(); 
         }
       
-    function updateRicoveriInDb($codRicovero, $paziente, $data, $durata, $motivo, $costo, $conn) {
-        try {
-            $sql = "UPDATE Ricoveri SET Paziente = ?, Data = ?, Durata = ?, Motivo = ?, Costo = ? WHERE CodiceRicovero = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([$paziente, $data, $durata, $motivo, $costo, $codRicovero]);
-        } catch (PDOException $e) {
-            die("DB Error: " . $e->getMessage());
+        function updateRicoveriInDb($codRicovero, $codOspedale, $data, $durata, $motivo, $costo, $conn) {
+            try {
+                $sql = "UPDATE Ricoveri SET CodOspedale = ?, Data = ?, Durata = ?, Motivo = ?, Costo = ? WHERE CodiceRicovero = ?";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute([$codOspedale, $data, $durata, $motivo, $costo, $codRicovero]);
+            } catch (PDOException $e) {
+                die("DB Error: " . $e->getMessage());
+            }
         }
-    }
     
     
 
