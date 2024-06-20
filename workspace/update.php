@@ -40,6 +40,7 @@ if ($codRicovero != "") {
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    
     <script>
         $(function() {
             var ospedali = <?php echo json_encode(array_map(function($ospedale) {
@@ -124,10 +125,6 @@ if (isset($_POST["submit"]))  {
     $codPatologia = $_POST["Codice"];
 
     try {
-        // Debug: Output the variables
-        echo "Update Ricoveri: CodiceRicovero=$codRicovero, CodOspedale=$codOspedale, Data=$data, Durata=$durata, Motivo=$motivo, Costo=$costo";
-        echo "Update PatologiaRicovero: CodiceRicovero=$codRicovero, CodPatologia=$codPatologia, CodOspedale=$codOspedale";
-
         // Update Ricoveri
         updateRicoveriInDb($codRicovero, $codOspedale, $data, $durata, $motivo, $costo, $conn);
         

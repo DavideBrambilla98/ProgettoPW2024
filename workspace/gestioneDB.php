@@ -40,6 +40,7 @@
                 FROM Persone";
         return array("sql" => $sql, "params" => array());
     }
+
     function readPatologieCrud($cod,$nome) : string {
         $sql = "SELECT Codice, Nome
         FROM Patologie
@@ -52,6 +53,7 @@
             $sql .= " AND Nome LIKE :nome";
         return $sql;
     }
+
     function readOspedaliCrud($codStruttura, $nomeStruttura) : string {
         $sql = "SELECT CodiceStruttura, DenominazioneStruttura
                 FROM Ospedali
@@ -65,6 +67,7 @@
         
         return $sql;
     }
+
     function readOspedaliFromDb ($codStruttura, $nomeStruttura, $indirizzoStruttura, $comuneStruttura, $direttoreSanitario) : string {
         $sql = "SELECT Ospedali.CodiceStruttura, Ospedali.DenominazioneStruttura, Ospedali.Indirizzo, Ospedali.Comune, Ospedali.DirettoreSanitario, Persone.nome,Persone.cognome, COUNT(*) AS countRicoveri
                 FROM Ospedali
@@ -89,9 +92,11 @@
         return $sql;
     }
 
+
  
     function readRicoveriFromDb ($nomOsp, $paziente, $nome, $cognome, $dataRic, $patologia, $codOsp, $cr) {
         $sql = "SELECT Ricoveri.CodiceRicovero, Ricoveri.CodOspedale, Ospedali.DenominazioneStruttura, Ricoveri.Paziente, Persone.nome, Persone.cognome, Ricoveri.Data, Ricoveri.Durata, Ricoveri.Motivo, Ricoveri.Costo, Patologie.Nome, Patologie.Codice AS codRicovero, SubQuery.numPatol
+
                 FROM Ricoveri
                 JOIN Ospedali ON Ricoveri.CodOspedale = Ospedali.CodiceStruttura
                 JOIN Persone ON Ricoveri.Paziente = Persone.codFiscale
@@ -148,6 +153,7 @@
         $stmt->execute();
         return $stmt->rowCount(); 
     }
+    
     function updatePatologiaRicoveroInDb($codRicovero, $codPatologia, $codOspedale, $conn) {
         try {
             $sql = "UPDATE PatologiaRicovero SET CodPatologia = ?, CodOspedale = ? WHERE CodiceRicovero = ?";
@@ -172,21 +178,21 @@
 }
 
         function createRicoveriInDb($codStruttura, $codRicovero, $paziente, $data, $durata, $motivo, $costo){
-            global $conn;
-            $sql = 'INSERT INTO Ricoveri (CodOspedale, CodiceRicovero, Paziente, Data, Durata, Motivo, Costo) VALUES (:CodOspedale, :CodiceRicovero, :Paziente, :Data, :Durata, :Motivo, :Costo)';
-            $stmt = $conn->prepare($sql);
 
-            $stmt->bindParam(':CodOspedale', $codStruttura);
-            $stmt->bindParam(':CodiceRicovero', $codRicovero);
+    global $conn;
+    $sql = 'INSERT INTO Ricoveri (CodOspedale, CodiceRicovero, Paziente, Data, Durata, Motivo, Costo) VALUES (:CodOspedale, :CodiceRicovero, :Paziente, :Data, :Durata, :Motivo, :Costo)';
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':CodOspedale', $codStruttura);
+    $stmt->bindParam(':CodiceRicovero', $codRicovero);
+    $stmt->bindParam(':Paziente', $paziente);
+    $stmt->bindParam(':Data', $data);
+    $stmt->bindParam(':Durata', $durata);
+    $stmt->bindParam(':Motivo', $motivo);
+    $stmt->bindParam(':Costo', $costo);
+    $stmt->execute();
+    return $stmt->rowCount(); 
+}
 
-            $stmt->bindParam(':Paziente', $paziente);
-            $stmt->bindParam(':Data', $data);
-            $stmt->bindParam(':Durata', $durata);
-            $stmt->bindParam(':Motivo', $motivo);
-            $stmt->bindParam(':Costo', $costo);
-            $stmt->execute();
-            return $stmt->rowCount(); 
-        }
       
         function updateRicoveriInDb($codRicovero, $codOspedale, $data, $durata, $motivo, $costo, $conn) {
             try {
@@ -198,8 +204,6 @@
             }
         }
     
-    
-
     function deleteRicoveriFromDb($codRicovero, $tableName, $conn) {
 
         $sql = "DELETE FROM Ricoveri WHERE CodiceRicovero = :CodiceRicovero";
@@ -213,7 +217,6 @@
 
     }
 }
-
 
     function readPersoneFromDb ($cf, $nome, $cognome, $dataNascita, $luogoNascita ,$indirizzo) : string {
         $sql = "SELECT  codFiscale,nome, cognome, dataNascita, nasLuogo, indirizzo, COUNT(Ricoveri.CodiceRicovero) AS countRicoveri
