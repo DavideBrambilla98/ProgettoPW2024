@@ -36,7 +36,7 @@
 	}
     
     function readPersoneCrud() : array {
-        $sql = "SELECT codFiscale, CONCAT(nome, ', ', cognome) AS nomecognome
+        $sql = "SELECT codFiscale, CONCAT(nome, ' ', cognome) AS nomecognome
                 FROM Persone";
         return array("sql" => $sql, "params" => array());
     }
