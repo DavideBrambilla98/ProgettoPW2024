@@ -206,3 +206,8 @@ footer i{
     overflow-x: hidden; /* Nasconde la scrollbar orizzontale */
     z-index: 1000; /* Assicura che il menù appaia sopra altri elementi */
 }
+input[readonly] {
+    background-color: #f5f5f5; 
+    opacity: 0.8; 
+    cursor: not-allowed;
+  }

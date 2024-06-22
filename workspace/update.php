@@ -13,7 +13,10 @@ $codRicovero = $_GET["CodiceRicovero"] ?? "";
 
 if ($codRicovero != "") {
     try {
-        $sql = "SELECT R.*, P.CodPatologia, O.DenominazioneStruttura, PA.Nome 
+        $sql = "SELECT R.*, P.CodPatologia, O.DenominazioneStruttura, PA.Nome, 
+                (SELECT CONCAT(Persone.nome, ' ', Persone.cognome) 
+                 FROM Persone 
+                 WHERE Persone.codFiscale = R.Paziente) AS PazienteNomeCognome
                 FROM Ricoveri R 
                 JOIN PatologiaRicovero P ON R.CodiceRicovero = P.CodiceRicovero 
                 JOIN Ospedali O ON R.CodOspedale = O.CodiceStruttura 
@@ -85,7 +88,7 @@ if ($codRicovero != "") {
         <input type="text" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo isset($row["CodiceRicovero"]) ? $row["CodiceRicovero"] : ""; ?>" readonly>
     </div>
     <div>
-        <input type="text" id="Paziente" name="Paziente" placeholder="Paziente" value="<?php echo isset($row["Paziente"]) ? $row["Paziente"] : ""; ?>" readonly>
+    <input type="text" id="Paziente" name="Paziente" placeholder="Paziente" value="<?php echo isset($row["PazienteNomeCognome"]) ? $row["PazienteNomeCognome"] : ""; ?>" readonly>
     </div>
     <div>
         <input type="hidden" id="CodOspedale" name="CodOspedale" value="<?php echo isset($row["CodOspedale"]) ? $row["CodOspedale"] : ""; ?>">

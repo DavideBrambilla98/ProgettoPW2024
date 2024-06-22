@@ -141,7 +141,7 @@ $conn = null;
     </div>
     <div>
         <input type="hidden" id="Codice" name="Codice" value="<?php echo isset($row["CodPatologia"])? $row["CodPatologia"] : "";?>">
-        <input type="text" id="MotivoDescrizione" name="MotivoDescrizione" placeholder="patologia" value="<?php echo isset($row["Nome"])? $row["Nome"] : "";?>">
+        <input type="text" id="MotivoDescrizione" name="MotivoDescrizione" placeholder="Patologia" value="<?php echo isset($row["Nome"])? $row["Nome"] : "";?>">
     </div>
     <div>
         <input type="date" id="Data" name="Data" value="<?php echo isset($row["Data"])? date("Y-m-d", strtotime($row["Data"])) : '';?>">
