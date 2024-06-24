@@ -2,7 +2,8 @@
 include_once 'gestioneDB.php';
 
 
-function getPatologia($conn) {
+function getPatologia($conn)
+{
     $sql = readPatologieCrud("", "");
     $stmt = $conn->prepare($sql);
     $stmt->execute();
@@ -11,4 +12,3 @@ function getPatologia($conn) {
 
 $patologie = getPatologia($conn);
 //echo json_encode($motivi);
-?>

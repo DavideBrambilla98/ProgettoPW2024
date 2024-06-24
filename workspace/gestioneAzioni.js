@@ -13,11 +13,11 @@ var pulsanteOspedale = document.getElementById("ospNav");
 var pulsanteVirus = document.getElementById("patoNav");
 
 // Cambia il colore del pulsante in base alla pagina
-switch(true) {
+switch (true) {
     case pagina.includes("index.php"):
         pulsanteHome.style.color = "#0047AB";
         break;
-    case pagina===(""):
+    case pagina === (""):
         pulsanteHome.style.color = "#0047AB";
         break;
     case pagina.includes("cittadino.php"):
@@ -37,77 +37,76 @@ switch(true) {
 }
 
 // per non far visualizzare la linea sotto al link delle pagine se si è già in quella pagina
-document.addEventListener("DOMContentLoaded", function() {
-  var links = document.querySelectorAll("nav ul li a");
-  for (var i = 0; i < links.length; i++) {
-      if (links[i].href == window.location.href) {
-          links[i].classList.add("current-page");
-      }
-  }
+document.addEventListener("DOMContentLoaded", function () {
+    var links = document.querySelectorAll("nav ul li a");
+    for (var i = 0; i < links.length; i++) {
+        if (links[i].href == window.location.href) {
+            links[i].classList.add("current-page");
+        }
+    }
 });
 
 
 // Script per evidenziare le righe della tabella -------------------------------------------------------------------------
 
 // Aggiungi l'effetto hover alle righe della tabella
-document.querySelectorAll('#tabella tr').forEach(function(row) {
-    row.addEventListener('mouseover', function() {
-      this.classList.add('hovered');
+document.querySelectorAll('#tabella tr').forEach(function (row) {
+    row.addEventListener('mouseover', function () {
+        this.classList.add('hovered');
     });
-    row.addEventListener('mouseout', function() {
-      this.classList.remove('hovered');
+    row.addEventListener('mouseout', function () {
+        this.classList.remove('hovered');
     });
-    
+
     // Modifica l'effetto di selezione al clic sulla riga
-   // row.addEventListener('click', function() {
-      // Verifica se la riga ha già la classe 'selected'
-     // if (this.classList.contains('selected')) {
-        // Se sì, rimuovi la classe 'selected'
-       // this.classList.remove('selected');
-      //} else {
-        // Altrimenti, rimuovi la classe 'selected' da tutte le altre righe
-        //document.querySelectorAll('.selected').forEach(function(selectedRow) {
-          //selectedRow.classList.remove('selected');
-        //});
-        // E aggiungi la classe 'selected' alla riga cliccata
-        //this.classList.add('selected');
-      //}
+    // row.addEventListener('click', function() {
+    // Verifica se la riga ha già la classe 'selected'
+    // if (this.classList.contains('selected')) {
+    // Se sì, rimuovi la classe 'selected'
+    // this.classList.remove('selected');
+    //} else {
+    // Altrimenti, rimuovi la classe 'selected' da tutte le altre righe
+    //document.querySelectorAll('.selected').forEach(function(selectedRow) {
+    //selectedRow.classList.remove('selected');
     //});
-  });
+    // E aggiungi la classe 'selected' alla riga cliccata
+    //this.classList.add('selected');
+    //}
+    //});
+});
 
 function reloadPage() {
-  // Controlla se la funzione è già stata eseguita
-  if (!window.reloaded) {
-    location.reload();
-    window.reloaded = true; // Imposta il flag a true dopo l'esecuzione
-  }
+    // Controlla se la funzione è già stata eseguita
+    if (!window.reloaded) {
+        location.reload();
+        window.reloaded = true; // Imposta il flag a true dopo l'esecuzione
+    }
 }
 
 // Reset del flag quando viene caricata un'altra pagina
-window.addEventListener('beforeunload', function() {
-  window.reloaded = false; // Reset del flag prima di caricare un'altra pagina
+window.addEventListener('beforeunload', function () {
+    window.reloaded = false; // Reset del flag prima di caricare un'altra pagina
 });
-  
 
 
-function cercaSelezionata(){
-  document.getElementById('search').addEventListener('change', function(){
-    if(this.value == '4'){ // Se l'utente seleziona "cronica"
-        document.forms['researchForm'].submit(); // Invia il form
-    }
-    if(this.value == '5'){ // Se l'utente seleziona "mortale"
-      document.forms['researchForm'].submit(); // Invia il form
-    }
-    if(this.value == '6'){ // Se l'utente seleziona "cronica e mortale"
-      document.forms['researchForm'].submit(); // Invia il form
-    }
-    if(this.value == '7'){ // Se l'utente seleziona "nè cronica nè mortale"
-      document.forms['researchForm'].submit(); // Invia il form
-    }
-  });
+
+function cercaSelezionata() {
+    document.getElementById('search').addEventListener('change', function () {
+        if (this.value == '4') { // Se l'utente seleziona "cronica"
+            document.forms['researchForm'].submit(); // Invia il form
+        }
+        if (this.value == '5') { // Se l'utente seleziona "mortale"
+            document.forms['researchForm'].submit(); // Invia il form
+        }
+        if (this.value == '6') { // Se l'utente seleziona "cronica e mortale"
+            document.forms['researchForm'].submit(); // Invia il form
+        }
+        if (this.value == '7') { // Se l'utente seleziona "nè cronica nè mortale"
+            document.forms['researchForm'].submit(); // Invia il form
+        }
+    });
 
 }
 
 
-  
-  
+

@@ -1,7 +1,8 @@
 <?php
 include_once 'gestioneDB.php';
 
-function getPersone($conn) {
+function getPersone($conn)
+{
     $crud = readPersoneCrud();
     $stmt = $conn->prepare($crud["sql"]);
     $stmt->execute();
@@ -10,4 +11,3 @@ function getPersone($conn) {
 
 $persone = getPersone($conn);
 //echo json_encode($persone);
-?>
