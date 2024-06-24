@@ -1,7 +1,8 @@
 <?php
 include_once 'gestioneDB.php';
 
-function getOspedali($conn) {
+function getOspedali($conn)
+{
     $sql = readOspedaliCrud("", "");
     $stmt = $conn->prepare($sql);
     $stmt->execute();
@@ -10,5 +11,3 @@ function getOspedali($conn) {
 
 $ospedali = getOspedali($conn);
 //echo json_encode($ospedali);
-
-?>
