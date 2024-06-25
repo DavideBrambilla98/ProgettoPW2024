@@ -227,7 +227,5 @@ if (isset($_SESSION['flash_message'])) {
     ?>
 </body>
 <script src='gestioneAzioni.js'></script>
-<script src='reloadPage()'></script> <!--  faccio ricaricare la pagina per correggere il problema della tabella che si abbassa
-                                                quando viene premuto modifica o crea record  -->
 
 </html>
