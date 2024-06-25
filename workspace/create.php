@@ -162,7 +162,9 @@ $paziente_data = array_map(function ($persona) {
             <input type="text" id="Costo" name="Costo" placeholder="Costo" value="<?php echo isset($row["Costo"]) ? $row["Costo"] : ""; ?>">
         </div>
 
-        <input type="submit" value="INVIO">
+        <button type="submit" name="submit">
+            <i class="fa-solid fa-plus"></i>
+        </button>
     </form>
 
 </body>

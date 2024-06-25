@@ -35,5 +35,5 @@ input[type="submit"] {
 button[type="submit"]:hover,
 input[type="submit"]:hover {
     transition: 0.5s;
-    color: #0047AB;
+    color: #4A9DEC;
 }
