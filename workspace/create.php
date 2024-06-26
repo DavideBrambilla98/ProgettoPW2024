@@ -93,9 +93,19 @@ $paziente_data = array_map(function ($persona) {
                 return false;
             }
 
-            // Puoi aggiungere altri controlli qui, ad esempio per il formato della data o la validità del costo
+            if (isNaN(costo)) {
+                alert("Valore non riconosciuto! usa il punto come separatore di cifre decimali");
+                return false;
+            }
+
+            if (durata.includes(',') || durata.includes('.')) {
+                alert('La durata deve essere un numero intero!');
+                return false;
+            }
+
 
             return true;
+
         }
     </script>
 </head>

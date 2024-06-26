@@ -82,6 +82,35 @@ if ($codRicovero != "") {
                 $(this).autocomplete("search", "");
             });
         });
+
+        function verificaCampi() {
+            var codOspedale = document.getElementById("CodOspedale").value;
+            var paziente = document.getElementById("Paziente").value;
+            var data = document.getElementById("Data").value;
+            var durata = document.getElementById("Durata").value;
+            var motivo = document.getElementById("Motivo").value;
+            var costo = document.getElementById("Costo").value;
+            var codice = document.getElementById("Codice").value;
+
+            if (codOspedale === "" || paziente === "" || data === "" || durata === "" || motivo === "" || costo === "" || codice === "") {
+                alert("Tutti i campi sono obbligatori!");
+                return false;
+            }
+
+            if (isNaN(costo)) {
+                alert("Valore non riconosciuto! usa il punto come separatore di cifre decimali");
+                return false;
+            }
+
+            if (durata.includes(',') || durata.includes('.')) {
+                alert('La durata deve essere un numero intero!');
+                return false;
+            }
+
+
+            return true;
+
+        }
     </script>
 </head>
 
@@ -92,7 +121,7 @@ if ($codRicovero != "") {
 
     ?>
 
-    <form name="updateForm" method="POST">
+    <form name="updateForm" method="POST" onsubmit="return verificaCampi()">
 
         <div>
             <div class="testo">codice ricovero:</div>
