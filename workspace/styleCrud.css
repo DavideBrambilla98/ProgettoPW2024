@@ -25,6 +25,7 @@ input[type="submit"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: 0.5s;
 }
 
 /* Stile per il pulsante di invio*/
@@ -41,4 +42,16 @@ button[type="submit"]:hover,
 input[type="submit"]:hover {
     transition: 0.5s;
     color: #4A9DEC;
+}
+
+input[type="text"]:hover,
+input[type="date"]:hover {
+    border: 1px solid #febb2b;
+    box-shadow: 0px 0px 0px 4px rgba(248, 209, 110, 0.2);
+    background-color: white;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus{
+    outline: 1px solid #febb2b;;
 }
