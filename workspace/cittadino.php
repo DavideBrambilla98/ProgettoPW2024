@@ -22,9 +22,9 @@
         <form name="researchForm" method="POST">
             <div class="select-wrapper">
                 <select id="search" name="search">
-                    <option value="1">codice fiscale</option>
-                    <option value="2">nome</option>
-                    <option value="3">cognome</option>
+                    <option value="2">cittadino</option>
+                    <option value="1">CSSN</option>
+                    <!-- <option value="3">cognome</option> -->
                     <option value="4">data di nascita</option>
                     <option value="5">luogo di nascita</option>
                     <option value="6">indirizzo</option>
@@ -113,7 +113,7 @@
         $statoPDO->execute();
 
         if ($statoPDO->rowCount() > 0) {
-            echo "<table id='tabella'><tr><th>Nome</th><th>Cognome</th><th>Codice fiscale</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th>Ricoveri</th></tr>";
+            echo "<table id='tabella'><tr><th>Cittadino</th><th>CSSN</th><th>Data di nascita</th><th>Luogo di nascita</th><th>Indirizzo</th><th>Ricoveri</th></tr>";
             // stampa i dati di ogni riga
             while ($row = $statoPDO->fetch()) {
                 if ($row["countRicoveri"] > 0) {
@@ -121,7 +121,15 @@
                 } else {
                     $countRicoveri = "no ricoveri";
                 }
-                echo "<tr><td>" . $row["nome"] . "</td><td>" . $row["cognome"] . "</td><td>" . $row["codFiscale"] . "</td><td>" . $row["dataNascita"] . "</td><td>" . $row["nasLuogo"] . "</td><td>" . $row["indirizzo"] . "</td><td>" . $countRicoveri . "</td></tr>";
+                echo 
+                "<tr>
+                    <td>" . $row["nome"] . " " . $row["cognome"] . "</td>
+                    <td>" . $row["codFiscale"] . "</td>
+                    <td>" . $row["dataNascita"] . "</td>
+                    <td>" . $row["nasLuogo"] . "</td>
+                    <td>" . $row["indirizzo"] . "</td>
+                    <td>" . $countRicoveri . "</td>
+                </tr>";
             }
             echo "</table>";
         } else {

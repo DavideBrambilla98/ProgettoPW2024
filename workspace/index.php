@@ -34,12 +34,12 @@ if (isset($_SESSION['flash_message'])) {
 
                 <div class="select-wrapper">
                     <select id="search" name="search">
-                        <option value="1">nome paziente</option>
-                        <option value="2">cognome paziente</option>
-                        <option value="3">paziente(CF)</option>
+                        <option value="1">paziente</option>
+                        <!-- <option value="2">cognome paziente</option> -->
+                        <option value="3">CSSN</option>
                         <option value="4">nome ospedale</option>
-                        <option value="5">data</option>
                         <option value="6">patologia</option>
+                        <option value="5">data</option>
                         <!-- <option value="6">patologia</option> -->
                     </select>
                     <i id="pulsDiscesa" class="fa-solid fa-caret-down"></i>
@@ -154,7 +154,7 @@ if (isset($_SESSION['flash_message'])) {
 
             if ($statoPDO->rowCount() > 0) {
 
-                echo "<table id='tabella'><tr><th>Paziente</th><th>CF paziente</th><th>Nome ospedale</th><th>Patologie</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
+                echo "<table id='tabella'><tr><th>Paziente</th><th>CSSN</th><th>Nome ospedale</th><th>Patologie</th><th>Motivo</th><th>Data</th><th>Durata (gg)</th><th>Costo (€)</th><th></th><th></th></tr>";
 
                 // output data of each row
 
@@ -193,13 +193,13 @@ if (isset($_SESSION['flash_message'])) {
                         </form>
                         </td>
                         <td>
-                        <form class= 'pulsCrud' id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
-                        <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
-                        <input type='hidden' name='delete' value='1'>
-                        <button type='button' title='elimina' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
-                        </form>
-                        </td>
-                        </tr>";
+                            <form class= 'pulsCrud' id='delete-form-{$row["CodiceRicovero"]}' action='delete.php' method='post'>
+                                <input type='hidden' name='CodiceRicovero' value='{$row["CodiceRicovero"]}'>
+                                <input type='hidden' name='delete' value='1'>
+                                <button type='button' title='elimina' onclick='confirmDelete(\"{$row["CodiceRicovero"]}\")'><i class='fa-solid fa-trash'></i></button>
+                            </form>
+                            </td>
+                    </tr>";
                 }
                 echo "</table>";
             } else {

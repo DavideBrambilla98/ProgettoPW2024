@@ -22,7 +22,7 @@
         <form name="researchForm" method="POST">
             <div class="select-wrapper">
                 <select id="search" name="search">
-                    <option value="1">codice patologia</option>
+                    <!-- <option value="1">codice patologia</option> -->
                     <option value="2">nome patologia</option>
                     <option value="3">criticità</option>
                     <option value="4">cronica</option>

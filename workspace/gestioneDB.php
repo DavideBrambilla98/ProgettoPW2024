@@ -87,8 +87,8 @@ function readOspedaliFromDb($codStruttura, $nomeStruttura, $indirizzoStruttura, 
         $sql .= " AND Indirizzo LIKE :indirizzoStruttura";
     if ($comuneStruttura != "")
         $sql .= " AND Comune LIKE :comuneStruttura";
-    if ($direttoreSanitario != "")
-        $sql .= " AND Persone.nome LIKE :direttoreSanitario OR Persone.cognome LIKE :direttoreSanitario ";
+    if ($direttoreSanitario != "") 
+        $sql .= " AND CONCAT(Persone.nome, ' ', Persone.cognome) LIKE :direttoreSanitario";
 
     $sql .= " GROUP BY Ospedali.CodiceStruttura";
     $sql .= " ORDER BY Ospedali.DenominazioneStruttura";
@@ -125,7 +125,7 @@ function readRicoveriFromDb($nomOsp, $paziente, $nome, $cognome, $dataRic, $pato
         $sql .= " AND Ricoveri.Paziente LIKE :Paziente";
     }
     if ($nome != "") {
-        $sql .= " AND Persone.nome LIKE :nome";
+        $sql .= " AND CONCAT(Persone.nome, ' ', Persone.cognome) LIKE :nome";
     }
     if ($cognome != "") {
         $sql .= " AND Persone.cognome LIKE :cognome";
@@ -237,10 +237,8 @@ function readPersoneFromDb($cf, $nome, $cognome, $dataNascita, $luogoNascita, $i
 
     if ($cf != "")
         $sql .= " AND codFiscale LIKE :cf";
-    if ($nome != "")
-        $sql .= " AND nome LIKE :nome";
-    if ($cognome != "")
-        $sql .= " AND cognome LIKE :cognome";
+    if ($nome != "") 
+        $sql .= " AND CONCAT(Persone.nome, ' ', Persone.cognome) LIKE :nome";
     if ($dataNascita != "")
         $sql .= " AND dataNascita LIKE :dataNascita";
     if ($luogoNascita != "")
