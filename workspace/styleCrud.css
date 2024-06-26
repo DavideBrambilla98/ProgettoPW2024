@@ -9,6 +9,11 @@ form {
 
 }
 
+.testo{
+    color: #ff9500 !important;
+    padding-bottom: 2px;
+}
+
 /* Stili per gli input */
 button[type="submit"],
 input[type="text"],

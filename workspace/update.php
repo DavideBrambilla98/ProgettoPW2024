@@ -95,29 +95,37 @@ if ($codRicovero != "") {
     <form name="updateForm" method="POST">
 
         <div>
+            <div class="testo">codice ricovero:</div>
             <input type="text" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo isset($row["CodiceRicovero"]) ? $row["CodiceRicovero"] : ""; ?>" readonly>
         </div>
         <div>
+            <div class="testo">paziente:</div>
             <input type="text" id="Paziente" name="Paziente" placeholder="Paziente" value="<?php echo isset($row["PazienteNomeCognome"]) ? $row["PazienteNomeCognome"] : ""; ?>" readonly>
         </div>
         <div>
+            <div class="testo">nome ospedale:</div>
             <input type="hidden" id="CodOspedale" name="CodOspedale" value="<?php echo isset($row["CodOspedale"]) ? $row["CodOspedale"] : ""; ?>">
             <input type="text" id="Ospedale" name="Ospedale" placeholder="Ospedale" value="<?php echo isset($row["DenominazioneStruttura"]) ? $row["DenominazioneStruttura"] : ""; ?>">
         </div>
         <div>
+            <div class="testo">patologia:</div>
             <input type="hidden" id="Codice" name="Codice" value="<?php echo isset($row["CodPatologia"]) ? $row["CodPatologia"] : ""; ?>">
             <input type="text" id="MotivoDescrizione" name="MotivoDescrizione" placeholder="patologia" value="<?php echo isset($row["Nome"]) ? $row["Nome"] : ""; ?>">
         </div>
         <div>
+            <div class="testo">data inizio ricovero:</div>
             <input type="date" id="Data" name="Data" value="<?php echo isset($row["Data"]) ? date("Y-m-d", strtotime(convertiData($row["Data"]))) : ''; ?>">
         </div>
         <div>
+            <div class="testo">durata (giorni):</div>
             <input type="text" id="Durata" name="Durata" placeholder="Durata" value="<?php echo isset($row["Durata"]) ? $row["Durata"] : ""; ?>">
         </div>
         <div>
+            <div class="testo">motivo:</div>
             <input type="text" id="Motivo" name="Motivo" placeholder="Motivo" value="<?php echo isset($row["Motivo"]) ? $row["Motivo"] : ""; ?>">
         </div>
         <div>
+            <div class="testo">costo (€):</div>
             <input type="text" id="Costo" name="Costo" placeholder="Costo" value="<?php echo isset($row["Costo"]) ? $row["Costo"] : ""; ?>">
         </div>
         <button type="submit" name="submit">
