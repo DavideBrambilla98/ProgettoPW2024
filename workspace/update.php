@@ -57,8 +57,6 @@ if ($codRicovero != "") {
                 return ["label" => $patologia["Nome"], "value" => $patologia["Codice"]];
             }, $patologie)); ?>
         );
-
-            verificaCampiUpdate()
         });
     </script>
 </head>

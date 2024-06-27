@@ -41,7 +41,6 @@ $paziente_data = array_map(function ($persona) {
             <?php echo json_encode($paziente_data); ?>
         );
 
-            verificaCampiCreate();
         });
     </script>
 </head>
