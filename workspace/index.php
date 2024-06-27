@@ -155,7 +155,7 @@ if (isset($_SESSION['flash_message'])) {
 
             if ($statoPDO->rowCount() > 0) {
 
-                echo "<table id='tabella'><tr><th>Paziente</th><th>CSSN</th><th>Nome ospedale</th><th>Patologie</th><th>Motivo</th><th>Data</th><th>Durata (gg)</th><th>Costo (€)</th><th></th><th></th></tr>";
+                echo "<table id='tabella'><tr><th>Paziente</th><th>CSSN</th><th>Nome ospedale</th><th>Patologie</th><th>Motivo</th><th>Data</th><th>Durata</th><th>Costo</th><th></th><th></th></tr>";
 
                 // output data of each row
 
@@ -185,8 +185,8 @@ if (isset($_SESSION['flash_message'])) {
 
                         <td>" . $formattedDate . "</td>
 
-                        <td>" . $row["Durata"] . "</td>
-                        <td>" . $row["Costo"] . "</td>
+                        <td>" . $row["Durata"] .' '.'gg'."</td>
+                        <td>" . $row["Costo"] .' '.'€'. "</td>
                         <td> 
                         <form class= 'pulsCrud' action='update.php' method='get'>
                             <input type='hidden' name='CodiceRicovero' value='" . $row["CodiceRicovero"] . "'>
