@@ -128,3 +128,10 @@ function verificaCampiCreate() {
     return true;
 }
 
+// funzione per confermare la cancellazione del record
+
+function confirmDelete(codiceRicovero) {
+    if (confirm("Sei sicuro di voler cancellare questo record?")) {
+        document.getElementById('delete-form-' + codiceRicovero).submit();
+    }
+}
