@@ -40,7 +40,6 @@ $paziente_data = array_map(function ($persona) {
             }, $patologie)); ?>,
             <?php echo json_encode($paziente_data); ?>
         );
-
         });
     </script>
 </head>
@@ -50,6 +49,7 @@ $paziente_data = array_map(function ($persona) {
     <?php
     include 'header.html';
     include 'footer.html';
+    include 'connessioneDB.php';
 
     ?>
 
@@ -80,38 +80,38 @@ $paziente_data = array_map(function ($persona) {
     ?>
     <form action="create.php" method="POST" onsubmit="return verificaCampiCreate()">
         <div>
-            <div class="testo">codice ricovero:</div>
+            <div class="testo">Codice ricovero:</div>
             <input type="text" id="CodiceRicovero" name="CodiceRicovero" value="<?php echo $codric; ?>" readonly>
         </div>
         <div>
-            <div class="testo">paziente:</div>
+            <div class="testo">Paziente:</div>
             <input type="hidden" id="CodiceFiscale" name="CodiceFiscale">
             <input type="text" id="Paziente" name="Paziente" placeholder="Paziente" value="<?php echo isset($row["Paziente"]) ? $row["Paziente"] : ""; ?>">
         </div>
         <div>
-            <div class="testo">nome ospedale:</div>
+            <div class="testo">Nome ospedale:</div>
             <input type="hidden" id="CodOspedale" name="CodOspedale" value="<?php echo isset($row["CodOspedale"]) ? $row["CodOspedale"] : ""; ?>">
-            <input type="text" id="Ospedale" name="Ospedale" placeholder="Ospedale" value="<?php echo isset($row["DenominazioneStruttura"]) ? $row["DenominazioneStruttura"] : ""; ?>">
+            <input type="text" id="Ospedale" name="Ospedale" placeholder="Nome ospedale" value="<?php echo isset($row["DenominazioneStruttura"]) ? $row["DenominazioneStruttura"] : ""; ?>">
         </div>
         <div>
-            <div class="testo">patologia:</div>
+            <div class="testo">Patologia:</div>
             <input type="hidden" id="Codice" name="Codice" value="<?php echo isset($row["CodPatologia"]) ? $row["CodPatologia"] : ""; ?>">
             <input type="text" id="MotivoDescrizione" name="MotivoDescrizione" placeholder="Patologia" value="<?php echo isset($row["Nome"]) ? $row["Nome"] : ""; ?>">
         </div>
         <div>
-            <div class="testo">data inizio ricovero:</div>
+            <div class="testo">Data inizio ricovero:</div>
             <input type="date" id="Data" name="Data" value="<?php echo isset($row["Data"]) ? date("Y-m-d", strtotime($row["Data"])) : ''; ?>">
         </div>
         <div>
-            <div class="testo">durata (giorni):</div>
+            <div class="testo">Durata (giorni):</div>
             <input type="text" id="Durata" name="Durata" placeholder="Durata (giorni)" value="<?php echo isset($row["Durata"]) ? $row["Durata"] : ""; ?>">
         </div>
         <div>
-            <div class="testo">motivo:</div>
+            <div class="testo">Motivo:</div>
             <input type="text" id="Motivo" name="Motivo" placeholder="Motivo" value="<?php echo isset($row["Motivo"]) ? $row["Motivo"] : ""; ?>">
         </div>
         <div>
-             <div class="testo">costo (€):</div>
+             <div class="testo">Costo (€):</div>
             <input type="text" id="Costo" name="Costo" placeholder="Costo (€)" value="<?php echo isset($row["Costo"]) ? $row["Costo"] : ""; ?>">
         </div>
 

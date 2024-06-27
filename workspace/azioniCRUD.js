@@ -84,7 +84,7 @@ function verificaCampiUpdate() {
     var codice = document.getElementById("Codice").value;
 
     if (codOspedale === "" || paziente === "" || data === "" || durata === "" || motivo === "" || costo === "" || codice === "") {
-        alert("Tutti i campi sono obbligatori!");
+        alert("Hai lasciato campi vuoti o inserito un valore di ospedale o patologia non corretto");
         return false;
     }
 
@@ -112,7 +112,7 @@ function verificaCampiCreate() {
     var codice1 = document.getElementById("Codice").value;
 
     if (codOspedale1 === "" || paziente1 === "" || data1 === "" || durata1 === "" || motivo1 === "" || costo1 === "" || codice1 === "") {
-        alert("Tutti i campi sono obbligatori!");
+        alert("Hai lasciato campi vuoti o inserito un valore di paziente o ospedale o patologia non corretto");
         return false;
     }
 
