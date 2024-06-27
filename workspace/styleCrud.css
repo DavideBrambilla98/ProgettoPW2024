@@ -1,12 +1,12 @@
+
 /* Stile per il form e i suoi elementi */
 form {
-    margin-top: 1%;
     margin-left: auto;
     margin-right: auto;
-    width: 300px;
+    margin-top: 2%;
+    width: 400px;
     display: grid;
     gap: 10px;
-
 }
 
 .testo{
@@ -20,7 +20,7 @@ input[type="text"],
 input[type="date"],
 input[type="submit"] {
     width: 100%;
-    padding: 10px;
+    padding: 6px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -53,5 +53,5 @@ input[type="date"]:hover {
 
 input[type="text"]:focus,
 input[type="date"]:focus{
-    outline: 1px solid #febb2b;;
+    outline: 1px solid #febb2b;
 }
