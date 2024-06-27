@@ -45,72 +45,21 @@ if ($codRicovero != "") {
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="azioniCRUD.js"></script>
 
-    <script>
-        $(function() {
-            var ospedali = <?php echo json_encode(array_map(function ($ospedale) {
-                                return ["label" => $ospedale["DenominazioneStruttura"], "value" => $ospedale["CodiceStruttura"]];
-                            }, $ospedali)); ?>;
+    <script type="text/javascript">
+        $(document).ready(function() {
+            autocompleteOspedaliPatologie(
+            <?php echo json_encode(array_map(function ($ospedale) {
+                return ["label" => $ospedale["DenominazioneStruttura"], "value" => $ospedale["CodiceStruttura"]];
+            }, $ospedali)); ?>,
+            <?php echo json_encode(array_map(function ($patologia) {
+                return ["label" => $patologia["Nome"], "value" => $patologia["Codice"]];
+            }, $patologie)); ?>
+        );
 
-            var patologie = <?php echo json_encode(array_map(function ($patologia) {
-                                return ["label" => $patologia["Nome"], "value" => $patologia["Codice"]];
-                            }, $patologie)); ?>;
-
-            // Autocomplete per Ospedale
-            $("#Ospedale").autocomplete({
-                source: ospedali,
-                minLength: 0,
-                select: function(event, ui) {
-                    $("#Ospedale").val(ui.item.label);
-                    $("#CodOspedale").val(ui.item.value);
-                    return false;
-                }
-            }).focus(function() {
-                $(this).autocomplete("search", "");
-            });
-
-            // Autocomplete per Motivo
-            $("#MotivoDescrizione").autocomplete({
-                source: patologie,
-                minLength: 0,
-                select: function(event, ui) {
-                    $("#MotivoDescrizione").val(ui.item.label);
-                    $("#Codice").val(ui.item.value);
-                    return false;
-                }
-            }).focus(function() {
-                $(this).autocomplete("search", "");
-            });
+            verificaCampiUpdate()
         });
-
-        function verificaCampi() {
-            var codOspedale = document.getElementById("CodOspedale").value;
-            var paziente = document.getElementById("Paziente").value;
-            var data = document.getElementById("Data").value;
-            var durata = document.getElementById("Durata").value;
-            var motivo = document.getElementById("Motivo").value;
-            var costo = document.getElementById("Costo").value;
-            var codice = document.getElementById("Codice").value;
-
-            if (codOspedale === "" || paziente === "" || data === "" || durata === "" || motivo === "" || costo === "" || codice === "") {
-                alert("Tutti i campi sono obbligatori!");
-                return false;
-            }
-
-            if (isNaN(costo)) {
-                alert("Valore non riconosciuto! usa il punto come separatore di cifre decimali");
-                return false;
-            }
-
-            if (durata.includes(',') || durata.includes('.')) {
-                alert('La durata deve essere un numero intero!');
-                return false;
-            }
-
-
-            return true;
-
-        }
     </script>
 </head>
 
@@ -121,7 +70,7 @@ if ($codRicovero != "") {
 
     ?>
 
-    <form name="updateForm" method="POST" onsubmit="return verificaCampi()">
+    <form name="updateForm" method="POST" onsubmit="return verificaCampiUpdate()">
 
         <div>
             <div class="testo">codice ricovero:</div>
